@@ -27,75 +27,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Instant Theme Initializer (prevents any flash) -->
-  <script>
-    (function() {
-      var saved = localStorage.getItem('billable_theme');
-      if (saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
-
   <style>
     /* ==========================================================================
-       1. Design Tokens — Default Clean Financial Statement (Light Theme)
+       1. Design Tokens — Dark Obsidian Cyber Financial Ledger
        ========================================================================== */
     :root {
-      /* Surface & Canvas (Light Default) */
-      --bg-main:          #F8FAFC;
-      --bg-card:          #FFFFFF;
-      --bg-card-hover:    #F8FAFC;
-      --bg-glass:         rgba(255, 255, 255, 0.88);
-      --bg-input:         #F1F5F9;
-      
-      /* Borders & Dividers */
-      --border:           rgba(15, 23, 42, 0.08);
-      --border-subtle:    rgba(15, 23, 42, 0.04);
-      --border-highlight: rgba(15, 23, 42, 0.14);
-      --border-glow:      rgba(5, 150, 105, 0.2);
-
-      /* Typography Ink */
-      --text-primary:     #0F172A;
-      --text-secondary:   #475569;
-      --text-muted:       #64748B;
-      --text-faint:       #94A3B8;
-
-      /* Meaning Accents */
-      --money:            #059669;  /* Recovered revenue */
-      --money-glow:       rgba(5, 150, 105, 0.18);
-      --money-surface:    rgba(5, 150, 105, 0.08);
-      --money-border:     rgba(5, 150, 105, 0.25);
-      
-      --flag:             #E11D48;  /* Out of scope */
-      --flag-glow:        rgba(225, 29, 72, 0.18);
-      --flag-surface:     rgba(225, 29, 72, 0.08);
-      --flag-border:      rgba(225, 29, 72, 0.25);
-
-      --cyan:             #0284C7;
-      --cyan-surface:     rgba(2, 132, 199, 0.08);
-
-      /* Fonts */
-      --display:          'Plus Jakarta Sans', system-ui, sans-serif;
-      --body:             'Inter', system-ui, sans-serif;
-      --mono:             'IBM Plex Mono', monospace;
-
-      /* Dimensions */
-      --radius-sm:        6px;
-      --radius-md:        12px;
-      --radius-lg:        18px;
-      --radius-full:      9999px;
-      --max:              1140px;
-    }
-
-    /* Dark Obsidian Theme Overrides */
-    [data-theme="dark"] {
-      /* Surface & Canvas (Dark) */
+      /* Surface & Canvas (Dark Obsidian) */
       --bg-main:          #08090A;
-      --bg-card:          rgba(15, 18, 20, 0.78);
-      --bg-card-hover:    rgba(22, 27, 30, 0.9);
+      --bg-card:          rgba(15, 18, 20, 0.85);
+      --bg-card-hover:    rgba(22, 27, 30, 0.95);
       --bg-glass:         rgba(15, 18, 20, 0.65);
       --bg-input:         rgba(10, 13, 15, 0.85);
       
@@ -124,86 +64,18 @@
 
       --cyan:             #38BDF8;
       --cyan-surface:     rgba(56, 189, 248, 0.08);
-    }
 
-    /* Dark Mode Element Tweaks */
-    [data-theme="dark"] .hero-h1 {
-      background: linear-gradient(180deg, #FFFFFF 20%, #A2B2C8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    [data-theme="dark"] .brand-name {
-      background: linear-gradient(180deg, #FFFFFF 30%, #CBD5E1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    [data-theme="dark"] .bg-mesh {
-      background:
-        radial-gradient(circle at 50% -10%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
-        radial-gradient(circle at 90% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 45%),
-        radial-gradient(circle at 10% 60%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
-        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px;
-      background-position: 0 0, 0 0, 0 0, -18px -18px;
-    }
-    [data-theme="dark"] .site-header {
-      background: rgba(8, 9, 10, 0.75);
-    }
-    [data-theme="dark"] .demo-terminal {
-      background: var(--bg-card);
-      box-shadow: 0 24px 80px -20px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.05);
-    }
-    [data-theme="dark"] .terminal-header {
-      background: rgba(12, 15, 18, 0.95);
-    }
-    [data-theme="dark"] .demo-pane-client {
-      background: rgba(10, 13, 15, 0.6);
-    }
-    [data-theme="dark"] .demo-pane-verdict {
-      background: rgba(14, 18, 21, 0.9);
-    }
-    [data-theme="dark"] .client-bubble {
-      background: rgba(20, 25, 29, 0.85);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-    [data-theme="dark"] .reply-box {
-      background: rgba(8, 11, 13, 0.9);
-    }
-    [data-theme="dark"] .site-footer {
-      background: #060708;
-    }
-    [data-theme="dark"] dialog {
-      background: #0F1316;
-      color: #F8FAFC;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(16, 185, 129, 0.1);
-    }
-    [data-theme="dark"] .dialog-header {
-      background: rgba(12, 16, 19, 0.95);
-    }
-    [data-theme="dark"] .form-input, [data-theme="dark"] .form-select, [data-theme="dark"] .mcp-code-preview {
-      background: #080A0C;
-      border-color: var(--border);
-      color: var(--text-primary);
-    }
-    [data-theme="dark"] .step-img-gradient {
-      background: linear-gradient(180deg, transparent 0%, rgba(15, 18, 20, 0.95) 100%);
-    }
-    [data-theme="dark"] .calc-result-box {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(8, 18, 14, 0.6) 100%);
-    }
-    [data-theme="dark"] .total-section {
-      background: linear-gradient(180deg, rgba(11, 14, 16, 0.5) 0%, rgba(8, 9, 10, 0.8) 100%);
-    }
-    [data-theme="dark"] .toggle-btn[aria-pressed="true"] {
-      background: #FFFFFF;
-      color: #08090A;
-    }
-    [data-theme="dark"] .hero-visual-card, [data-theme="dark"] .objection-editorial-card {
-      background: var(--bg-card);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    }
-    [data-theme="dark"] .social-btn {
-      background: rgba(255, 255, 255, 0.05);
+      /* Fonts */
+      --display:          'Plus Jakarta Sans', system-ui, sans-serif;
+      --body:             'Inter', system-ui, sans-serif;
+      --mono:             'IBM Plex Mono', monospace;
+
+      /* Dimensions */
+      --radius-sm:        6px;
+      --radius-md:        12px;
+      --radius-lg:        18px;
+      --radius-full:      9999px;
+      --max:              1140px;
     }
 
     /* Sound & Interactive Haptics Toggle */
@@ -458,22 +330,15 @@
     /* ==========================================================================
        2. Sticky Navigation Header
        ========================================================================== */
-    /* ==========================================================================
-       2. Sticky Navigation Header
-       ========================================================================== */
     .site-header {
       border-bottom: 1px solid var(--border);
-      padding-block: 0.95rem;
-      background: rgba(255, 255, 255, 0.88);
+      padding-block: 1.1rem;
+      background: rgba(8, 9, 10, 0.75);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 60;
-    }
-
-    [data-theme="dark"] .site-header {
-      background: rgba(8, 9, 10, 0.75);
     }
 
     .header-inner {
@@ -494,29 +359,23 @@
       font-family: var(--mono);
       font-weight: 700;
       font-size: 1rem;
-      border: 1px solid rgba(5, 150, 105, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.4);
       width: 32px;
       height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, rgba(5, 150, 105, 0.12) 0%, rgba(255, 255, 255, 0.9) 100%);
-      color: var(--money);
-      box-shadow: 0 1px 4px rgba(5, 150, 105, 0.15);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    [data-theme="dark"] .brand-mark {
-      border-color: rgba(16, 185, 129, 0.4);
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(8, 9, 10, 0.8) 100%);
+      color: var(--money);
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .brand:hover .brand-mark {
       transform: scale(1.08) rotate(-4deg);
       border-color: var(--money);
-      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.3);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     }
 
     .brand-name {
@@ -524,12 +383,6 @@
       font-weight: 800;
       font-size: 1.35rem;
       letter-spacing: -0.03em;
-      background: linear-gradient(180deg, #0F172A 30%, #334155 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    [data-theme="dark"] .brand-name {
       background: linear-gradient(180deg, #FFFFFF 30%, #CBD5E1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -543,11 +396,10 @@
       font-size: 0.75rem;
       font-weight: 500;
       color: var(--text-secondary);
-      background: var(--bg-card);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
       padding: 0.35rem 0.9rem;
       border-radius: var(--radius-full);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
     @media (min-width: 768px) {
@@ -565,15 +417,15 @@
       padding: 0.55rem 1.1rem;
       border: 1px solid var(--border-highlight);
       border-radius: var(--radius-sm);
-      background: var(--bg-card);
+      background: rgba(255, 255, 255, 0.05);
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(8px);
     }
 
     .header-cta:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--money);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-1px);
     }
 
@@ -586,25 +438,18 @@
       font-family: var(--body);
       font-size: 1.0625rem;
       font-weight: 600;
-      color: #FFFFFF;
-      background: linear-gradient(180deg, #059669 0%, #047857 100%);
-      border: 1px solid #047857;
+      color: #061A12;
+      background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: var(--radius-sm);
       padding: 0.95rem 1.95rem;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25), 0 1px 3px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35), 0 2px 4px rgba(0, 0, 0, 0.5);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
       touch-action: manipulation;
-    }
-
-    [data-theme="dark"] .btn-primary {
-      color: #061A12;
-      background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35), 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .btn-primary::after {
@@ -620,11 +465,6 @@
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
-      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
-    }
-
-    [data-theme="dark"] .btn-primary:hover {
       box-shadow: 0 0 36px rgba(16, 185, 129, 0.5), 0 6px 12px rgba(0, 0, 0, 0.6);
       background: linear-gradient(180deg, #4ADE80 0%, #10B981 100%);
     }
@@ -646,19 +486,18 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-primary);
-      background: var(--bg-card);
-      border: 1px solid var(--border-highlight);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 0.45rem 0.85rem;
       cursor: pointer;
       transition: all 0.18s ease;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
       touch-action: manipulation;
     }
 
     .btn-secondary:hover {
-      border-color: var(--money);
-      background: var(--bg-card-hover);
+      border-color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.12);
       transform: translateY(-1px);
     }
 
@@ -2268,7 +2107,6 @@
       </div>
       <div style="display:flex; align-items:center; gap:0.65rem;">
         <button class="sound-toggle-btn js-toggle-sound" id="btn-sound-toggle" title="Enable AI Audio Haptics">🔇</button>
-        <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle-home" title="Switch Theme (Light / Dark)">☀️</button>
         <a href="/app.html" class="header-cta" style="border-color:var(--money-border); color:var(--money);">Launch App ↗</a>
         <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect contract →</button>
       </div>
@@ -3365,28 +3203,6 @@
           if (legalDialog && legalDialog.open) legalDialog.close();
         }
       });
-
-      // Theme Switcher (Default: Light)
-      var currentTheme = localStorage.getItem('billable_theme') || 'light';
-      function applyTheme(theme) {
-        currentTheme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('billable_theme', theme);
-        document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
-          btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
-          btn.setAttribute('title', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
-        });
-      }
-
-      document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-          applyTheme(nextTheme);
-          SoundFX.click();
-        });
-      });
-
-      applyTheme(currentTheme);
 
     })();
   </script>
