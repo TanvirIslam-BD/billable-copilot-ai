@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Billable Copilot AI — Autonomous Scope & Contract Dashboard</title>
   <meta name="description" content="The signed-in workspace where a freelancer keeps contracts, checks client requests, sends change orders, and recovers freelance revenue.">
   <meta name="robots" content="noindex, follow">
@@ -72,6 +72,7 @@
       --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.04);
       --shadow-card:    0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
       --shadow-lg:      0 12px 30px -4px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+      --shadow-drawer:  -10px 0 30px rgba(0, 0, 0, 0.15);
     }
 
     *, *::before, *::after {
@@ -119,7 +120,7 @@
     }
 
     /* ==========================================================================
-       2. Left Navigation Sidebar
+       2. Left Navigation Sidebar (Desktop & Mobile Drawer)
        ========================================================================== */
     .app-sidebar {
       background: var(--bg-sidebar);
@@ -132,7 +133,40 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
-      z-index: 10;
+      z-index: 100;
+    }
+
+    /* Mobile Sidebar Drawer Overlay State */
+    @media (max-width: 860px) {
+      .app-sidebar.mobile-drawer-open {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        max-width: 85vw;
+        height: 100%;
+        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.2);
+        animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .mobile-drawer-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 95;
+      }
+
+      .mobile-drawer-backdrop.active {
+        display: block;
+      }
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
     }
 
     .sidebar-brand-link {
@@ -153,6 +187,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .brand-title {
@@ -187,7 +222,7 @@
       display: flex;
       align-items: center;
       gap: 0.65rem;
-      padding: 0.55rem 0.75rem;
+      padding: 0.6rem 0.75rem;
       border-radius: var(--radius-md);
       color: var(--text-secondary);
       background: transparent;
@@ -199,6 +234,7 @@
       transition: all 0.15s ease;
       cursor: pointer;
       text-align: left;
+      touch-action: manipulation;
     }
 
     .nav-link-btn:hover {
@@ -301,10 +337,108 @@
     }
 
     /* ==========================================================================
-       3. Main Center Workspace
+       3. Mobile Top App Bar (Visible on <= 860px)
+       ========================================================================== */
+    .mobile-top-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    @media (max-width: 860px) {
+      .mobile-top-bar {
+        display: flex;
+      }
+    }
+
+    .mobile-menu-btn {
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      cursor: pointer;
+      color: var(--text-main);
+      padding: 0.25rem 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-copilot-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--brand-surface);
+      border: 1px solid var(--brand-border);
+      color: var(--brand);
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+
+    /* Bottom Mobile Navigation Bar (Phones / <= 860px) */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      z-index: 90;
+      justify-content: space-around;
+      align-items: center;
+      padding-inline: 0.5rem;
+    }
+
+    @media (max-width: 860px) {
+      .mobile-bottom-nav {
+        display: flex;
+      }
+    }
+
+    .mobile-tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.4rem;
+      flex: 1;
+      touch-action: manipulation;
+    }
+
+    .mobile-tab-item.active {
+      color: var(--brand);
+    }
+
+    .mobile-tab-item svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ==========================================================================
+       4. Main Center Workspace
        ========================================================================== */
     .app-main {
-      padding: 1.5rem 2rem 3rem 2rem;
+      padding: clamp(1rem, 3vw, 2rem);
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
@@ -313,8 +447,10 @@
       width: 100%;
     }
 
-    @media (max-width: 640px) {
-      .app-main { padding: 1rem; }
+    @media (max-width: 860px) {
+      .app-main {
+        padding-bottom: 85px; /* Extra clearance for mobile bottom bar */
+      }
     }
 
     /* Screen Views Management */
@@ -337,9 +473,15 @@
       flex-wrap: wrap;
     }
 
+    @media (max-width: 860px) {
+      .workspace-top-bar {
+        display: none; /* Replaced by mobile-top-bar on small screens */
+      }
+    }
+
     .greeting-title {
       font-family: var(--font-display);
-      font-size: 1.35rem;
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
       font-weight: 800;
       color: var(--text-main);
       letter-spacing: -0.02em;
@@ -353,7 +495,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 0.45rem 0.85rem;
-      width: clamp(240px, 30vw, 380px);
+      width: clamp(220px, 28vw, 360px);
       box-shadow: var(--shadow-sm);
     }
 
@@ -431,7 +573,7 @@
       color: #FFFFFF;
       border: none;
       border-radius: var(--radius-md);
-      padding: 0.5rem 1rem;
+      padding: 0.55rem 1.15rem;
       font-size: 0.84rem;
       font-weight: 600;
       display: inline-flex;
@@ -440,6 +582,7 @@
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
 
     .btn-primary-action:hover {
@@ -448,16 +591,16 @@
     }
 
     /* ==========================================================================
-       4. Hero Card: AI Scope Analyzer Split
+       5. Hero Card: AI Scope Analyzer Split
        ========================================================================== */
     .analyzer-split-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem);
       display: grid;
       grid-template-columns: 1.35fr 1fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
       box-shadow: var(--shadow-card);
     }
 
@@ -479,12 +622,12 @@
     .analyzer-sub {
       font-size: 0.8125rem;
       color: var(--text-secondary);
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
     }
 
     .analyzer-textarea {
       width: 100%;
-      height: 95px;
+      min-height: 95px;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 0.75rem 0.95rem;
@@ -492,7 +635,7 @@
       font-size: 0.85rem;
       color: var(--text-main);
       background: var(--bg-hover);
-      resize: none;
+      resize: vertical;
       outline: none;
       transition: border-color 0.15s ease;
     }
@@ -507,7 +650,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 0.85rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .btn-try-examples {
@@ -520,6 +665,7 @@
       align-items: center;
       gap: 0.25rem;
       font-weight: 500;
+      padding: 0.25rem;
     }
 
     .btn-try-examples:hover { color: var(--brand); }
@@ -529,7 +675,7 @@
       color: #FFFFFF;
       border: none;
       border-radius: var(--radius-md);
-      padding: 0.5rem 1.15rem;
+      padding: 0.55rem 1.15rem;
       font-size: 0.82rem;
       font-weight: 600;
       display: inline-flex;
@@ -537,6 +683,7 @@
       gap: 0.4rem;
       cursor: pointer;
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
 
     .btn-analyze-sparkle:hover { background: var(--brand-hover); }
@@ -546,10 +693,11 @@
       background: var(--bg-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 1.25rem;
+      padding: clamp(0.85rem, 2vw, 1.25rem);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      gap: 0.75rem;
     }
 
     .result-box-title {
@@ -559,7 +707,6 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
       gap: 0.4rem;
@@ -568,7 +715,7 @@
     .result-rows-group {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.65rem;
     }
 
     .result-row {
@@ -579,6 +726,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 0.65rem 0.85rem;
+      gap: 0.5rem;
     }
 
     .result-row-left {
@@ -595,6 +743,7 @@
       align-items: center;
       justify-content: center;
       font-size: 0.85rem;
+      flex-shrink: 0;
     }
 
     .result-row-title {
@@ -613,22 +762,23 @@
       font-family: var(--font-display);
       font-size: 1.05rem;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     /* ==========================================================================
-       5. 4 Summary Metric KPI Cards
+       6. 4 Summary Metric KPI Cards
        ========================================================================== */
     .kpi-cards-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.25rem;
+      gap: 1rem;
     }
 
     @media (max-width: 1024px) {
       .kpi-cards-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    @media (max-width: 540px) {
+    @media (max-width: 520px) {
       .kpi-cards-grid { grid-template-columns: 1fr; }
     }
 
@@ -703,17 +853,17 @@
     }
 
     /* ==========================================================================
-       6. Middle Analytics Section: Trends & Donut Breakdown
+       7. Middle Analytics Section: Trends & Donut Breakdown
        ========================================================================== */
     .trends-breakdown-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem);
       box-shadow: var(--shadow-card);
       display: grid;
       grid-template-columns: 1.75fr 1fr;
-      gap: 2rem;
+      gap: 1.5rem;
       align-items: center;
     }
 
@@ -725,7 +875,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
@@ -738,7 +888,7 @@
 
     .section-card-title {
       font-family: var(--font-display);
-      font-size: 0.95rem;
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
       font-weight: 700;
       color: var(--text-main);
     }
@@ -746,10 +896,11 @@
     .trends-legend {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
       font-size: 0.75rem;
       color: var(--text-secondary);
       font-weight: 500;
+      flex-wrap: wrap;
     }
 
     .legend-item {
@@ -784,7 +935,7 @@
         border-left: none;
         border-top: 1px solid var(--border-subtle);
         padding-left: 0;
-        padding-top: 1.5rem;
+        padding-top: 1.25rem;
       }
     }
 
@@ -840,13 +991,13 @@
     }
 
     /* ==========================================================================
-       7. Tables Section
+       8. Tables Section (With Responsive Scroll Wrappers)
        ========================================================================== */
     .dashboard-table-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem);
       box-shadow: var(--shadow-card);
     }
 
@@ -855,12 +1006,15 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .table-title-group {
       display: flex;
       align-items: center;
       gap: 0.65rem;
+      flex-wrap: wrap;
     }
 
     .badge-pill-pink {
@@ -874,11 +1028,19 @@
       border-radius: var(--radius-full);
     }
 
+    .table-responsive-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-inline: -0.25rem;
+    }
+
     .data-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.8125rem;
       text-align: left;
+      min-width: 620px; /* Ensures tabular alignment on mobile with horizontal scroll */
     }
 
     .data-table th {
@@ -936,6 +1098,7 @@
       border-radius: var(--radius-sm);
       font-size: 0.72rem;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .tag-out-of-scope {
@@ -972,13 +1135,14 @@
       background: transparent;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.8rem;
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--brand);
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      touch-action: manipulation;
     }
 
     .btn-review-quote:hover {
@@ -1024,12 +1188,12 @@
     }
 
     /* ==========================================================================
-       8. Pipeline & Kanban Views (Change Orders Screen)
+       9. Pipeline & Kanban Views (Change Orders Screen)
        ========================================================================== */
     .kanban-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.25rem;
+      gap: 1rem;
     }
 
     @media (max-width: 1024px) {
@@ -1048,7 +1212,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      min-height: 380px;
+      min-height: 240px;
     }
 
     .kanban-col-header {
@@ -1086,12 +1250,12 @@
       box-shadow: var(--shadow-card);
     }
 
-    /* Ledger Summary Bars */
+    /* Ledger Summary Banner */
     .ledger-banner {
       background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
       color: #FFFFFF;
       border-radius: var(--radius-xl);
-      padding: 1.75rem;
+      padding: clamp(1.25rem, 3vw, 1.85rem);
       box-shadow: var(--shadow-lg);
       display: flex;
       justify-content: space-between;
@@ -1100,29 +1264,25 @@
       gap: 1rem;
     }
 
-    .ledger-stat-box {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
     .ledger-stat-val {
       font-family: var(--font-display);
-      font-size: 2rem;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
       font-weight: 800;
+      line-height: 1.2;
     }
 
     .ledger-stat-sub {
       font-size: 0.8rem;
-      opacity: 0.85;
+      opacity: 0.88;
+      margin-top: 2px;
     }
 
-    /* Parsed Scope JSON vs Raw Contract Code Panel */
+    /* Scope & Raw Toggle Card */
     .scope-viewer-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: clamp(1rem, 2.5vw, 1.5rem);
       box-shadow: var(--shadow-card);
     }
 
@@ -1144,6 +1304,7 @@
       background: transparent;
       color: var(--text-secondary);
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     .btn-scope-toggle.active {
@@ -1166,7 +1327,7 @@
     }
 
     /* ==========================================================================
-       9. Right Sidebar: AI Copilot Rail
+       10. Right Sidebar: AI Copilot Rail (Desktop & Mobile Slide-over Drawer)
        ========================================================================== */
     .app-copilot-rail {
       background: var(--bg-sidebar);
@@ -1181,6 +1342,39 @@
       overflow-y: auto;
       gap: 1.25rem;
       z-index: 10;
+    }
+
+    /* Mobile/Tablet Copilot Slide-up Modal Sheet */
+    .mobile-copilot-sheet {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      align-items: flex-end;
+    }
+
+    .mobile-copilot-sheet.active {
+      display: flex;
+    }
+
+    .copilot-sheet-body {
+      background: #FFFFFF;
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 20px 20px 0 0;
+      padding: 1.25rem 1.25rem 2rem 1.25rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      animation: slideUpSheet 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUpSheet {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
     }
 
     .copilot-rail-header {
@@ -1259,6 +1453,7 @@
       cursor: pointer;
       text-align: center;
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
 
     .btn-view-drafts:hover { background: var(--brand-surface); }
@@ -1301,6 +1496,7 @@
       cursor: pointer;
       text-align: left;
       transition: all 0.15s ease;
+      touch-action: manipulation;
     }
 
     .quick-action-btn:hover {
@@ -1356,7 +1552,7 @@
       background: #FFFFFF;
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 0.45rem 0.75rem;
+      padding: 0.5rem 0.75rem;
       box-shadow: var(--shadow-sm);
     }
 
@@ -1364,7 +1560,7 @@
       border: none;
       background: transparent;
       outline: none;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--text-main);
       width: 100%;
     }
@@ -1373,14 +1569,15 @@
       background: var(--brand);
       border: none;
       color: #FFFFFF;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
+      touch-action: manipulation;
     }
 
     .chat-disclaimer {
@@ -1391,16 +1588,16 @@
 
     /* Modal Dialogs */
     dialog::backdrop {
-      background: rgba(15, 23, 42, 0.45);
+      background: rgba(15, 23, 42, 0.5);
       backdrop-filter: blur(4px);
     }
 
     .app-dialog {
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: 1.5rem;
+      padding: clamp(1rem, 3vw, 1.5rem);
       max-width: 580px;
-      width: 90vw;
+      width: 92vw;
       margin: auto;
       box-shadow: var(--shadow-lg);
       background: #FFFFFF;
@@ -1425,28 +1622,30 @@
     .btn-close-dialog {
       background: none;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       cursor: pointer;
       color: var(--text-muted);
+      padding: 0.25rem;
     }
 
-    /* Tone Selector */
     .tone-chip-group {
       display: flex;
       gap: 0.5rem;
       margin-block: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .tone-chip {
       font-family: var(--font-mono);
       font-size: 0.72rem;
       font-weight: 600;
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.75rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--bg-hover);
       color: var(--text-secondary);
       cursor: pointer;
+      touch-action: manipulation;
     }
 
     .tone-chip.active {
@@ -1458,12 +1657,35 @@
 </head>
 <body>
 
+  <!-- Mobile Drawer Backdrop Overlay -->
+  <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop"></div>
+
+  <!-- Mobile Top App Bar (Visible on <= 860px) -->
+  <header class="mobile-top-bar" aria-label="Mobile Navigation Header">
+    <button id="btn-toggle-mobile-menu" class="mobile-menu-btn" aria-label="Open Navigation Menu">☰</button>
+    
+    <a href="/" class="sidebar-brand-link" style="margin-bottom:0; padding-left:0;">
+      <div class="brand-icon-box" style="width:24px; height:24px;">
+        <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
+          <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="#4F46E5" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="46" cy="18" r="6.5" fill="#10B981" />
+        </svg>
+      </div>
+      <span class="brand-title" style="font-size:0.95rem;">Billable Copilot AI</span>
+    </a>
+
+    <button id="btn-open-mobile-copilot" class="mobile-copilot-trigger" aria-label="Open AI Copilot">
+      <span class="dot-live"></span>
+      <span>AI Copilot</span>
+    </button>
+  </header>
+
   <div class="app-wrapper">
 
     <!-- ==========================================================================
-         1. Left Navigation Sidebar
+         1. Left Navigation Sidebar (Desktop & Mobile Slide-in Drawer)
          ========================================================================== -->
-    <aside class="app-sidebar" aria-label="Main Navigation Sidebar">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation Sidebar">
       <div>
         <!-- Logo -->
         <a href="/" class="sidebar-brand-link" title="Return to Landing Page">
@@ -1556,10 +1778,10 @@
     </aside>
 
     <!-- ==========================================================================
-         2. Main Center Workspace
+         2. Main Workspace Center
          ========================================================================== -->
     <main class="app-main">
-      <!-- Top Workspace Header -->
+      <!-- Top Workspace Header (Desktop/Tablet) -->
       <header class="workspace-top-bar">
         <h1 class="greeting-title" id="page-title">Good morning, Julian 👋</h1>
 
@@ -1636,7 +1858,7 @@
                     <div class="result-row-desc">Estimated value of change order</div>
                   </div>
                 </div>
-                <div class="result-metric-val" style="color:var(--money);" id="res-revenue-val">+$700</div>
+                <div class="result-metric-val num-money" style="color:var(--money);" id="res-revenue-val">+$700</div>
               </div>
 
               <div class="result-row">
@@ -1647,7 +1869,7 @@
                     <div class="result-row-desc">High confidence in analysis</div>
                   </div>
                 </div>
-                <div class="result-metric-val" style="color:var(--purple);" id="res-confidence-val">98%</div>
+                <div class="result-metric-val tabular-nums" style="color:var(--purple);" id="res-confidence-val">98%</div>
               </div>
             </div>
           </div>
@@ -1713,7 +1935,7 @@
                 <span style="color:var(--text-muted); font-size:0.8rem;" title="Information">ⓘ</span>
               </div>
 
-              <div style="display:flex; align-items:center; gap:1rem;">
+              <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
                 <div class="trends-legend">
                   <span class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Scope Requests</span>
                   <span class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Out-of-Scope</span>
@@ -1812,7 +2034,7 @@
             </div>
           </div>
 
-          <div style="overflow-x:auto;">
+          <div class="table-responsive-wrapper">
             <table class="data-table">
               <thead>
                 <tr>
@@ -1885,7 +2107,7 @@
             <h2 class="section-card-title">Contract Health &amp; Revision Limits</h2>
           </div>
 
-          <div style="overflow-x:auto;">
+          <div class="table-responsive-wrapper">
             <table class="data-table">
               <thead>
                 <tr>
@@ -2039,57 +2261,59 @@ Effective Date: August 1, 2026
         </div>
 
         <section class="dashboard-table-card">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Time / Source</th>
-                <th>Client</th>
-                <th>Request Text</th>
-                <th>Verdict</th>
-                <th>Clause Ref</th>
-                <th>Suggested Quote</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">10:42 AM · Slack</span></td>
-                <td><strong>Acme Software</strong></td>
-                <td>"Can we also add blog CMS filter?"</td>
-                <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
-                <td>§2.1 Exclusions</td>
-                <td><span class="delta-money-num">+$400.00</span></td>
-                <td><span class="status-tag tag-ambiguous">Open</span></td>
-              </tr>
-              <tr>
-                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">09:15 AM · Email</span></td>
-                <td><strong>Kessler Studio</strong></td>
-                <td>"Here is round 4 executive edits"</td>
-                <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
-                <td>§5.1 Revision Cap</td>
-                <td><span class="delta-money-num">+$300.00</span></td>
-                <td><span class="status-tag tag-ambiguous">Open</span></td>
-              </tr>
-              <tr>
-                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Yesterday · WhatsApp</span></td>
-                <td><strong>Bronson Health</strong></td>
-                <td>"Patient portal sync with EHR"</td>
-                <td><span class="status-tag tag-ambiguous">Ambiguous</span></td>
-                <td>§3.4 Integrations</td>
-                <td><span class="delta-money-num">+$1,200.00</span></td>
-                <td><span class="status-tag tag-healthy">Ordered</span></td>
-              </tr>
-              <tr>
-                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Aug 22 · Manual</span></td>
-                <td><strong>Acme Software</strong></td>
-                <td>"Nudge header down 5px"</td>
-                <td><span class="status-tag tag-in-scope">In Scope</span></td>
-                <td>§4.2 Minor Tweaks</td>
-                <td><span style="color:var(--text-muted);">$0.00</span></td>
-                <td><span class="status-tag tag-healthy">Waived</span></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Time / Source</th>
+                  <th>Client</th>
+                  <th>Request Text</th>
+                  <th>Verdict</th>
+                  <th>Clause Ref</th>
+                  <th>Suggested Quote</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-family:var(--font-mono); font-size:0.75rem;">10:42 AM · Slack</span></td>
+                  <td><strong>Acme Software</strong></td>
+                  <td>"Can we also add blog CMS filter?"</td>
+                  <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                  <td>§2.1 Exclusions</td>
+                  <td><span class="delta-money-num">+$400.00</span></td>
+                  <td><span class="status-tag tag-ambiguous">Open</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:var(--font-mono); font-size:0.75rem;">09:15 AM · Email</span></td>
+                  <td><strong>Kessler Studio</strong></td>
+                  <td>"Here is round 4 executive edits"</td>
+                  <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                  <td>§5.1 Revision Cap</td>
+                  <td><span class="delta-money-num">+$300.00</span></td>
+                  <td><span class="status-tag tag-ambiguous">Open</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Yesterday · WhatsApp</span></td>
+                  <td><strong>Bronson Health</strong></td>
+                  <td>"Patient portal sync with EHR"</td>
+                  <td><span class="status-tag tag-ambiguous">Ambiguous</span></td>
+                  <td>§3.4 Integrations</td>
+                  <td><span class="delta-money-num">+$1,200.00</span></td>
+                  <td><span class="status-tag tag-healthy">Ordered</span></td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Aug 22 · Manual</span></td>
+                  <td><strong>Acme Software</strong></td>
+                  <td>"Nudge header down 5px"</td>
+                  <td><span class="status-tag tag-in-scope">In Scope</span></td>
+                  <td>§4.2 Minor Tweaks</td>
+                  <td><span style="color:var(--text-muted);">$0.00</span></td>
+                  <td><span class="status-tag tag-healthy">Waived</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
 
@@ -2220,44 +2444,46 @@ Effective Date: August 1, 2026
           <div class="table-card-header">
             <h2 class="section-card-title">Append-Only Event Ledger</h2>
           </div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Event ID</th>
-                <th>Timestamp</th>
-                <th>Type</th>
-                <th>Client</th>
-                <th>Amount</th>
-                <th>Audit Hash</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>evt_8832a</code></td>
-                <td>Today, 10:42 AM</td>
-                <td><span class="status-tag tag-out-of-scope">scope_caught</span></td>
-                <td>Acme Software</td>
-                <td><span class="delta-money-num">+$400.00</span></td>
-                <td><code>sha256:7f4a9b...</code></td>
-              </tr>
-              <tr>
-                <td><code>evt_8831c</code></td>
-                <td>Yesterday, 04:15 PM</td>
-                <td><span class="status-tag tag-healthy">payment_received</span></td>
-                <td>London Brand Co.</td>
-                <td><span class="delta-money-num">+$640.00</span></td>
-                <td><code>sha256:19bc4a...</code></td>
-              </tr>
-              <tr>
-                <td><code>evt_8829f</code></td>
-                <td>Aug 21, 02:30 PM</td>
-                <td><span class="status-tag tag-ambiguous">scope_waived</span></td>
-                <td>Acme Software</td>
-                <td><span style="color:var(--text-muted);">$0.00 (Waived)</span></td>
-                <td><code>sha256:4a02fe...</code></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Event ID</th>
+                  <th>Timestamp</th>
+                  <th>Type</th>
+                  <th>Client</th>
+                  <th>Amount</th>
+                  <th>Audit Hash</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>evt_8832a</code></td>
+                  <td>Today, 10:42 AM</td>
+                  <td><span class="status-tag tag-out-of-scope">scope_caught</span></td>
+                  <td>Acme Software</td>
+                  <td><span class="delta-money-num">+$400.00</span></td>
+                  <td><code>sha256:7f4a9b...</code></td>
+                </tr>
+                <tr>
+                  <td><code>evt_8831c</code></td>
+                  <td>Yesterday, 04:15 PM</td>
+                  <td><span class="status-tag tag-healthy">payment_received</span></td>
+                  <td>London Brand Co.</td>
+                  <td><span class="delta-money-num">+$640.00</span></td>
+                  <td><code>sha256:19bc4a...</code></td>
+                </tr>
+                <tr>
+                  <td><code>evt_8829f</code></td>
+                  <td>Aug 21, 02:30 PM</td>
+                  <td><span class="status-tag tag-ambiguous">scope_waived</span></td>
+                  <td>Acme Software</td>
+                  <td><span style="color:var(--text-muted);">$0.00 (Waived)</span></td>
+                  <td><code>sha256:4a02fe...</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
 
@@ -2289,7 +2515,7 @@ Effective Date: August 1, 2026
     </main>
 
     <!-- ==========================================================================
-         3. Right Sidebar: AI Copilot Rail
+         3. Right Sidebar: AI Copilot Rail (Desktop View)
          ========================================================================== -->
     <aside class="app-copilot-rail" aria-label="AI Copilot Sidebar">
       <div style="display:flex; flex-direction:column; gap:1.25rem;">
@@ -2402,8 +2628,8 @@ Effective Date: August 1, 2026
 
       <!-- Bottom Chat Input -->
       <div class="rail-chat-container">
-        <form id="copilot-chat-form" class="rail-chat-box">
-          <input type="text" id="copilot-chat-input" class="rail-chat-input" placeholder="Ask AI Copilot anything..." aria-label="Chat with AI Copilot">
+        <form class="rail-chat-box js-copilot-chat-form">
+          <input type="text" class="rail-chat-input js-copilot-chat-input" placeholder="Ask AI Copilot anything..." aria-label="Chat with AI Copilot">
           <button type="submit" class="btn-send-chat" title="Send message">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
@@ -2413,6 +2639,73 @@ Effective Date: August 1, 2026
     </aside>
 
   </div>
+
+  <!-- ==========================================================================
+       Mobile AI Copilot Slide-up Bottom Sheet (On <= 1180px)
+       ========================================================================== -->
+  <div id="mobile-copilot-sheet" class="mobile-copilot-sheet">
+    <div class="copilot-sheet-body">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:0.75rem;">
+        <div class="copilot-rail-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>AI Copilot Intelligence</span>
+        </div>
+        <button id="btn-close-copilot-sheet" style="background:none; border:none; font-size:1.25rem; color:var(--text-muted); cursor:pointer;">✕</button>
+      </div>
+
+      <div class="rail-card">
+        <div class="rail-card-head"><span>✨ AI Insight</span></div>
+        <p style="font-size:0.78rem; color:var(--text-secondary);">Morning, Julian! Here's what I found:</p>
+        <ul class="insight-bullet-list">
+          <li>2 requests are out-of-scope.</li>
+          <li>I've drafted change orders for both.</li>
+          <li>Total revenue opportunity: $700</li>
+        </ul>
+      </div>
+
+      <div class="quick-actions-list">
+        <button class="quick-action-btn js-action-analyze">
+          <div class="quick-action-left">
+            <span>Analyze New Request</span>
+            <span class="quick-action-sub">Paste request into analyzer</span>
+          </div>
+          <span>&gt;</span>
+        </button>
+      </div>
+
+      <!-- Mobile Copilot Chat -->
+      <form class="rail-chat-box js-copilot-chat-form">
+        <input type="text" class="rail-chat-input js-copilot-chat-input" placeholder="Ask AI Copilot anything..." aria-label="Chat with AI Copilot">
+        <button type="submit" class="btn-send-chat" title="Send message">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bottom Mobile Tab Bar (For One-Thumb Navigation on Phones) -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+    <button class="mobile-tab-item active js-nav-tab" data-screen="today">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+      <span>Overview</span>
+    </button>
+    <button class="mobile-tab-item js-nav-tab" data-screen="contracts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+      <span>Contracts</span>
+    </button>
+    <button class="mobile-tab-item js-nav-tab" data-screen="requests">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span>Requests</span>
+    </button>
+    <button class="mobile-tab-item js-nav-tab" data-screen="change_orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      <span>Orders</span>
+    </button>
+    <button class="mobile-tab-item js-nav-tab" data-screen="ledger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+      <span>Ledger</span>
+    </button>
+  </nav>
 
   <!-- ==========================================================================
        MODAL 1: REVIEW & QUOTE (WITH TONE SELECTOR)
@@ -2474,7 +2767,44 @@ Effective Date: August 1, 2026
     (function () {
       'use strict';
 
-      // 1. Navigation Screen Switching
+      // 1. Mobile Drawer and Sheet Handlers
+      var btnToggleMenu = document.getElementById('btn-toggle-mobile-menu');
+      var appSidebar = document.getElementById('app-sidebar');
+      var drawerBackdrop = document.getElementById('mobile-drawer-backdrop');
+
+      function openMobileSidebar() {
+        if (appSidebar) appSidebar.classList.add('mobile-drawer-open');
+        if (drawerBackdrop) drawerBackdrop.classList.add('active');
+      }
+
+      function closeMobileSidebar() {
+        if (appSidebar) appSidebar.classList.remove('mobile-drawer-open');
+        if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+      }
+
+      if (btnToggleMenu) btnToggleMenu.addEventListener('click', openMobileSidebar);
+      if (drawerBackdrop) drawerBackdrop.addEventListener('click', function() {
+        closeMobileSidebar();
+        closeMobileCopilot();
+      });
+
+      // Mobile Copilot Bottom Sheet
+      var btnOpenMobileCopilot = document.getElementById('btn-open-mobile-copilot');
+      var mobileCopilotSheet = document.getElementById('mobile-copilot-sheet');
+      var btnCloseCopilotSheet = document.getElementById('btn-close-copilot-sheet');
+
+      function openMobileCopilot() {
+        if (mobileCopilotSheet) mobileCopilotSheet.classList.add('active');
+      }
+
+      function closeMobileCopilot() {
+        if (mobileCopilotSheet) mobileCopilotSheet.classList.remove('active');
+      }
+
+      if (btnOpenMobileCopilot) btnOpenMobileCopilot.addEventListener('click', openMobileCopilot);
+      if (btnCloseCopilotSheet) btnCloseCopilotSheet.addEventListener('click', closeMobileCopilot);
+
+      // 2. Navigation Screen Switching
       var navButtons = document.querySelectorAll('.js-nav-tab');
       var screenViews = document.querySelectorAll('.screen-view');
       var pageTitle = document.getElementById('page-title');
@@ -2506,6 +2836,10 @@ Effective Date: August 1, 2026
           pageTitle.innerHTML = screenTitles[screenKey];
         }
 
+        closeMobileSidebar();
+        closeMobileCopilot();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         // Update Copilot Rail context
         updateCopilotContext(screenKey);
       }
@@ -2517,7 +2851,7 @@ Effective Date: August 1, 2026
         });
       });
 
-      // 2. AI Scope Analyzer Sandbox
+      // 3. AI Scope Analyzer Sandbox
       var exampleQueries = [
         {
           text: "Can we also add a custom blog filter and round 4 homepage edits?",
@@ -2589,7 +2923,7 @@ Effective Date: August 1, 2026
         if (resConfidenceVal) resConfidenceVal.textContent = data.confidence;
       }
 
-      // 3. Contract Detail & Parsed Scope vs Raw Scope Toggle
+      // 4. Contract Detail & Parsed Scope vs Raw Scope Toggle
       var tabToggleParsed = document.getElementById('tab-toggle-parsed');
       var tabToggleRaw = document.getElementById('tab-toggle-raw');
       var viewParsedScope = document.getElementById('view-parsed-scope');
@@ -2618,7 +2952,7 @@ Effective Date: August 1, 2026
         });
       });
 
-      // 4. Modal 1: Review & Quote Dialog with Tone Selector
+      // 5. Modal 1: Review & Quote Dialog with Tone Selector
       var quoteModal = document.getElementById('quote-modal');
       var btnCloseQuote = document.getElementById('btn-close-quote-modal');
       var btnCopyQuoteReply = document.getElementById('btn-copy-quote-reply');
@@ -2685,7 +3019,7 @@ Effective Date: August 1, 2026
         });
       }
 
-      // 5. Modal 2: Contract Upload Modal
+      // 6. Modal 2: Contract Upload Modal
       var contractUploadModal = document.getElementById('contract-upload-modal');
       var btnTopNewContract = document.getElementById('btn-top-new-contract');
       var btnCreateContractScreen = document.getElementById('btn-create-contract-screen');
@@ -2711,7 +3045,7 @@ Effective Date: August 1, 2026
         });
       }
 
-      // 6. Context Injection for AI Copilot Rail
+      // 7. Context Injection for AI Copilot Rail
       function updateCopilotContext(screen) {
         var greetingSub = document.getElementById('rail-greeting-sub');
         var insightBullets = document.getElementById('rail-insight-bullets');
@@ -2732,51 +3066,52 @@ Effective Date: August 1, 2026
         }
       }
 
-      // 7. Quick Actions in AI Rail
-      var actionAnalyze = document.querySelector('.js-action-analyze');
-      var actionGenerate = document.querySelector('.js-action-generate');
-      var actionReview = document.querySelector('.js-action-review');
-      var actionAnalytics = document.querySelector('.js-action-analytics');
+      // 8. Quick Actions in AI Rail
+      var actionAnalyzeList = document.querySelectorAll('.js-action-analyze');
+      var actionGenerateList = document.querySelectorAll('.js-action-generate');
+      var actionReviewList = document.querySelectorAll('.js-action-review');
+      var actionAnalyticsList = document.querySelectorAll('.js-action-analytics');
 
-      if (actionAnalyze) {
-        actionAnalyze.addEventListener('click', function () {
+      actionAnalyzeList.forEach(function(btn) {
+        btn.addEventListener('click', function () {
           switchScreen('today');
           analyzerInput.focus();
         });
-      }
+      });
 
-      if (actionGenerate) {
-        actionGenerate.addEventListener('click', function () {
+      actionGenerateList.forEach(function(btn) {
+        btn.addEventListener('click', function () {
           switchScreen('change_orders');
         });
-      }
+      });
 
-      if (actionReview) {
-        actionReview.addEventListener('click', function () {
+      actionReviewList.forEach(function(btn) {
+        btn.addEventListener('click', function () {
           switchScreen('contracts');
         });
-      }
+      });
 
-      if (actionAnalytics) {
-        actionAnalytics.addEventListener('click', function () {
+      actionAnalyticsList.forEach(function(btn) {
+        btn.addEventListener('click', function () {
           switchScreen('ledger');
         });
-      }
+      });
 
-      // 8. Chat Rail Interactive Form
-      var chatForm = document.getElementById('copilot-chat-form');
-      var chatInput = document.getElementById('copilot-chat-input');
-      if (chatForm && chatInput) {
-        chatForm.addEventListener('submit', function (e) {
+      // 9. Chat Rail Interactive Forms (Desktop & Mobile)
+      var chatForms = document.querySelectorAll('.js-copilot-chat-form');
+      chatForms.forEach(function(form) {
+        form.addEventListener('submit', function(e) {
           e.preventDefault();
-          var q = chatInput.value.trim();
+          var input = form.querySelector('.js-copilot-chat-input');
+          if (!input) return;
+          var q = input.value.trim();
           if (!q) return;
-          chatInput.value = "";
-          alert("AI Copilot: I analyzed \"" + q + "\" against your 3 active contracts. All clauses are verified and in sync.");
+          input.value = "";
+          alert("AI Copilot: I analyzed \"" + q + "\" against your active contracts. All clauses are verified and in sync.");
         });
-      }
+      });
 
-      // 9. Export Ledger Button
+      // 10. Export Ledger Button
       var btnExportLedger = document.getElementById('btn-export-ledger');
       if (btnExportLedger) {
         btnExportLedger.addEventListener('click', function() {

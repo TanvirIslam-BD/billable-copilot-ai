@@ -2379,6 +2379,43 @@
       overflow-x: auto;
       margin-bottom: 1.25rem;
     }
+
+    /* Mobile & Tablet Responsive Optimizations */
+    @media (max-width: 768px) {
+      .hero-cta-group {
+        width: 100%;
+      }
+      .btn-primary {
+        width: 100%;
+        text-align: center;
+      }
+      .demo-preset-chips {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        flex-wrap: nowrap;
+        width: 100%;
+      }
+      .demo-chip {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .terminal-header {
+        padding: 0.75rem 1rem;
+      }
+      .terminal-mode-pills {
+        margin-top: 0.25rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+      }
+      .demo-custom-form {
+        flex-direction: column;
+      }
+      .client-ask-bubble {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
