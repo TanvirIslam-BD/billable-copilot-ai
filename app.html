@@ -1,673 +1,268 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Billable Copilot — Autonomous AI Scope & Contract Intelligence</title>
-  <meta name="description" content="The signed-in workspace where autonomous AI monitors contracts, catches scope creep in real-time, drafts polite change orders, and recovers freelance revenue.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Billable Copilot AI</title>
+  <meta name="description" content="AI Scope & Contract Intelligence Dashboard for tracking client requests, catching out-of-scope creep, and protecting project revenue.">
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="https://billable.copilotai.live/app.html">
-  <meta name="theme-color" content="#0D1117">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://billable.copilotai.live/app.html">
-  <meta property="og:title" content="Billable Copilot Console">
-  <meta property="og:description" content="Autonomous AI Scope & Contract Intelligence Dashboard.">
-  <meta property="og:image" content="https://billable.copilotai.live/og.png">
+  <meta name="theme-color" content="#4F46E5">
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <!-- Typography: Plus Jakarta Sans + Inter + IBM Plex Mono -->
+  <!-- Typography Pairing -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">  <!-- Instant Theme Initializer (prevents any flash) -->
-  <script>
-    (function() {
-      var saved = localStorage.getItem('billable_theme');
-      if (saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       1. Design Tokens — Default Light Console & Dark Theme Overrides
+       1. Design System Tokens (Light Neo-Clean SaaS Dashboard)
        ========================================================================== */
     :root {
-      /* Working Surface Tokens (Light Default) */
-      --app-bg:       #F6F8FA;
-      --app-panel:    #FFFFFF;
-      --app-surface:  #F0F3F6;
-      --app-surface-hover: #E4E8EC;
-      --app-line:     #E1E4E8;
-      --app-line-light:#D0D7DE;
+      /* Backgrounds & Surfaces */
+      --bg-page:        #F8FAFC;
+      --bg-card:        #FFFFFF;
+      --bg-sidebar:     #FFFFFF;
+      --bg-subtle:      #F1F5F9;
+      --bg-hover:       #F8FAFC;
+      --bg-active-nav:  #EEF2FF;
 
-      /* Ink Tokens */
-      --app-text:     #0D1117;
-      --app-muted:    #57606A;
-      --app-faint:    #8C959F;
-      --app-white:    #0D1117;
+      /* Borders & Dividers */
+      --border:         #E2E8F0;
+      --border-subtle:  #F1F5F9;
+      --border-focus:   #6366F1;
 
-      /* AI Neural Cyan & Purple Accents */
-      --ai-cyan:      #0284C7;
-      --ai-cyan-glow: rgba(2, 132, 199, 0.2);
-      --ai-cyan-surf: rgba(2, 132, 199, 0.08);
-      --ai-purple:    #7C3AED;
-      --ai-purple-glow:rgba(124, 58, 237, 0.2);
+      /* Typography Colors */
+      --text-main:      #0F172A;
+      --text-secondary: #475569;
+      --text-muted:     #94A3B8;
+      --text-faint:     #CBD5E1;
 
-      /* Meaning Accents */
-      --money:        #059669;  /* Recovered revenue */
-      --money-glow:   rgba(5, 150, 105, 0.2);
-      --money-surface:rgba(5, 150, 105, 0.08);
-      --money-border: rgba(5, 150, 105, 0.25);
+      /* Brand Accents */
+      --brand:          #4F46E5;
+      --brand-hover:    #4338CA;
+      --brand-surface:  #EEF2FF;
+      --brand-border:   #C7D2FE;
 
-      --flag:         #E11D48;  /* Out of scope only */
-      --flag-surface: rgba(225, 29, 72, 0.08);
-      --flag-border:  rgba(225, 29, 72, 0.25);
+      /* Status Colors */
+      --money:          #10B981;
+      --money-surface:  #ECFDF5;
+      --money-border:   #A7F3D0;
 
-      --ambiguous:    #D97706;  /* Ambiguous scope */
-      --ambiguous-surface: rgba(217, 119, 6, 0.08);
-      --ambiguous-border:  rgba(217, 119, 6, 0.25);
+      --flag:           #EF4444;
+      --flag-surface:   #FEF2F2;
+      --flag-border:    #FECACA;
 
-      --in-scope:     #0284C7;  /* In-scope */
-      --in-scope-surface: rgba(2, 132, 199, 0.08);
-      --in-scope-border:  rgba(2, 132, 199, 0.25);
+      --warn:           #F59E0B;
+      --warn-surface:   #FFFBEB;
+      --warn-border:    #FDE68A;
+
+      --cyan:           #06B6D4;
+      --purple:         #8B5CF6;
+      --purple-surface: #F5F3FF;
 
       /* Typography */
-      --display:      'Plus Jakarta Sans', system-ui, sans-serif;
-      --body:         'Inter', system-ui, sans-serif;
-      --mono:         'IBM Plex Mono', monospace;
+      --font-display:   'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-body:      'Inter', system-ui, sans-serif;
+      --font-mono:      'IBM Plex Mono', monospace;
 
-      /* Dimensions & Spacing */
-      --rail-width:   410px;
-      --nav-width:    235px;
-      --header-h:     62px;
-      --bottom-nav-h: 60px;
-      --radius-sm:    6px;
-      --radius-md:    10px;
-      --radius-lg:    14px;
-    }
+      /* Geometry */
+      --radius-sm:      6px;
+      --radius-md:      10px;
+      --radius-lg:      14px;
+      --radius-xl:      18px;
+      --radius-full:    9999px;
 
-    /* Dark Cyber Console Overrides */
-    [data-theme="dark"] {
-      /* Working Surface Tokens (Dark) */
-      --app-bg:       #0A0C0E;
-      --app-panel:    #121619;
-      --app-surface:  #171D21;
-      --app-surface-hover: #1E252A;
-      --app-line:     #242C31;
-      --app-line-light:#323C43;
-
-      /* Ink Tokens */
-      --app-text:     #E8ECEE;
-      --app-muted:    #8F999D;
-      --app-faint:    #5E686C;
-      --app-white:    #FFFFFF;
-
-      /* AI Neural Cyan & Purple Accents */
-      --ai-cyan:      #00F2FE;
-      --ai-cyan-glow: rgba(0, 242, 254, 0.25);
-      --ai-cyan-surf: rgba(0, 242, 254, 0.08);
-      --ai-purple:    #8B5CF6;
-      --ai-purple-glow:rgba(139, 92, 246, 0.25);
-
-      /* Meaning Accents */
-      --money:        #10B981;
-      --money-glow:   rgba(16, 185, 129, 0.25);
-      --money-surface:rgba(16, 185, 129, 0.09);
-      --money-border: rgba(16, 185, 129, 0.3);
-
-      --flag:         #F43F5E;
-      --flag-surface: rgba(244, 63, 94, 0.09);
-      --flag-border:  rgba(244, 63, 94, 0.3);
-
-      --ambiguous:    #F59E0B;
-      --ambiguous-surface: rgba(245, 158, 11, 0.1);
-      --ambiguous-border:  rgba(245, 158, 11, 0.3);
-
-      --in-scope:     #38BDF8;
-      --in-scope-surface: rgba(56, 189, 248, 0.1);
-      --in-scope-border:  rgba(56, 189, 248, 0.3);
-    }
-
-    /* Light Theme Card Polish (Default) */
-    .app-sidebar,
-    .app-topbar,
-    .app-chat-rail {
-      background: var(--app-panel);
-      border-color: var(--app-line);
-    }
-    .mobile-bottom-nav {
-      background: var(--app-panel);
-      border-color: var(--app-line);
-    }
-    .metric-card,
-    .dashboard-section,
-    .pinned-paste-box {
-      background: var(--app-panel);
-      border-color: var(--app-line);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.02);
-    }
-    .pipeline-col {
-      background: var(--app-surface);
-      border-color: var(--app-line);
-    }
-    .pipeline-card {
-      background: var(--app-panel);
-      border-color: var(--app-line);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    }
-    .chat-msg.assistant .chat-bubble {
-      background: var(--app-surface);
-      border-color: var(--app-line);
-      color: var(--app-text);
-    }
-    .chat-action-card {
-      background: var(--app-panel);
-      border-color: var(--money-border);
-      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.08);
-    }
-    .ai-thought-trace {
-      background: rgba(2, 132, 199, 0.06);
-      border: 1px solid rgba(2, 132, 199, 0.2);
-      border-left: 3px solid var(--ai-cyan);
-      color: var(--ai-cyan);
-    }
-    .rail-header {
-      background: var(--app-surface);
-    }
-    .rail-tone-strip {
-      background: var(--app-panel);
-      border-color: var(--app-line);
-    }
-    .rail-input-container {
-      background: var(--app-panel);
-    }
-    .rail-input,
-    .paste-input-area,
-    .form-ctrl {
-      background: var(--app-surface);
-      border-color: var(--app-line-light);
-      color: var(--app-text);
-    }
-    dialog {
-      background: var(--app-panel);
-      border-color: var(--app-line-light);
-      color: var(--app-text);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
-    }
-    .modal-header {
-      background: var(--app-surface);
-    }
-    .ai-daemon-status-box {
-      background: rgba(2, 132, 199, 0.06);
-      border-color: rgba(2, 132, 199, 0.2);
-    }
-
-    /* Theme Switcher Button */
-    .theme-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      background: var(--app-surface);
-      border: 1px solid var(--app-line);
-      color: var(--app-text);
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.15s ease;
-      touch-action: manipulation;
-    }
-
-    .theme-toggle-btn:hover {
-      background: var(--app-surface-hover);
-      border-color: var(--app-line-light);
-      transform: scale(1.05);
+      /* Shadows */
+      --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      --shadow-card:    0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-hover:   0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
     }
 
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
       height: 100%;
-      background-color: var(--app-bg);
-      color: var(--app-text);
-      font-family: var(--body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-body);
       font-size: 14px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
-    :focus-visible {
-      outline: 2px solid var(--ai-cyan);
-      outline-offset: 2px;
+    /* Layout Containers */
+    .app-wrapper {
+      display: grid;
+      grid-template-columns: 240px 1fr 340px;
+      min-height: 100vh;
+      background-color: var(--bg-page);
     }
 
-    .mono {
-      font-family: var(--mono);
-      font-variant-numeric: tabular-nums;
+    @media (max-width: 1380px) {
+      .app-wrapper {
+        grid-template-columns: 220px 1fr 310px;
+      }
     }
 
-    .num-money {
-      font-family: var(--mono);
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-      color: var(--money);
+    @media (max-width: 1180px) {
+      .app-wrapper {
+        grid-template-columns: 220px 1fr;
+      }
+      .app-copilot-rail {
+        display: none;
+      }
     }
 
-    /* AI Neural Pulse Animation */
-    @keyframes aiPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
-    }
-
-    .ai-live-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--ai-cyan);
-      box-shadow: 0 0 10px var(--ai-cyan);
-      animation: aiPulse 2s infinite ease-in-out;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    /* AI Badges & Chips */
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.25rem 0.55rem;
-      border-radius: var(--radius-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-
-    .chip-ai {
-      color: var(--ai-cyan);
-      background: var(--ai-cyan-surf);
-      border: 1px solid rgba(0, 242, 254, 0.35);
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.15);
-    }
-
-    .chip-flag {
-      color: var(--flag);
-      background: var(--flag-surface);
-      border: 1px solid var(--flag-border);
-    }
-
-    .chip-scope {
-      color: var(--in-scope);
-      background: var(--in-scope-surface);
-      border: 1px solid var(--in-scope-border);
-    }
-
-    .chip-ambiguous {
-      color: var(--ambiguous);
-      background: var(--ambiguous-surface);
-      border: 1px solid var(--ambiguous-border);
-    }
-
-    .chip-money {
-      color: var(--money);
-      background: var(--money-surface);
-      border: 1px solid var(--money-border);
-    }
-
-    .chip-muted {
-      color: var(--app-muted);
-      background: var(--app-surface);
-      border: 1px solid var(--app-line);
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-family: var(--body);
-      font-size: 0.875rem;
-      font-weight: 500;
-      min-height: 38px;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none;
-      user-select: none;
-      touch-action: manipulation;
-    }
-
-    .btn-ai {
-      background: var(--ai-cyan-surf);
-      border: 1px solid var(--ai-cyan);
-      color: var(--ai-cyan);
-      font-weight: 600;
-      box-shadow: 0 0 12px var(--ai-cyan-glow);
-    }
-
-    .btn-ai:hover {
-      background: var(--ai-cyan);
-      color: #FFFFFF;
-      box-shadow: 0 0 20px var(--ai-cyan-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: var(--money);
-      color: #FFFFFF;
-      font-weight: 600;
-      border-color: var(--money-border);
-      box-shadow: 0 2px 8px var(--money-glow);
-    }
-
-    [data-theme="dark"] .btn-primary {
-      color: #051B12;
-      background: #10B981;
-    }
-
-    .btn-primary:hover {
-      filter: brightness(1.1);
-      box-shadow: 0 4px 14px var(--money-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: var(--app-surface);
-      color: var(--app-text);
-      border-color: var(--app-line);
-    }
-
-    .btn-secondary:hover {
-      background: var(--app-surface-hover);
-      border-color: var(--app-line-light);
-    }
-
-    .btn-sm {
-      min-height: 32px;
-      font-size: 0.75rem;
-      padding: 0.35rem 0.65rem;
-      font-family: var(--mono);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--app-muted);
-      border-color: transparent;
-    }
-
-    .btn-ghost:hover {
-      background: var(--app-surface);
-      color: var(--app-text);
+    @media (max-width: 860px) {
+      .app-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .app-sidebar {
+        display: none;
+      }
     }
 
     /* ==========================================================================
-       2. Layout Grid (Nav, Main Canvas, Chat Rail)
+       2. Left Navigation Sidebar
        ========================================================================== */
-    .app-layout {
-      display: grid;
-      grid-template-columns: var(--nav-width) 1fr var(--rail-width);
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      position: relative;
-    }
-
-    @media (max-width: 1240px) {
-      .app-layout {
-        grid-template-columns: var(--nav-width) 1fr;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .app-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Backdrop Overlay for Drawers on Mobile */
-    .app-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 40;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-    }
-
-    .app-backdrop.is-visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* Left Sidebar Navigation */
     .app-sidebar {
-      background: var(--app-panel);
-      border-right: 1px solid var(--app-line);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 0;
       height: 100vh;
       overflow-y: auto;
-      z-index: 50;
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @media (max-width: 768px) {
-      .app-sidebar {
-        position: fixed;
-        inset: 0 auto 0 0;
-        width: min(280px, 80vw);
-        transform: translateX(-100%);
-        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.9);
-      }
-      .app-sidebar.is-open {
-        transform: translateX(0);
-      }
-    }
-
-    .sidebar-top {
-      padding: 1.25rem 1rem;
-    }
-
-    .sidebar-brand-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.75rem;
-      padding-inline: 0.5rem;
-    }
-
-    .sidebar-brand {
+    .sidebar-brand-link {
       display: flex;
       align-items: center;
       gap: 0.65rem;
       text-decoration: none;
-      color: var(--app-text);
+      color: var(--text-main);
+      margin-bottom: 1.75rem;
+      padding-left: 0.35rem;
     }
 
-    .sidebar-brand-mark {
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 0.9rem;
+    .brand-icon-box {
       width: 28px;
       height: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--brand-surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid var(--ai-cyan);
-      background: var(--ai-cyan-surf);
-      color: var(--ai-cyan);
-      border-radius: var(--radius-sm);
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
     }
 
-    .sidebar-brand-text {
-      font-family: var(--display);
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
       font-weight: 800;
-      font-size: 1.15rem;
       letter-spacing: -0.02em;
+      color: var(--text-main);
     }
 
-    .btn-close-sidebar {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--app-muted);
-      font-size: 1.4rem;
-      cursor: pointer;
-      padding: 0.25rem;
-    }
-
-    @media (max-width: 768px) {
-      .btn-close-sidebar {
-        display: block;
-      }
+    .sidebar-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 1.25rem;
+      margin-bottom: 0.45rem;
+      padding-left: 0.5rem;
     }
 
     .nav-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 2px;
     }
 
-    .nav-item-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.7rem 0.85rem;
-      border-radius: var(--radius-sm);
-      color: var(--app-muted);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.875rem;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      touch-action: manipulation;
-    }
-
-    .nav-item-btn:hover {
-      background: var(--app-surface);
-      color: var(--app-text);
-    }
-
-    .nav-item-btn.is-active {
-      background: var(--app-surface);
-      color: var(--app-white);
-      font-weight: 600;
-      border-left: 2px solid var(--ai-cyan);
-    }
-
-    .nav-btn-content {
+    .nav-link {
       display: flex;
       align-items: center;
       gap: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .nav-link.active {
+      background: var(--bg-active-nav);
+      color: var(--brand);
+      font-weight: 600;
     }
 
     .nav-icon {
-      width: 17px;
-      height: 17px;
+      width: 18px;
+      height: 18px;
       stroke-width: 2;
       flex-shrink: 0;
     }
 
-    .nav-badge {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 99px;
-      background: var(--app-line);
-      color: var(--app-text);
-    }
-
     .sidebar-bottom {
-      padding: 1rem;
-      border-top: 1px solid var(--app-line);
-    }
-
-    /* AI Live Status Panel */
-    .ai-daemon-status-box {
-      background: rgba(0, 242, 254, 0.04);
-      border: 1px solid rgba(0, 242, 254, 0.2);
-      border-radius: var(--radius-md);
-      padding: 0.75rem;
-      margin-bottom: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .ai-daemon-header {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--ai-cyan);
-    }
-
-    .ai-daemon-body {
-      font-size: 0.75rem;
-      color: var(--app-muted);
-      line-height: 1.35;
-    }
-
-    .user-profile-row {
+    .user-profile-card {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-top: 0.35rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      cursor: pointer;
     }
 
-    .user-avatar-meta {
+    .user-meta {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.6rem;
     }
 
-    .user-avatar {
-      width: 32px;
-      height: 32px;
+    .user-avatar-initials {
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      background: #1B2329;
-      border: 1px solid var(--ai-cyan);
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--mono);
-      font-weight: 600;
-      font-size: 0.75rem;
-      color: var(--ai-cyan);
-      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
-      flex-shrink: 0;
     }
 
-    .user-details {
+    .user-name-role {
       display: flex;
       flex-direction: column;
       line-height: 1.2;
@@ -676,2280 +271,1835 @@
     .user-name {
       font-size: 0.8125rem;
       font-weight: 600;
-      color: var(--app-text);
+      color: var(--text-main);
     }
 
-    .user-plan {
-      font-family: var(--mono);
+    .user-role {
       font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .ai-active-pill {
+      background: var(--money-surface);
+      border: 1px solid var(--money-border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .ai-active-pill-header {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 700;
       color: var(--money);
+      margin-bottom: 2px;
+    }
+
+    .dot-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--money);
+      box-shadow: 0 0 6px var(--money);
     }
 
     /* ==========================================================================
-       3. Main Content Stage
+       3. Main Center Workspace
        ========================================================================== */
     .app-main {
+      padding: 1.5rem 2rem 3rem 2rem;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-      background: var(--app-bg);
-      position: relative;
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin-inline: auto;
+      width: 100%;
     }
 
-    /* Topbar Header */
-    .app-topbar {
-      height: var(--header-h);
-      border-bottom: 1px solid var(--app-line);
-      padding-inline: clamp(1rem, 3vw, 1.5rem);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--app-panel);
-      flex-shrink: 0;
-      gap: 0.5rem;
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .btn-hamburger {
-      display: none;
-      background: var(--app-surface);
-      border: 1px solid var(--app-line);
-      color: var(--app-text);
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-sm);
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 768px) {
-      .btn-hamburger {
-        display: inline-flex;
+    @media (max-width: 640px) {
+      .app-main {
+        padding: 1rem;
       }
     }
 
-    .topbar-title-row {
+    /* Top Workspace Header */
+    .workspace-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .greeting-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .top-search-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.45rem 0.85rem;
+      width: clamp(240px, 30vw, 380px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    .search-kbd {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    .top-actions-cluster {
       display: flex;
       align-items: center;
       gap: 0.65rem;
     }
 
-    .topbar-title {
-      font-family: var(--display);
-      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-
-    .topbar-ai-trigger {
-      display: none;
-      align-items: center;
-      gap: 0.4rem;
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(139, 92, 246, 0.2) 100%);
-      border: 1px solid rgba(0, 242, 254, 0.4);
-      color: var(--app-text);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.35rem 0.75rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-    }
-
-    @media (max-width: 1240px) {
-      .topbar-ai-trigger {
-        display: inline-flex;
-      }
-    }
-
-    .main-scroll-view {
-      flex: 1;
-      overflow-y: auto;
-      padding: clamp(1rem, 2.5vw, 1.75rem);
-      padding-bottom: calc(var(--bottom-nav-h) + 1.5rem);
-      -webkit-overflow-scrolling: touch;
-    }
-
-    @media (min-width: 769px) {
-      .main-scroll-view {
-        padding-bottom: 2rem;
-      }
-    }
-
-    /* Views */
-    .screen-view {
-      display: none;
-      animation: fadeIn 0.15s ease both;
-    }
-
-    .screen-view.is-active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(4px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    /* AI Live Scope Scanner Box */
-    .pinned-paste-box {
-      background: linear-gradient(180deg, rgba(23, 29, 33, 0.95) 0%, rgba(18, 22, 25, 0.95) 100%);
-      border: 1px solid var(--app-line-light);
-      border-radius: var(--radius-md);
-      padding: clamp(0.95rem, 2vw, 1.25rem);
-      margin-bottom: 1.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 242, 254, 0.04);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(12px);
-    }
-
-    .paste-box-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.65rem;
-    }
-
-    .paste-box-title {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--ai-cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    .paste-contract-select {
-      background: var(--app-surface);
-      color: var(--app-text);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      padding: 0.4rem 0.65rem;
-      font-family: var(--body);
-      font-size: 0.78rem;
-      max-width: 100%;
-    }
-
-    .paste-input-area {
-      width: 100%;
-      min-height: 65px;
-      max-height: 140px;
-      resize: vertical;
-      background: var(--app-bg);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      padding: 0.65rem 0.85rem;
-      font-family: var(--body);
-      font-size: 0.875rem;
-      color: var(--app-text);
-      margin-bottom: 0.65rem;
-      transition: all 0.15s ease;
-    }
-
-    .paste-input-area:focus {
-      outline: 2px solid var(--ai-cyan);
-      border-color: var(--ai-cyan);
-      box-shadow: 0 0 16px rgba(0, 242, 254, 0.15);
-    }
-
-    .paste-actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .ai-speed-note {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--app-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    /* Metric Cards Grid */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: clamp(0.75rem, 2vw, 1rem);
-      margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 480px) {
-      .metrics-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .metric-card {
-      background: var(--app-panel);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-md);
-      padding: clamp(0.9rem, 2vw, 1.15rem);
-      transition: all 0.2s ease;
-    }
-
-    .metric-card:hover {
-      border-color: var(--app-line-light);
-    }
-
-    .metric-card-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: var(--app-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.45rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.25rem;
-    }
-
-    .metric-card-value {
-      font-family: var(--mono);
-      font-variant-numeric: tabular-nums;
-      font-size: clamp(1.4rem, 3.5vw, 1.75rem);
-      font-weight: 700;
-      color: var(--app-text);
-      line-height: 1.1;
-    }
-
-    .metric-card-sub {
-      font-size: 0.72rem;
-      color: var(--app-muted);
-      margin-top: 0.35rem;
-      line-height: 1.3;
-    }
-
-    /* Section Cards & Responsive Tables */
-    .dashboard-section {
-      background: var(--app-panel);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-md);
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-    }
-
-    .section-header {
-      padding: 0.95rem 1.25rem;
-      border-bottom: 1px solid var(--app-line);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .section-title {
-      font-family: var(--display);
-      font-size: clamp(0.95rem, 2vw, 1.05rem);
-      font-weight: 700;
-    }
-
-    /* Responsive Table Horizontal Scroll wrapper */
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .data-table {
-      width: 100%;
-      min-width: 620px; /* Ensures clean spacing on mobile without collapsing */
-      border-collapse: collapse;
-      font-size: 0.875rem;
-      text-align: left;
-    }
-
-    .data-table th {
-      background: var(--app-surface);
-      color: var(--app-muted);
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--app-line);
-      white-space: nowrap;
-    }
-
-    .data-table td {
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid var(--app-line);
-      color: var(--app-text);
-      vertical-align: middle;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .data-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .text-right { text-align: right; }
-
-    /* Meter Bar */
-    .revision-meter {
+    .btn-lang {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-    }
-
-    .meter-track {
-      width: 45px;
-      height: 6px;
-      border-radius: 99px;
-      background: var(--app-surface);
-      overflow: hidden;
-      display: inline-block;
-    }
-
-    .meter-fill {
-      height: 100%;
-      background: var(--money);
-      border-radius: 99px;
-    }
-
-    .meter-fill.warning {
-      background: var(--ambiguous);
-    }
-
-    .meter-fill.danger {
-      background: var(--flag);
-    }
-
-    /* Pipeline Kanban for Change Orders with Touch Carousel */
-    .pipeline-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(260px, 1fr));
-      gap: 1rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .pipeline-col {
-      background: var(--app-surface);
-      border: 1px solid var(--app-line);
+      gap: 0.35rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.75rem;
       border-radius: var(--radius-md);
-      padding: 1rem;
-      min-height: 380px;
-      display: flex;
-      flex-direction: column;
-      scroll-snap-align: start;
-    }
-
-    .pipeline-col-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--app-muted);
-      margin-bottom: 0.85rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--app-line);
-    }
-
-    .pipeline-cards-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      flex: 1;
-    }
-
-    .pipeline-card {
-      background: var(--app-panel);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      padding: 0.85rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      transition: all 0.15s ease;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
       cursor: pointer;
     }
 
-    .pipeline-card:hover {
-      border-color: var(--app-line-light);
+    .btn-icon-round {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .btn-icon-round .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--flag);
+      color: #FFFFFF;
+      font-size: 0.62rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary-action {
+      background: var(--brand);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.5rem 1rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary-action:hover {
+      background: var(--brand-hover);
       transform: translateY(-1px);
     }
 
-    .p-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.45rem;
-    }
-
-    .p-card-client {
-      font-weight: 600;
-      font-size: 0.8125rem;
-    }
-
-    .p-card-amount {
-      font-family: var(--mono);
-      font-weight: 600;
-      color: var(--money);
-      font-size: 0.875rem;
-    }
-
-    .p-card-body {
-      font-size: 0.75rem;
-      color: var(--app-muted);
-      line-height: 1.4;
-      margin-bottom: 0.65rem;
-    }
-
-    .p-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--app-faint);
-    }
-
     /* ==========================================================================
-       4. Right-Hand Autonomous Copilot Rail
+       4. Hero Card: AI Scope Analyzer Split
        ========================================================================== */
-    .app-chat-rail {
-      background: var(--app-panel);
-      border-left: 1px solid var(--app-line);
+    .analyzer-split-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    @media (max-width: 900px) {
+      .analyzer-split-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .analyzer-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .analyzer-sub {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .analyzer-textarea {
+      width: 100%;
+      height: 95px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.95rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--text-main);
+      background: var(--bg-hover);
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .analyzer-textarea:focus {
+      border-color: var(--border-focus);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .analyzer-footer-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.85rem;
+    }
+
+    .btn-try-examples {
+      background: transparent;
+      border: none;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-weight: 500;
+    }
+
+    .btn-try-examples:hover {
+      color: var(--brand);
+    }
+
+    .btn-analyze-sparkle {
+      background: var(--brand);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.5rem 1.15rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-analyze-sparkle:hover {
+      background: var(--brand-hover);
+    }
+
+    /* Analyzer Result Panel */
+    .analyzer-result-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      z-index: 50;
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      justify-content: space-between;
     }
 
-    @media (max-width: 1240px) {
-      .app-chat-rail {
-        position: fixed;
-        inset: 0 0 0 auto;
-        width: min(420px, 92vw);
-        transform: translateX(100%);
-        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.9);
-      }
-      .app-chat-rail.is-open {
-        transform: translateX(0);
-      }
+    .result-box-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    .rail-header {
-      height: var(--header-h);
-      border-bottom: 1px solid var(--app-line);
-      padding-inline: 1.25rem;
+    .result-rows-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .result-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--app-surface);
-      flex-shrink: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.85rem;
     }
 
-    .rail-title-box {
+    .result-row-left {
       display: flex;
       align-items: center;
       gap: 0.6rem;
     }
 
-    .rail-title {
-      font-family: var(--display);
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--app-text);
-    }
-
-    .btn-close-rail {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--app-muted);
-      font-size: 1.4rem;
-      cursor: pointer;
-      padding: 0.25rem;
-    }
-
-    @media (max-width: 1240px) {
-      .btn-close-rail {
-        display: block;
-      }
-    }
-
-    .rail-tone-strip {
-      padding: 0.45rem 1.25rem;
-      background: rgba(10, 12, 14, 0.8);
-      border-bottom: 1px solid var(--app-line);
+    .result-icon-tag {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
+      justify-content: center;
+      font-size: 0.85rem;
     }
 
-    .tone-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--app-muted);
-      text-transform: uppercase;
-    }
-
-    .tone-buttons {
-      display: flex;
-      gap: 0.3rem;
-    }
-
-    .tone-btn {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      padding: 0.2rem 0.55rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--app-line);
-      background: var(--app-surface);
-      color: var(--app-muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      touch-action: manipulation;
-    }
-
-    .tone-btn.active {
-      border-color: var(--ai-cyan);
-      color: var(--ai-cyan);
-      background: var(--ai-cyan-surf);
+    .result-row-title {
+      font-size: 0.8125rem;
       font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.2;
     }
 
-    .rail-messages-stream {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .chat-msg {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      max-width: 95%;
-    }
-
-    .chat-msg.user {
-      align-self: flex-end;
-    }
-
-    .chat-msg.assistant {
-      align-self: flex-start;
-      width: 100%;
-    }
-
-    .chat-bubble {
-      padding: 0.85rem 1rem;
-      border-radius: var(--radius-md);
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-
-    .chat-msg.user .chat-bubble {
-      background: linear-gradient(135deg, #10B981 0%, #0E9F6E 100%);
-      color: #051B12;
-      font-weight: 500;
-      border-bottom-right-radius: 2px;
-    }
-
-    .chat-msg.assistant .chat-bubble {
-      background: var(--app-surface);
-      border: 1px solid var(--app-line-light);
-      color: var(--app-text);
-      border-bottom-left-radius: 2px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    /* AI Reasoning Chain-of-Thought Trace Box */
-    .ai-thought-trace {
-      background: rgba(10, 12, 14, 0.9);
-      border: 1px solid var(--app-line);
-      border-left: 2px solid var(--ai-cyan);
-      border-radius: var(--radius-sm);
-      padding: 0.65rem 0.85rem;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--ai-cyan);
-      margin-bottom: 0.65rem;
-      line-height: 1.4;
-    }
-
-    .ai-thought-step {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.25rem;
-      color: var(--app-muted);
-    }
-
-    .ai-thought-step:last-child {
-      margin-bottom: 0;
-      color: var(--ai-cyan);
-    }
-
-    /* Tool Call Execution Chips in Chat */
-    .tool-chip {
-      font-family: var(--mono);
+    .result-row-desc {
       font-size: 0.7rem;
-      color: var(--ai-cyan);
-      background: rgba(0, 242, 254, 0.08);
-      border: 1px solid rgba(0, 242, 254, 0.25);
-      padding: 0.2rem 0.5rem;
-      border-radius: var(--radius-sm);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-bottom: 0.35rem;
+      color: var(--text-muted);
     }
 
-    /* Action Confirmation Card in Chat */
-    .chat-action-card {
-      background: var(--app-bg);
-      border: 1px solid var(--money-border);
-      border-radius: var(--radius-sm);
-      padding: 0.85rem;
-      margin-top: 0.65rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
-    }
-
-    .action-card-header {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--money);
-      text-transform: uppercase;
-    }
-
-    /* Rail Suggested Prompts */
-    .rail-suggestions {
-      padding: 0.75rem 1.25rem;
-      border-top: 1px solid var(--app-line);
-      background: var(--app-bg);
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .suggestion-btn {
-      text-align: left;
-      font-family: var(--body);
-      font-size: 0.75rem;
-      color: var(--app-muted);
-      background: var(--app-surface);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      padding: 0.45rem 0.65rem;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      touch-action: manipulation;
-    }
-
-    .suggestion-btn:hover {
-      color: var(--ai-cyan);
-      border-color: rgba(0, 242, 254, 0.3);
-      background: var(--ai-cyan-surf);
-    }
-
-    /* Rail Input */
-    .rail-input-container {
-      padding: 0.85rem 1.25rem;
-      border-top: 1px solid var(--app-line);
-      background: var(--app-panel);
-    }
-
-    .rail-form {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .rail-input {
-      flex: 1;
-      min-height: 40px;
-      padding: 0.6rem 0.85rem;
-      background: var(--app-bg);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      color: var(--app-text);
-      font-family: var(--body);
-      font-size: 0.875rem;
-    }
-
-    .rail-input:focus {
-      outline: 2px solid var(--ai-cyan);
-      border-color: var(--ai-cyan);
+    .result-metric-val {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
     }
 
     /* ==========================================================================
-       5. Mobile Bottom Navigation Bar (<768px)
+       5. 4 Summary Metric KPI Cards
        ========================================================================== */
-    .mobile-bottom-nav {
-      display: none;
-      position: fixed;
-      inset: auto 0 0 0;
-      height: var(--bottom-nav-h);
-      background: rgba(18, 22, 25, 0.96);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-top: 1px solid var(--app-line);
-      z-index: 35;
-      justify-content: space-around;
-      align-items: center;
-      padding-inline: 0.25rem;
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
     }
 
-    @media (max-width: 768px) {
-      .mobile-bottom-nav {
-        display: flex;
+    @media (max-width: 1024px) {
+      .kpi-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    .bottom-nav-btn {
+    @media (max-width: 540px) {
+      .kpi-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .kpi-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+    }
+
+    .badge-green {
+      background: var(--money-surface);
+      color: var(--money);
+      border: 1px solid var(--money-border);
+    }
+
+    .badge-red {
+      background: var(--flag-surface);
+      color: var(--flag);
+      border: 1px solid var(--flag-border);
+    }
+
+    .kpi-big-num {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-bottom-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .kpi-subtext {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .sparkline-svg {
+      width: 75px;
+      height: 24px;
+    }
+
+    /* ==========================================================================
+       6. Middle Analytics Section: Trends & Donut Breakdown
+       ========================================================================== */
+    .trends-breakdown-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+      display: grid;
+      grid-template-columns: 1.75fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 960px) {
+      .trends-breakdown-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .trends-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .trends-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-card-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .trends-legend {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .multi-curve-chart-svg {
+      width: 100%;
+      height: 180px;
+    }
+
+    /* Donut Breakdown Side */
+    .donut-analyzed-pane {
+      border-left: 1px solid var(--border-subtle);
+      padding-left: 1.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.2rem;
-      background: transparent;
-      border: none;
-      color: var(--app-muted);
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      padding: 0.4rem 0.5rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      flex: 1;
-      transition: color 0.15s ease;
-      touch-action: manipulation;
     }
 
-    .bottom-nav-btn.is-active {
-      color: var(--ai-cyan);
-      font-weight: 600;
+    @media (max-width: 960px) {
+      .donut-analyzed-pane {
+        border-left: none;
+        border-top: 1px solid var(--border-subtle);
+        padding-left: 0;
+        padding-top: 1.5rem;
+      }
     }
 
-    .bottom-nav-btn svg {
-      width: 18px;
-      height: 18px;
+    .donut-chart-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1rem;
     }
 
-    .bottom-nav-btn.ai-tab {
-      color: var(--ai-cyan);
+    .donut-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
     }
 
-    /* Modal Dialogs */
-    dialog {
-      position: fixed;
+    .donut-center-num {
+      position: absolute;
       inset: 0;
-      margin: auto;
-      padding: 0;
-      border: 1px solid var(--app-line-light);
-      border-radius: var(--radius-md);
-      background: var(--app-panel);
-      color: var(--app-text);
-      max-width: 620px;
-      width: min(620px, calc(100% - 1.5rem));
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 242, 254, 0.1);
-      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
     }
 
-    dialog::backdrop {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+    .donut-total-val {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
     }
 
-    .modal-header {
-      padding: 1.1rem 1.35rem;
-      border-bottom: 1px solid var(--app-line);
+    .donut-total-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .donut-breakdown-legend {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+    }
+
+    .donut-legend-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(10, 12, 14, 0.8);
     }
 
-    .modal-body {
-      padding: 1.35rem;
-      max-height: 75vh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+    /* ==========================================================================
+       7. Tables Section: Contracts & Change Order Requests
+       ========================================================================== */
+    .dashboard-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
     }
 
-    .form-group {
-      margin-bottom: 1.15rem;
+    .table-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
 
-    .form-label {
-      display: block;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--app-muted);
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
+    .table-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
     }
 
-    .form-ctrl {
+    .badge-pill-pink {
+      background: #FDF2F8;
+      border: 1px solid #FBCFE8;
+      color: #DB2777;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .data-table {
       width: 100%;
-      min-height: 40px;
-      padding: 0.65rem 0.85rem;
-      background: var(--app-bg);
-      border: 1px solid var(--app-line);
-      border-radius: var(--radius-sm);
-      color: var(--app-text);
-      font-family: var(--body);
-      font-size: 0.875rem;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      text-align: left;
     }
 
-    .form-ctrl:focus {
-      outline: 2px solid var(--ai-cyan);
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 0.85rem 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+      color: var(--text-secondary);
+    }
+
+    .data-table tr:hover td {
+      background: var(--bg-hover);
+    }
+
+    .client-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .client-logo-box {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    .logo-acme { background: #2563EB; }
+    .logo-kessler { background: #0F172A; }
+    .logo-bronson { background: #16A34A; }
+
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .tag-out-of-scope {
+      background: var(--flag-surface);
+      color: var(--flag);
+      border: 1px solid var(--flag-border);
+    }
+
+    .tag-warning {
+      background: var(--warn-surface);
+      color: var(--warn);
+      border: 1px solid var(--warn-border);
+    }
+
+    .tag-healthy {
+      background: var(--money-surface);
+      color: var(--money);
+      border: 1px solid var(--money-border);
+    }
+
+    .delta-money-num {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--money);
+    }
+
+    .confidence-pct {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--brand);
+    }
+
+    .btn-review-quote {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--brand);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-review-quote:hover {
+      background: var(--brand-surface);
+      border-color: var(--brand-border);
+    }
+
+    .table-view-all-link {
+      display: block;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--brand);
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+
+    .table-view-all-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Health circle scores */
+    .health-score-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .score-green {
+      background: var(--money-surface);
+      border: 1.5px solid var(--money);
+      color: var(--money);
+    }
+
+    .score-orange {
+      background: var(--warn-surface);
+      border: 1.5px solid var(--warn);
+      color: var(--warn);
+    }
+
+    /* ==========================================================================
+       8. Right Sidebar: AI Copilot Rail
+       ========================================================================== */
+    .app-copilot-rail {
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      gap: 1.25rem;
+    }
+
+    .copilot-rail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .copilot-rail-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .copilot-active-badge {
+      background: var(--money-surface);
+      border: 1px solid var(--money-border);
+      color: var(--money);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+
+    /* Card: AI Insight */
+    .rail-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .rail-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .insight-bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .insight-bullet-list li::before {
+      content: '✓';
+      color: var(--money);
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .btn-view-drafts {
+      background: #FFFFFF;
+      border: 1px solid var(--brand-border);
+      color: var(--brand);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.45rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-view-drafts:hover {
+      background: var(--brand-surface);
+    }
+
+    /* Card: Scope Radar Waves */
+    .radar-wave-box {
+      height: 70px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radar-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .radar-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Quick Actions */
+    .quick-actions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+
+    .quick-action-btn:hover {
+      border-color: var(--brand);
+      background: var(--bg-hover);
+    }
+
+    .quick-action-left {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .quick-action-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    /* Recent Insights Feed */
+    .recent-feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.75rem;
+    }
+
+    .recent-feed-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .recent-feed-time {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Bottom Chat Prompt */
+    .rail-chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .rail-chat-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.45rem 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rail-chat-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    .btn-send-chat {
+      background: var(--brand);
+      border: none;
+      color: #FFFFFF;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .chat-disclaimer {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- Backdrop for Drawers on Mobile -->
-  <div class="app-backdrop" id="app-backdrop"></div>
+  <div class="app-wrapper">
 
-  <div class="app-layout">
-    <!-- ====================================================================
+    <!-- ==========================================================================
          1. Left Navigation Sidebar
-         ==================================================================== -->
-    <aside class="app-sidebar" id="app-sidebar">
-      <div class="sidebar-top">
-        <div class="sidebar-brand-row">
-          <a href="/" class="sidebar-brand" title="Back to Landing Page">
-            <span class="sidebar-brand-mark">
-              <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
-                <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="46" cy="18" r="6.5" fill="#00F59B" />
-              </svg>
-            </span>
-            <span class="sidebar-brand-text">Billable Copilot AI</span>
-          </a>
-          <button class="btn-close-sidebar" id="btn-close-sidebar" aria-label="Close sidebar">✕</button>
-        </div>
+         ========================================================================== -->
+    <aside class="app-sidebar" aria-label="Main Navigation Sidebar">
+      <div>
+        <!-- Logo -->
+        <a href="/" class="sidebar-brand-link">
+          <div class="brand-icon-box">
+            <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+              <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="#4F46E5" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="46" cy="18" r="6.5" fill="#10B981" />
+            </svg>
+          </div>
+          <span class="brand-title">Billable Copilot AI</span>
+        </a>
 
-        <nav>
-          <ul class="nav-list">
-            <li>
-              <button class="nav-item-btn is-active js-nav-tab" data-screen="today">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  Today
-                </span>
-                <span class="nav-badge" id="badge-today-open">2</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-item-btn js-nav-tab" data-screen="contracts">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  Contracts
-                </span>
-                <span class="nav-badge" id="badge-contracts-count">3</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-item-btn js-nav-tab" data-screen="requests">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
-                  Requests
-                </span>
-                <span class="nav-badge" id="badge-requests-count">5</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-item-btn js-nav-tab" data-screen="change-orders">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-                  Change Orders
-                </span>
-                <span class="nav-badge" id="badge-co-count">3</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-item-btn js-nav-tab" data-screen="ledger">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                  Recovery Ledger
-                </span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-item-btn js-nav-tab" data-screen="settings">
-                <span class="nav-btn-content">
-                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                  MCP &amp; Settings
-                </span>
-              </button>
-            </li>
-          </ul>
-        </nav>
+        <!-- Main Dashboard Tab -->
+        <ul class="nav-list">
+          <li>
+            <a href="/app.html" class="nav-link active">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Group: CONTRACT WORKSPACE -->
+        <div class="sidebar-section-label">Contract Workspace</div>
+        <ul class="nav-list">
+          <li>
+            <a href="#contracts" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Contracts</span>
+            </a>
+          </li>
+          <li>
+            <a href="#reviews" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>AI Reviews</span>
+            </a>
+          </li>
+          <li>
+            <a href="#requests" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>Requests</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Group: RECOVERY & INSIGHTS -->
+        <div class="sidebar-section-label">Recovery &amp; Insights</div>
+        <ul class="nav-list">
+          <li>
+            <a href="#recovery" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Revenue Recovery</span>
+            </a>
+          </li>
+          <li>
+            <a href="#analytics" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span>Analytics</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Group: AI & KNOWLEDGE -->
+        <div class="sidebar-section-label">AI &amp; Knowledge</div>
+        <ul class="nav-list">
+          <li>
+            <a href="#agents" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+              <span>AI Agents</span>
+            </a>
+          </li>
+          <li>
+            <a href="#knowledge" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              <span>Knowledge Base</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Group: SYSTEM -->
+        <div class="sidebar-section-label">System</div>
+        <ul class="nav-list">
+          <li>
+            <a href="#settings" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
       </div>
 
+      <!-- Sidebar Bottom Profile & Status -->
       <div class="sidebar-bottom">
-        <!-- AI Background Daemon Live Status -->
-        <div class="ai-daemon-status-box">
-          <div class="ai-daemon-header">
-            <span class="ai-live-dot"></span>
-            <span>AI COPILOT ACTIVE</span>
-          </div>
-          <div class="ai-daemon-body">
-            Monitoring 3 active contracts. 0 scope leaks undetected.
-          </div>
-        </div>
-
-        <div class="user-profile-row">
-          <div class="user-avatar-meta">
-            <div class="user-avatar">JD</div>
-            <div class="user-details">
+        <div class="user-profile-card">
+          <div class="user-meta">
+            <div class="user-avatar-initials">JV</div>
+            <div class="user-name-role">
               <span class="user-name">Julian Vance</span>
-              <span class="user-plan">Solo Freelance</span>
+              <span class="user-role">Account Manager</span>
             </div>
           </div>
+          <span style="color:var(--text-muted); font-size:0.75rem;">⌵</span>
+        </div>
+
+        <div class="ai-active-pill">
+          <div class="ai-active-pill-header">
+            <span class="dot-live"></span>
+            <span>AI Copilot Active</span>
+          </div>
+          <div>Monitoring 3 active contracts. 0 scope leaks detected.</div>
         </div>
       </div>
     </aside>
 
-    <!-- ====================================================================
-         2. Main Application Content Stage
-         ==================================================================== -->
+    <!-- ==========================================================================
+         2. Main Workspace Center
+         ========================================================================== -->
     <main class="app-main">
-      <header class="app-topbar">
-        <div class="topbar-left">
-          <button class="btn-hamburger" id="btn-hamburger" aria-label="Open Navigation">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
-          <div class="topbar-title-row">
-            <h1 class="topbar-title" id="screen-title">Today</h1>
-            <span class="chip chip-ai" style="display:none;" id="topbar-ai-pill">✨ AI Guard</span>
-          </div>
+      <!-- Top Workspace Bar -->
+      <header class="workspace-top-bar">
+        <h1 class="greeting-title">Good morning, Julian 👋</h1>
+
+        <div class="top-search-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="search-input" placeholder="Search contracts, clients, clauses..." aria-label="Search contracts">
+          <span class="search-kbd">⌘ K</span>
         </div>
 
-        <div class="topbar-actions">
-          <button class="sound-toggle-btn js-toggle-sound" id="btn-sound-toggle-app" title="Enable AI Audio Haptics">🔇</button>
-          <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle" title="Switch Theme (Light / Dark)">☀️</button>
-          <button class="btn btn-secondary btn-sm" id="btn-open-new-contract">+ Contract</button>
-          <button class="topbar-ai-trigger" id="btn-open-rail-top" title="Open AI Scope Copilot">
-            <span class="ai-live-dot"></span>
-            <span>AI Rail</span>
+        <div class="top-actions-cluster">
+          <button class="btn-lang" title="Select Language">
+            <span>🌐 EN</span>
+            <span style="font-size:0.65rem;">⌵</span>
+          </button>
+          <button class="btn-icon-round" title="Notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="badge-count">1</span>
+          </button>
+          <button class="btn-primary-action" id="btn-new-contract">
+            <span>+ New Contract</span>
           </button>
         </div>
       </header>
 
-      <div class="main-scroll-view">
-        <!-- Pinned Fast-Check Box (Always reachable) -->
-        <div class="pinned-paste-box">
-          <div class="paste-box-header">
-            <span class="paste-box-title">
-              <span class="ai-live-dot"></span>
-              Autonomous Scope Checker — Fast AI Ingest
-            </span>
-            <select class="paste-contract-select" id="fast-check-contract-select">
-              <!-- Populated via JS -->
-            </select>
+      <!-- Hero Card: AI Scope Analyzer Split -->
+      <section class="analyzer-split-card" aria-label="AI Scope Analyzer">
+        <div>
+          <div class="analyzer-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>AI Scope Analyzer</span>
           </div>
-          <textarea class="paste-input-area" id="fast-check-input" placeholder="Paste client ask: 'Can we add a mobile app?' or 'Client wants round 4 edits...'"></textarea>
-          <div class="paste-actions-row">
-            <div class="ai-speed-note">
-              <span>⚡ Evaluated by MCP Clause Model in &lt;180ms</span>
-            </div>
-            <button class="btn btn-ai btn-sm" id="btn-run-fast-check">✨ Run AI Scope Check →</button>
-          </div>
-        </div>
+          <p class="analyzer-sub">Paste a client request to detect scope expansion and revenue impact.</p>
 
-        <!-- SCREEN 1: TODAY (Default Landing) -->
-        <div class="screen-view is-active" id="screen-today">
-          <!-- Real-Time AI Scope Telemetry HUD -->
-          <div class="dashboard-section" style="margin-bottom:1.25rem; padding:0.85rem 1.25rem; border-radius:var(--radius-md); background:var(--app-panel); border:1px solid var(--app-line);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
-              <span style="font-family:var(--mono); font-size:0.75rem; font-weight:600; color:var(--ai-cyan); display:flex; align-items:center; gap:0.4rem;">
-                <span class="ai-live-dot"></span>
-                ACTIVE SCOPE TELEMETRY RADAR
-              </span>
-              <span class="chip chip-ai" style="font-size:0.7rem;">3 CONTRACTS MONITORED</span>
-            </div>
-            <canvas id="ai-radar-canvas" height="75" style="width:100%; display:block; border-radius:6px;"></canvas>
-          </div>
+          <textarea id="analyzer-input" class="analyzer-textarea" placeholder="Paste client request here... (e.g. 'Can we also add blog search and round 4 homepage revisions?')" aria-label="Client request to analyze"></textarea>
 
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-card-label">
-                <span>AI Recovered (Mo)</span>
-                <span class="chip chip-money">+$1.8k</span>
-              </div>
-              <div class="metric-card-value num-money" id="today-stat-recovered">$1,840</div>
-              <div class="metric-card-sub">4 caught change orders</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">
-                <span>Action Needed</span>
-                <span class="chip chip-flag">2 Out</span>
-              </div>
-              <div class="metric-card-value" id="today-stat-pending">2</div>
-              <div class="metric-card-sub">Out-of-scope asks pending</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">
-                <span>Active Scope</span>
-              </div>
-              <div class="metric-card-value" id="today-stat-contracts">3</div>
-              <div class="metric-card-sub">1 at revision limit</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">
-                <span>Aging Orders</span>
-              </div>
-              <div class="metric-card-value" style="color:var(--ambiguous)" id="today-stat-aging">1</div>
-              <div class="metric-card-sub">&gt;14 days awaiting reply</div>
-            </div>
-          </div>
-
-          <!-- Open Action Items -->
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Open Client Requests Requiring Change Order</h2>
-              <span class="chip chip-ai">AI Confidence: 99.2%</span>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Client / Contract</th>
-                    <th>Request Extract</th>
-                    <th>Verdict</th>
-                    <th>Clause</th>
-                    <th>AI Delta</th>
-                    <th class="text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-today-open">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Contracts At A Glance -->
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Contract Health &amp; Revision Limits</h2>
-              <button class="btn btn-ghost btn-sm js-nav-tab" data-screen="contracts">View Contracts →</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Client</th>
-                    <th>Project Title</th>
-                    <th>Revisions Used</th>
-                    <th>AI Unbilled Caught</th>
-                    <th>Days to Deadline</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-today-contracts">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
+          <div class="analyzer-footer-controls">
+            <button class="btn-try-examples" id="btn-try-examples">
+              <span>Try examples</span>
+              <span>⌵</span>
+            </button>
+            <button class="btn-analyze-sparkle" id="btn-analyze-request">
+              <span>Analyze Request ✨</span>
+            </button>
           </div>
         </div>
 
-        <!-- SCREEN 2: CONTRACTS -->
-        <div class="screen-view" id="screen-contracts">
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Active Client Contracts &amp; Scope Limits</h2>
-              <button class="btn btn-ai btn-sm" id="btn-add-contract-2">✨ AI Parse New Contract</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Client</th>
-                    <th>Contract Title</th>
-                    <th>Hourly / Fixed</th>
-                    <th>Revision Meter</th>
-                    <th>Unbilled Caught</th>
-                    <th>Status</th>
-                    <th class="text-right">AI Scope Inspection</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-contracts-list">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- SCREEN 3: REQUESTS STREAM -->
-        <div class="screen-view" id="screen-requests">
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Incoming Request Stream &amp; Verdicts</h2>
-              <div style="display:flex; gap:0.5rem;">
-                <select class="paste-contract-select" id="filter-requests-verdict">
-                  <option value="all">All Verdicts</option>
-                  <option value="out_of_scope">Out of Scope</option>
-                  <option value="in_scope">In Scope</option>
-                  <option value="ambiguous">Ambiguous</option>
-                </select>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Timestamp</th>
-                    <th>Contract</th>
-                    <th>Raw Client Text</th>
-                    <th>AI Verdict</th>
-                    <th>Clause Ref</th>
-                    <th>Suggested Value</th>
-                    <th class="text-right">Copilot Action</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-requests-stream">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- SCREEN 4: CHANGE ORDERS PIPELINE -->
-        <div class="screen-view" id="screen-change-orders">
-          <div class="pipeline-grid">
-            <!-- Draft -->
-            <div class="pipeline-col">
-              <div class="pipeline-col-header">
-                <span>1. AI Drafts</span>
-                <span id="p-count-draft">1</span>
-              </div>
-              <div class="pipeline-cards-list" id="p-list-draft"></div>
-            </div>
-            <!-- Sent -->
-            <div class="pipeline-col">
-              <div class="pipeline-col-header">
-                <span>2. Sent to Client</span>
-                <span id="p-count-sent">1</span>
-              </div>
-              <div class="pipeline-cards-list" id="p-list-sent"></div>
-            </div>
-            <!-- Accepted -->
-            <div class="pipeline-col">
-              <div class="pipeline-col-header">
-                <span>3. Accepted</span>
-                <span id="p-count-accepted">1</span>
-              </div>
-              <div class="pipeline-cards-list" id="p-list-accepted"></div>
-            </div>
-            <!-- Paid -->
-            <div class="pipeline-col">
-              <div class="pipeline-col-header">
-                <span>4. Paid</span>
-                <span id="p-count-paid">1</span>
-              </div>
-              <div class="pipeline-cards-list" id="p-list-paid"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SCREEN 5: RECOVERY LEDGER -->
-        <div class="screen-view" id="screen-ledger">
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-card-label">Caught by AI</div>
-              <div class="metric-card-value num-money">$2,340</div>
-              <div class="metric-card-sub">Identified out-of-scope</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">Billed via COs</div>
-              <div class="metric-card-value num-money">$1,900</div>
-              <div class="metric-card-sub">81% conversion rate</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">Waived Work</div>
-              <div class="metric-card-value mono" style="color:var(--app-muted)">$440</div>
-              <div class="metric-card-sub">Absorbed for goodwill</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-card-label">Collected &amp; Paid</div>
-              <div class="metric-card-value num-money">$1,500</div>
-              <div class="metric-card-sub">$400 pending in transit</div>
-            </div>
+        <!-- Analyzer Result Panel -->
+        <div class="analyzer-result-box">
+          <div class="result-box-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span>Analysis Result</span>
           </div>
 
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Append-Only Event Ledger (Audit Trail)</h2>
-              <button class="btn btn-secondary btn-sm" id="btn-export-ledger">Export CSV</button>
-            </div>
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Timestamp</th>
-                    <th>Event Type</th>
-                    <th>Contract / Client</th>
-                    <th>Reasoning / Context</th>
-                    <th class="text-right">Amount</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody-ledger-events">
-                  <!-- Rendered by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- SCREEN 6: MCP & SETTINGS -->
-        <div class="screen-view" id="screen-settings">
-          <div class="dashboard-section">
-            <div class="section-header">
-              <h2 class="section-title">Model Context Protocol (MCP) Integration</h2>
-              <span class="chip chip-ai">OAuth 2.1 Live</span>
-            </div>
-            <div style="padding:1.25rem;">
-              <p style="color:var(--app-muted); margin-bottom:1rem;">Your AI assistant in Claude Desktop, Cursor, or ChatGPT communicates with Billable's autonomous scope server through MCP. All tools run on the same shared memory.</p>
-              
-              <div class="form-group">
-                <label class="form-label">Claude Desktop Config (`claude_desktop_config.json`)</label>
-                <textarea class="form-ctrl mono" style="height:120px; font-size:0.75rem; color:var(--ai-cyan);" readonly>{
-  "mcpServers": {
-    "billable": {
-      "command": "npx",
-      "args": ["-y", "@billable/mcp@latest"],
-      "env": {
-        "BILLABLE_API_KEY": "bil_live_89a74c99e12f00a4b89"
-      }
-    }
-  }
-}</textarea>
-              </div>
-
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-top:1.25rem;">
-                <div class="form-group">
-                  <label class="form-label">Default Hourly Rate ($)</label>
-                  <input type="number" class="form-ctrl mono" id="cfg-rate" value="100">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Default AI Change Order Tone</label>
-                  <select class="form-ctrl" id="cfg-tone">
-                    <option value="warm" selected>Warm &amp; Polite (Recommended)</option>
-                    <option value="neutral">Neutral &amp; Direct</option>
-                    <option value="firm">Firm &amp; Formal</option>
-                  </select>
+          <div class="result-rows-group">
+            <div class="result-row">
+              <div class="result-row-left">
+                <div class="result-icon-tag" style="background:#FFFBEB; color:#F59E0B;">⚠️</div>
+                <div>
+                  <div class="result-row-title" id="res-verdict-title">Scope expansion detected</div>
+                  <div class="result-row-desc" id="res-verdict-desc">Request extends beyond current contract scope.</div>
                 </div>
               </div>
             </div>
+
+            <div class="result-row">
+              <div class="result-row-left">
+                <div class="result-icon-tag" style="background:#ECFDF5; color:#10B981;">💲</div>
+                <div>
+                  <div class="result-row-title">Revenue opportunity</div>
+                  <div class="result-row-desc">Estimated value of change order</div>
+                </div>
+              </div>
+              <div class="result-metric-val" style="color:var(--money);" id="res-revenue-val">+$700</div>
+            </div>
+
+            <div class="result-row">
+              <div class="result-row-left">
+                <div class="result-icon-tag" style="background:#F5F3FF; color:#8B5CF6;">📈</div>
+                <div>
+                  <div class="result-row-title">AI Confidence</div>
+                  <div class="result-row-desc">High confidence in analysis</div>
+                </div>
+              </div>
+              <div class="result-metric-val" style="color:var(--purple);" id="res-confidence-val">98%</div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- 4 Top KPI Summary Cards -->
+      <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
+        <!-- KPI 1 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Revenue Protected (MTD)</span>
+            <span class="kpi-badge badge-green">▲ 19%</span>
+          </div>
+          <div class="kpi-big-num">$1,840</div>
+          <div class="kpi-bottom-row">
+            <span class="kpi-subtext">4 change orders secured</span>
+            <!-- Sparkline SVG -->
+            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
+              <path d="M 2 18 Q 18 10 32 16 T 54 8 T 73 3" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Open Risks</span>
+            <span class="kpi-badge badge-red">2 Critical</span>
+          </div>
+          <div class="kpi-big-num">2</div>
+          <div class="kpi-bottom-row">
+            <span class="kpi-subtext">Out-of-scope requests</span>
+            <!-- Sparkline SVG -->
+            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
+              <path d="M 2 20 Q 20 18 36 12 T 56 16 T 73 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Active Contracts</span>
+            <a href="#contracts" style="font-size:0.7rem; color:var(--brand); text-decoration:none; font-weight:600;">View all</a>
+          </div>
+          <div class="kpi-big-num">3</div>
+          <div class="kpi-bottom-row">
+            <span class="kpi-subtext">1 at revision limit</span>
+            <!-- Sparkline SVG -->
+            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
+              <path d="M 2 12 Q 22 20 40 8 T 60 14 T 73 4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">AI Accuracy</span>
+            <span class="kpi-badge badge-green">▲ 3%</span>
+          </div>
+          <div class="kpi-big-num">98%</div>
+          <div class="kpi-bottom-row">
+            <span class="kpi-subtext">Analysis confidence</span>
+            <!-- Sparkline SVG -->
+            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
+              <path d="M 2 16 Q 18 8 36 14 T 56 6 T 73 2" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Middle Analytics Section: Trends & Donut Breakdown -->
+      <section class="trends-breakdown-card" aria-label="Contract and Scope Trends">
+        <div>
+          <div class="trends-header">
+            <div class="trends-title-wrap">
+              <h2 class="section-card-title">Contract &amp; Scope Trends</h2>
+              <span style="color:var(--text-muted); font-size:0.8rem;" title="Information">ⓘ</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <div class="trends-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Scope Requests</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Out-of-Scope</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#10B981;"></span> Change Orders</span>
+              </div>
+              <button class="btn-lang" style="padding:0.3rem 0.6rem; font-size:0.75rem;">
+                <span>Last 6 months</span>
+                <span>⌵</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Multi-Curve Trends SVG Line Chart -->
+          <svg class="multi-curve-chart-svg" viewBox="0 0 540 180" fill="none">
+            <!-- Grid Lines -->
+            <line x1="30" y1="30" x2="520" y2="30" stroke="#F1F5F9" stroke-width="1"/>
+            <line x1="30" y1="70" x2="520" y2="70" stroke="#F1F5F9" stroke-width="1"/>
+            <line x1="30" y1="110" x2="520" y2="110" stroke="#F1F5F9" stroke-width="1"/>
+            <line x1="30" y1="150" x2="520" y2="150" stroke="#F1F5F9" stroke-width="1"/>
+
+            <!-- Y Axis Labels -->
+            <text x="10" y="34" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">40</text>
+            <text x="10" y="74" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">30</text>
+            <text x="10" y="114" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">20</text>
+            <text x="10" y="154" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">0</text>
+
+            <!-- Line 1: Scope Requests (Blue) -->
+            <path d="M 40 70 C 130 50, 200 90, 310 65 C 410 45, 460 70, 510 50" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="40" cy="70" r="3.5" fill="#3B82F6"/>
+            <circle cx="135" cy="55" r="3.5" fill="#3B82F6"/>
+            <circle cx="230" cy="75" r="3.5" fill="#3B82F6"/>
+            <circle cx="325" cy="65" r="3.5" fill="#3B82F6"/>
+            <circle cx="420" cy="55" r="3.5" fill="#3B82F6"/>
+            <circle cx="510" cy="50" r="3.5" fill="#3B82F6"/>
+
+            <!-- Line 2: Out-of-Scope (Purple) -->
+            <path d="M 40 100 C 130 85, 210 115, 310 95 C 410 80, 460 95, 510 75" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="40" cy="100" r="3.5" fill="#8B5CF6"/>
+            <circle cx="135" cy="90" r="3.5" fill="#8B5CF6"/>
+            <circle cx="230" cy="108" r="3.5" fill="#8B5CF6"/>
+            <circle cx="325" cy="95" r="3.5" fill="#8B5CF6"/>
+            <circle cx="420" cy="85" r="3.5" fill="#8B5CF6"/>
+            <circle cx="510" cy="75" r="3.5" fill="#8B5CF6"/>
+
+            <!-- Line 3: Change Orders (Green) -->
+            <path d="M 40 140 C 130 120, 210 135, 310 125 C 410 115, 460 130, 510 110" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="40" cy="140" r="3.5" fill="#10B981"/>
+            <circle cx="135" cy="125" r="3.5" fill="#10B981"/>
+            <circle cx="230" cy="130" r="3.5" fill="#10B981"/>
+            <circle cx="325" cy="125" r="3.5" fill="#10B981"/>
+            <circle cx="420" cy="120" r="3.5" fill="#10B981"/>
+            <circle cx="510" cy="110" r="3.5" fill="#10B981"/>
+
+            <!-- X Axis Month Labels -->
+            <text x="40" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jan</text>
+            <text x="135" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Feb</text>
+            <text x="230" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Mar</text>
+            <text x="325" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Apr</text>
+            <text x="420" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">May</text>
+            <text x="510" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jun</text>
+          </svg>
+        </div>
+
+        <!-- Right Side Donut Breakdown -->
+        <div class="donut-analyzed-pane">
+          <div class="donut-chart-container">
+            <svg class="donut-svg" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#F1F5F9" stroke-width="12"/>
+              <!-- Green slice (45% = 135deg) -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#10B981" stroke-width="12" stroke-dasharray="135 301" stroke-dashoffset="0"/>
+              <!-- Purple slice (40% = 120deg) -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#8B5CF6" stroke-width="12" stroke-dasharray="120 301" stroke-dashoffset="-135"/>
+              <!-- Blue slice (15% = 46deg) -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#3B82F6" stroke-width="12" stroke-dasharray="46 301" stroke-dashoffset="-255"/>
+            </svg>
+            <div class="donut-center-num">
+              <span class="donut-total-val">42</span>
+              <span class="donut-total-lbl">Total</span>
+            </div>
+          </div>
+
+          <div class="donut-breakdown-legend">
+            <div class="donut-legend-row">
+              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#10B981;"></span> In Scope</span>
+              <strong>19 (45%)</strong>
+            </div>
+            <div class="donut-legend-row">
+              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#8B5CF6;"></span> Out of Scope</span>
+              <strong>17 (40%)</strong>
+            </div>
+            <div class="donut-legend-row">
+              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#3B82F6;"></span> Unclear</span>
+              <strong>6 (15%)</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Table 1: Contract & Requests Requiring Change Order -->
+      <section class="dashboard-table-card" aria-label="Requests Requiring Change Order">
+        <div class="table-card-header">
+          <div class="table-title-group">
+            <h2 class="section-card-title">Contract &amp; Requests Requiring Change Order</h2>
+            <span class="badge-pill-pink">2 out of scope</span>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Request Summary</th>
+                <th>Status</th>
+                <th>Contract Clause</th>
+                <th>AI Delta Revenue</th>
+                <th>Confidence</th>
+                <th>Action</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-acme">A</div>
+                    <span>Acme Software</span>
+                  </div>
+                </td>
+                <td style="max-width:240px;">Add blog section to marketing site with CMS integration and SEO optimization.</td>
+                <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                <td>§2 — Services, 3.2 Exclusions</td>
+                <td><span class="delta-money-num">+$400</span></td>
+                <td><span class="confidence-pct">98%</span></td>
+                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-kessler">K</div>
+                    <span>Kessler Fashion Studio</span>
+                  </div>
+                </td>
+                <td style="max-width:240px;">Fourth round of edits on homepage design before board presentation.</td>
+                <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                <td>§5 — Revisions, 5.1 Revision Limit</td>
+                <td><span class="delta-money-num">+$300</span></td>
+                <td><span class="confidence-pct">96%</span></td>
+                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-bronson">B</div>
+                    <span>Bronson Health</span>
+                  </div>
+                </td>
+                <td style="max-width:240px;">Add patient portal syncing with EHR system and reporting dashboard.</td>
+                <td><span class="status-tag tag-warning">Warning</span></td>
+                <td>§3 — Integrations, 3.4 Additional Systems</td>
+                <td><span class="delta-money-num">+$1,200</span></td>
+                <td><span class="confidence-pct">92%</span></td>
+                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a href="#requests" class="table-view-all-link">View all requests &gt;</a>
+      </section>
+
+      <!-- Table 2: Contract Health & Revision Limits -->
+      <section class="dashboard-table-card" aria-label="Contract Health and Revision Limits">
+        <div class="table-card-header">
+          <h2 class="section-card-title">Contract Health &amp; Revision Limits</h2>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Project</th>
+                <th>Revisions Used</th>
+                <th>Revision Limit</th>
+                <th>AI Health Score</th>
+                <th>Days to Deadline</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-acme">A</div>
+                    <span>Acme Software</span>
+                  </div>
+                </td>
+                <td>Web App UI &amp; Component Design</td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span>2</span>
+                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:66%; height:100%; background:#3B82F6;"></div></div>
+                    <span>/ 3</span>
+                  </div>
+                </td>
+                <td>3 Included</td>
+                <td><div class="health-score-circle score-green">82</div></td>
+                <td>12 days</td>
+                <td><span class="status-tag tag-warning">At Risk</span></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-kessler">K</div>
+                    <span>Kessler Fashion Studio</span>
+                  </div>
+                </td>
+                <td>E-Commerce Shopify Build</td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span>3</span>
+                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:100%; height:100%; background:#8B5CF6;"></div></div>
+                    <span>/ 3</span>
+                  </div>
+                </td>
+                <td>3 Included</td>
+                <td><div class="health-score-circle score-orange">64</div></td>
+                <td>5 days</td>
+                <td><span class="status-tag tag-out-of-scope">Revision Limit</span></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="client-cell">
+                    <div class="client-logo-box logo-bronson">B</div>
+                    <span>Bronson Health</span>
+                  </div>
+                </td>
+                <td>Patient Portal &amp; Sync System</td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span>1</span>
+                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:25%; height:100%; background:#10B981;"></div></div>
+                    <span>/ 4</span>
+                  </div>
+                </td>
+                <td>4 Included</td>
+                <td><div class="health-score-circle score-green">91</div></td>
+                <td>24 days</td>
+                <td><span class="status-tag tag-healthy">Healthy</span></td>
+                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <a href="#contracts" class="table-view-all-link">View all contracts &gt;</a>
+      </section>
     </main>
 
-    <!-- ====================================================================
-         4. Right-Hand Autonomous Copilot Rail (Slide-Over on Mobile/Tablet)
-         ==================================================================== -->
-    <aside class="app-chat-rail" id="app-chat-rail">
-      <div class="rail-header">
-        <div class="rail-title-box">
-          <span class="ai-live-dot"></span>
-          <span class="rail-title">Scope Copilot AI</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:0.5rem;">
-          <span class="chip chip-ai" id="rail-context-tag">ctx: today</span>
-          <button class="btn-close-rail" id="btn-close-rail" aria-label="Close AI Rail">✕</button>
-        </div>
-      </div>
-
-      <!-- Tone Adjustment Strip -->
-      <div class="rail-tone-strip">
-        <span class="tone-label">AI Tone:</span>
-        <div class="tone-buttons">
-          <button class="tone-btn active" data-tone="warm">Warm</button>
-          <button class="tone-btn" data-tone="neutral">Neutral</button>
-          <button class="tone-btn" data-tone="firm">Firm</button>
-        </div>
-      </div>
-
-      <div class="rail-messages-stream" id="rail-messages">
-        <!-- Assistant Greeting with Chain of Thought -->
-        <div class="chat-msg assistant">
-          <div class="ai-thought-trace">
-            <div class="ai-thought-step">⚡ 1. Evaluated active contracts against 2 pending asks</div>
-            <div class="ai-thought-step">⚡ 2. Matched Acme Corp §2 &amp; Kessler Studio §5</div>
-            <div class="ai-thought-step">⚡ 3. Generated 2 polite change orders (+$700 total)</div>
+    <!-- ==========================================================================
+         3. Right Sidebar: AI Copilot Rail
+         ========================================================================== -->
+    <aside class="app-copilot-rail" aria-label="AI Copilot Sidebar">
+      <div style="display:flex; flex-direction:column; gap:1.25rem;">
+        <!-- Header -->
+        <div class="copilot-rail-header">
+          <div class="copilot-rail-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>AI Copilot</span>
           </div>
-          <div class="chat-bubble">
-            Morning Julian. I've analyzed your communications: <strong>2 requests</strong> are out-of-scope. I've drafted polite change orders that can recover <strong>$700</strong> without client friction.
+          <span class="copilot-active-badge">Active</span>
+        </div>
+
+        <!-- Card: AI Insight -->
+        <div class="rail-card">
+          <div class="rail-card-head">
+            <span>✨ AI Insight</span>
+            <span style="cursor:pointer; color:var(--text-muted); font-size:0.75rem;">▲</span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-secondary);">Morning, Julian! Here's what I found:</p>
+          <ul class="insight-bullet-list">
+            <li>2 requests are out-of-scope.</li>
+            <li>I've drafted change orders for both.</li>
+            <li>Total revenue opportunity: $700</li>
+          </ul>
+          <button class="btn-view-drafts" id="btn-view-drafts-rail">View Drafts</button>
+        </div>
+
+        <!-- Card: Scope Radar -->
+        <div class="rail-card">
+          <div class="rail-card-head">
+            <span>🌐 Scope Radar</span>
+            <span style="cursor:pointer; color:var(--text-muted); font-size:0.75rem;">▲</span>
+          </div>
+          <div class="radar-wave-box">
+            <svg class="radar-svg" viewBox="0 0 280 60" fill="none">
+              <!-- Wave 1 (Cyan) -->
+              <path d="M 10 30 Q 75 10 140 30 T 270 20" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <circle cx="75" cy="20" r="3.5" fill="#06B6D4"/>
+              <circle cx="210" cy="25" r="3.5" fill="#06B6D4"/>
+              <!-- Wave 2 (Purple) -->
+              <path d="M 10 35 Q 75 50 140 35 T 270 45" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <circle cx="140" cy="35" r="3.5" fill="#8B5CF6"/>
+              <circle cx="270" cy="45" r="3.5" fill="#8B5CF6"/>
+            </svg>
+          </div>
+          <div class="radar-legend-row">
+            <span style="display:flex; align-items:center; gap:0.25rem;"><span class="legend-dot" style="background:#10B981;"></span> Healthy</span>
+            <span style="display:flex; align-items:center; gap:0.25rem;"><span class="legend-dot" style="background:#F59E0B;"></span> Warning</span>
+            <span style="display:flex; align-items:center; gap:0.25rem;"><span class="legend-dot" style="background:#EF4444;"></span> At Risk</span>
+          </div>
+          <a href="#contracts" style="font-size:0.72rem; color:var(--brand); text-decoration:none; font-weight:600; text-align:center; margin-top:2px;">View all contracts &gt;</a>
+        </div>
+
+        <!-- Card: Quick Actions -->
+        <div class="rail-card">
+          <div class="rail-card-head">
+            <span>⚡ Quick Actions</span>
+          </div>
+          <div class="quick-actions-list">
+            <button class="quick-action-btn js-action-analyze">
+              <div class="quick-action-left">
+                <span>Analyze New Request</span>
+                <span class="quick-action-sub">Paste a request to analyze scope</span>
+              </div>
+              <span style="color:var(--text-muted);">&gt;</span>
+            </button>
+            <button class="quick-action-btn js-action-generate">
+              <div class="quick-action-left">
+                <span>Generate Change Order</span>
+                <span class="quick-action-sub">Create draft from request</span>
+              </div>
+              <span style="color:var(--text-muted);">&gt;</span>
+            </button>
+            <button class="quick-action-btn js-action-review">
+              <div class="quick-action-left">
+                <span>Review Contract</span>
+                <span class="quick-action-sub">Check clauses and limits</span>
+              </div>
+              <span style="color:var(--text-muted);">&gt;</span>
+            </button>
+            <button class="quick-action-btn js-action-analytics">
+              <div class="quick-action-left">
+                <span>View Analytics</span>
+                <span class="quick-action-sub">See trends &amp; performance</span>
+              </div>
+              <span style="color:var(--text-muted);">&gt;</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card: Recent Insights -->
+        <div class="rail-card">
+          <div class="rail-card-head">
+            <span>Recent Insights</span>
+          </div>
+          <div class="recent-feed-list">
+            <div class="recent-feed-item">
+              <span>Acme Software request marked out-of-scope</span>
+              <span class="recent-feed-time">2h ago</span>
+            </div>
+            <div class="recent-feed-item">
+              <span>Revision limit reached for Kessler Studio</span>
+              <span class="recent-feed-time">5h ago</span>
+            </div>
+            <div class="recent-feed-item">
+              <span>New change order approved</span>
+              <span class="recent-feed-time">Yesterday</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Suggested contextual prompts -->
-      <div class="rail-suggestions" id="rail-suggestions">
-        <!-- Injected via JS based on current screen -->
-      </div>
-
-      <div class="rail-input-container">
-        <form id="rail-form" class="rail-form">
-          <input type="text" class="rail-input" id="rail-input" placeholder="Ask AI: 'Rewrite that softer', 'Check clause §4'..." autocomplete="off">
-          <button type="submit" class="btn btn-ai btn-sm">✨ Ask</button>
+      <!-- Bottom Chat Input -->
+      <div class="rail-chat-container">
+        <form id="copilot-chat-form" class="rail-chat-box">
+          <input type="text" id="copilot-chat-input" class="rail-chat-input" placeholder="Ask AI Copilot anything..." aria-label="Chat with AI Copilot">
+          <button type="submit" class="btn-send-chat" title="Send message">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
         </form>
+        <span class="chat-disclaimer">AI responses can make mistakes. Verify important details.</span>
       </div>
     </aside>
+
   </div>
 
-  <!-- ====================================================================
-       5. Mobile Bottom Navigation Bar (<768px)
-       ==================================================================== -->
-  <nav class="mobile-bottom-nav">
-    <button class="bottom-nav-btn is-active js-mobile-tab" data-screen="today">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-      <span>Today</span>
-    </button>
-    <button class="bottom-nav-btn js-mobile-tab" data-screen="contracts">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-      <span>Contracts</span>
-    </button>
-    <button class="bottom-nav-btn js-mobile-tab" data-screen="requests">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
-      <span>Requests</span>
-    </button>
-    <button class="bottom-nav-btn js-mobile-tab" data-screen="change-orders">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-      <span>Orders</span>
-    </button>
-    <button class="bottom-nav-btn js-mobile-tab" data-screen="ledger">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-      <span>Ledger</span>
-    </button>
-    <button class="bottom-nav-btn ai-tab" id="btn-mobile-ai-tab">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
-      <span>AI Rail</span>
-    </button>
-  </nav>
-
-  <!-- ====================================================================
-       6. Modals & Dialogs
-       ==================================================================== -->
-  <!-- AI Add / Parse Contract Modal -->
-  <dialog id="modal-add-contract">
-    <div class="modal-header">
-      <div style="display:flex; align-items:center; gap:0.5rem;">
-        <span class="ai-live-dot"></span>
-        <h3 style="font-family:var(--display); font-size:1.1rem; font-weight:700;">AI Contract Ingestion &amp; Scope Parser</h3>
-      </div>
-      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('modal-add-contract').close()">✕</button>
+  <!-- Interactive Modal: Review & Quote Dialog -->
+  <dialog id="quote-modal" style="border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; max-width:540px; width:90vw; margin:auto; box-shadow:0 20px 60px rgba(0,0,0,0.15); background:#FFFFFF;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-subtle); padding-bottom:0.75rem;">
+      <h3 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700; color:var(--text-main);">Draft Change Order — Acme Software</h3>
+      <button id="btn-close-quote-modal" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">✕</button>
     </div>
-    <div class="modal-body">
-      <form id="form-new-contract">
-        <div class="form-group">
-          <label class="form-label">Client Name</label>
-          <input type="text" class="form-ctrl" id="new-c-client" placeholder="e.g. Acme Software" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Project Title</label>
-          <input type="text" class="form-ctrl" id="new-c-title" placeholder="e.g. Brand Identity &amp; Web Redesign" required>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem;">
-          <div class="form-group">
-            <label class="form-label">Fixed Fee ($)</label>
-            <input type="number" class="form-ctrl mono" id="new-c-fee" placeholder="4500" value="4500">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Revisions Allowed</label>
-            <input type="number" class="form-ctrl mono" id="new-c-revisions" placeholder="3" value="3">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Paste Raw Contract / Statement of Work</label>
-          <textarea class="form-ctrl" id="new-c-raw" style="height:100px;" placeholder="Paste deliverables: 5 custom pages, responsive design, 3 revision rounds. Extra pages $400/ea..."></textarea>
-        </div>
-        <button type="submit" class="btn btn-ai" style="width:100%">✨ Run AI Scope Parser &amp; Save Contract →</button>
-      </form>
+    <div style="font-size:0.875rem; color:var(--text-secondary); line-height:1.6; margin-bottom:1.25rem;">
+      <p style="margin-bottom:0.75rem;"><strong>Clause Ref:</strong> §2.1 Scope of Work &amp; §3.2 Exclusions</p>
+      <p style="margin-bottom:0.75rem;"><strong>Proposed Adjustment:</strong> +$400.00 (Estimated 3.5 hrs delivery at $115/hr rate).</p>
+      <div style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem; font-family:var(--font-mono); font-size:0.78rem; color:var(--text-main);">
+        "Happy to add the CMS blog integration! That falls outside our contracted scope (§2.1), so it would be $400 and adjusts delivery by 2 business days. Should I send over the change order?"
+      </div>
+    </div>
+    <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+      <button id="btn-copy-quote-reply" class="btn-primary-action" style="background:var(--money);">Copy Client Reply ✓</button>
     </div>
   </dialog>
 
-  <!-- AI Contract Detail / Scope Inspector Modal -->
-  <dialog id="modal-contract-detail">
-    <div class="modal-header">
-      <div style="display:flex; align-items:center; gap:0.5rem;">
-        <span class="ai-live-dot"></span>
-        <h3 style="font-family:var(--display); font-size:1.1rem; font-weight:700;" id="c-detail-title">AI Scope Intelligence Inspector</h3>
-      </div>
-      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('modal-contract-detail').close()">✕</button>
-    </div>
-    <div class="modal-body" id="c-detail-body">
-      <!-- Injected by JS -->
-    </div>
-  </dialog>
-
-  <!-- ====================================================================
-       7. Dashboard Store & MCP Engine Script
-       ==================================================================== -->
+  <!-- Interactive JavaScript Logic -->
   <script>
-    (function() {
+    (function () {
       'use strict';
 
-      // Seed Database (Mock MCP store in LocalStorage)
-      var defaultDB = {
-        user: { name: "Julian Vance", email: "julian@vancestudio.com", rate: 100, tone: "warm" },
-        contracts: [
-          {
-            id: "ct_101",
-            client: "Acme Software",
-            title: "Web App UI & Component Design",
-            rate: 100,
-            fee: 5000,
-            revisions_allowed: 3,
-            revisions_used: 2,
-            unbilled_caught: 400,
-            days_to_deadline: 12,
-            scope_json: {
-              deliverables: ["Dashboard UI (5 screens)", "Component Library", "3 Design Revisions"],
-              exclusions: ["Backend API integration", "Copywriting", "Blog engine architecture"],
-              rates: { extra_page: 400, extra_revision: 250, hourly: 100 }
-            }
-          },
-          {
-            id: "ct_102",
-            client: "Kessler Fashion Studio",
-            title: "E-Commerce Shopify Build",
-            rate: 120,
-            fee: 7200,
-            revisions_allowed: 3,
-            revisions_used: 3,
-            unbilled_caught: 640,
-            days_to_deadline: 5,
-            scope_json: {
-              deliverables: ["Shopify Theme Setup", "Product Catalog (20 items)", "Checkout Styling"],
-              exclusions: ["Custom ERP Webhooks", "Product photography retouching"],
-              rates: { extra_page: 450, extra_revision: 300, hourly: 120 }
-            }
-          },
-          {
-            id: "ct_103",
-            client: "Beacon Health",
-            title: "Patient Portal Design System",
-            rate: 150,
-            fee: 9000,
-            revisions_allowed: 4,
-            revisions_used: 1,
-            unbilled_caught: 800,
-            days_to_deadline: 24,
-            scope_json: {
-              deliverables: ["WCAG AAA Design System", "Figma Token Library", "Developer Handoff Spec"],
-              exclusions: ["Native iOS Swift development"],
-              rates: { extra_page: 500, extra_revision: 350, hourly: 150 }
-            }
-          }
-        ],
-        requests: [
-          {
-            id: "req_1",
-            contract_id: "ct_101",
-            client: "Acme Software",
-            text: "Hey Julian, while you're in there, can we also add a blog section? Shouldn't take long 🙂",
-            verdict: "out_of_scope",
-            clause: "§2 — 5 pages, 3 revisions",
-            amount: 400,
-            days: 3,
-            status: "open",
-            reply: "Happy to add a blog section. That's outside our original five pages, so it'd be $400 and moves delivery to the 14th. Want me to send the change order?",
-            date: "Today, 10:42 AM"
-          },
-          {
-            id: "req_2",
-            contract_id: "ct_102",
-            client: "Kessler Fashion Studio",
-            text: "Client wants a fourth round of edits on the checkout before tomorrow's board meeting.",
-            verdict: "out_of_scope",
-            clause: "§5 — 3 revisions cap exceeded",
-            amount: 300,
-            days: 1,
-            status: "open",
-            reply: "Can definitely do a 4th round. As we've completed the 3 contract revisions, this is billed at our $300 revision rate. Shall I proceed?",
-            date: "Today, 09:15 AM"
-          },
-          {
-            id: "req_3",
-            contract_id: "ct_101",
-            client: "Acme Software",
-            text: "Can you adjust the logo size on the main navbar?",
-            verdict: "in_scope",
-            clause: "§4 — Revision 2 of 3",
-            amount: 0,
-            days: 0,
-            status: "closed",
-            reply: "Sure thing, adjusting the header logo now. That's revision 2 of your 3 included rounds.",
-            date: "Yesterday"
-          }
-        ],
-        change_orders: [
-          { id: "co_1", client: "Acme Software", amount: 400, title: "Blog Section Architecture", status: "draft", days: 3 },
-          { id: "co_2", client: "Kessler Fashion Studio", amount: 640, title: "ERP Inventory Sync Webhook", status: "sent", days: 4 },
-          { id: "co_3", client: "Beacon Health", amount: 800, title: "Mobile Dark Mode Token Set", status: "accepted", days: 2 },
-          { id: "co_4", client: "Nordic Tech", amount: 1500, title: "Next.js Migration Sprint", status: "paid", days: 5 }
-        ],
-        ledger: [
-          { date: "Today 10:42 AM", type: "AI_SCOPE_CAUGHT", client: "Acme Software", context: "Blog Section (§2 Deliverables Exceeded)", amount: "+$400.00" },
-          { date: "Today 09:15 AM", type: "AI_SCOPE_CAUGHT", client: "Kessler Fashion Studio", context: "Round 4 Edits (§5 Cap Exceeded)", amount: "+$300.00" },
-          { date: "Yesterday", type: "CHANGE_ORDER_PAID", client: "Nordic Tech", context: "Next.js Migration Sprint #12", amount: "+$1,500.00" },
-          { date: "Aug 20, 2026", type: "SCOPE_WAIVED", client: "Acme Software", context: "Favicon adjustment waived for goodwill", amount: "$0.00 (Waived $80)" }
-        ]
-      };
-
-      var DB = JSON.parse(localStorage.getItem('billable_app_db') || 'null');
-      if (!DB) {
-        DB = defaultDB;
-        localStorage.setItem('billable_app_db', JSON.stringify(DB));
-      }
-
-      function saveDB() {
-        localStorage.setItem('billable_app_db', JSON.stringify(DB));
-      }
-
-      // State Management
-      var currentScreen = 'today';
-      var currentTone = 'warm';
-
-      // DOM Elements
-      var navButtons = document.querySelectorAll('.js-nav-tab');
-      var mobileNavButtons = document.querySelectorAll('.js-mobile-tab');
-      var screenViews = document.querySelectorAll('.screen-view');
-      var screenTitle = document.getElementById('screen-title');
-      var railContextTag = document.getElementById('rail-context-tag');
-      var railSuggestions = document.getElementById('rail-suggestions');
-      var railMessages = document.getElementById('rail-messages');
-      var railForm = document.getElementById('rail-form');
-      var railInput = document.getElementById('rail-input');
-      var fastCheckSelect = document.getElementById('fast-check-contract-select');
-      var fastCheckInput = document.getElementById('fast-check-input');
-      var btnRunFastCheck = document.getElementById('btn-run-fast-check');
-      var toneButtons = document.querySelectorAll('.tone-btn');
-      var appSidebar = document.getElementById('app-sidebar');
-      var appChatRail = document.getElementById('app-chat-rail');
-      var appBackdrop = document.getElementById('app-backdrop');
-      var btnHamburger = document.getElementById('btn-hamburger');
-      var btnCloseSidebar = document.getElementById('btn-close-sidebar');
-      var btnOpenRailTop = document.getElementById('btn-open-rail-top');
-      var btnCloseRail = document.getElementById('btn-close-rail');
-      var btnMobileAiTab = document.getElementById('btn-mobile-ai-tab');
-
-      // Drawer Open / Close Helpers
-      function openSidebar() {
-        if (appSidebar) appSidebar.classList.add('is-open');
-        if (appBackdrop) appBackdrop.classList.add('is-visible');
-        if (appChatRail) appChatRail.classList.remove('is-open');
-      }
-
-      function closeSidebar() {
-        if (appSidebar) appSidebar.classList.remove('is-open');
-        if (appBackdrop && !appChatRail.classList.contains('is-open')) {
-          appBackdrop.classList.remove('is-visible');
+      // Example prompts for quick testing
+      var exampleQueries = [
+        {
+          text: "Can we also add a custom blog filter and round 4 homepage edits?",
+          title: "Scope expansion detected",
+          desc: "Request extends beyond current contract scope (§2.1 & §5.1).",
+          revenue: "+$700",
+          confidence: "98%"
+        },
+        {
+          text: "Please nudge the navbar down 5px and adjust the logo color.",
+          title: "In-Scope Request",
+          desc: "Request is covered under Revision Round 2 (§4.2).",
+          revenue: "$0.00",
+          confidence: "99%"
+        },
+        {
+          text: "Can we build a full iOS mobile app before Friday?",
+          title: "Major Scope Expansion",
+          desc: "Uncontracted platform addition with rush delivery (§9.1).",
+          revenue: "+$2,400",
+          confidence: "95%"
         }
+      ];
+
+      var currentExampleIdx = 0;
+      var analyzerInput = document.getElementById('analyzer-input');
+      var btnTryExamples = document.getElementById('btn-try-examples');
+      var btnAnalyzeRequest = document.getElementById('btn-analyze-request');
+      var resVerdictTitle = document.getElementById('res-verdict-title');
+      var resVerdictDesc = document.getElementById('res-verdict-desc');
+      var resRevenueVal = document.getElementById('res-revenue-val');
+      var resConfidenceVal = document.getElementById('res-confidence-val');
+
+      if (btnTryExamples && analyzerInput) {
+        btnTryExamples.addEventListener('click', function () {
+          currentExampleIdx = (currentExampleIdx + 1) % exampleQueries.length;
+          var ex = exampleQueries[currentExampleIdx];
+          analyzerInput.value = ex.text;
+          runAnalysis(ex);
+        });
       }
 
-      function openChatRail() {
-        if (appChatRail) appChatRail.classList.add('is-open');
-        if (appBackdrop) appBackdrop.classList.add('is-visible');
-        if (appSidebar) appSidebar.classList.remove('is-open');
+      if (btnAnalyzeRequest && analyzerInput) {
+        btnAnalyzeRequest.addEventListener('click', function () {
+          var val = analyzerInput.value.trim();
+          if (!val) {
+            val = exampleQueries[0].text;
+            analyzerInput.value = val;
+          }
+          
+          btnAnalyzeRequest.innerHTML = "Analyzing...";
+          setTimeout(function() {
+            btnAnalyzeRequest.innerHTML = "Analyze Request ✨";
+            var isOutOfScope = !val.toLowerCase().includes('nudge') && !val.toLowerCase().includes('minor');
+            runAnalysis({
+              title: isOutOfScope ? "Scope expansion detected" : "In-Scope Request",
+              desc: isOutOfScope ? "Request extends beyond current contract scope (§2.1)." : "Covered under agreed revisions.",
+              revenue: isOutOfScope ? "+$650" : "$0.00",
+              confidence: "97%"
+            });
+          }, 350);
+        });
       }
 
-      function closeChatRail() {
-        if (appChatRail) appChatRail.classList.remove('is-open');
-        if (appBackdrop && !appSidebar.classList.contains('is-open')) {
-          appBackdrop.classList.remove('is-visible');
-        }
+      function runAnalysis(data) {
+        if (resVerdictTitle) resVerdictTitle.textContent = data.title;
+        if (resVerdictDesc) resVerdictDesc.textContent = data.desc;
+        if (resRevenueVal) resRevenueVal.textContent = data.revenue;
+        if (resConfidenceVal) resConfidenceVal.textContent = data.confidence;
       }
 
-      function closeAllDrawers() {
-        closeSidebar();
-        closeChatRail();
-      }
+      // Review & Quote Modal
+      var quoteModal = document.getElementById('quote-modal');
+      var btnCloseQuote = document.getElementById('btn-close-quote-modal');
+      var btnCopyQuoteReply = document.getElementById('btn-copy-quote-reply');
+      var reviewQuoteBtns = document.querySelectorAll('.btn-review-quote');
 
-      if (btnHamburger) btnHamburger.addEventListener('click', openSidebar);
-      if (btnCloseSidebar) btnCloseSidebar.addEventListener('click', closeSidebar);
-      if (btnOpenRailTop) btnOpenRailTop.addEventListener('click', openChatRail);
-      if (btnMobileAiTab) btnMobileAiTab.addEventListener('click', openChatRail);
-      if (btnCloseRail) btnCloseRail.addEventListener('click', closeChatRail);
-      if (appBackdrop) appBackdrop.addEventListener('click', closeAllDrawers);
-
-      toneButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          toneButtons.forEach(function(b) { b.classList.remove('active'); });
-          this.classList.add('active');
-          currentTone = this.getAttribute('data-tone');
-          sendCopilotMessage("Adjust drafted tone to " + currentTone + " mode.");
+      reviewQuoteBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (quoteModal) quoteModal.showModal();
         });
       });
 
-      // Suggested Prompts per Screen
-      var screenSuggestions = {
-        today: [
-          "✨ AI Draft change order for Acme ask",
-          "🧠 Why is Kessler out of scope?",
-          "📊 Calculate recovered revenue"
-        ],
-        contracts: [
-          "⚡ Highest scope creep risk?",
-          "🔍 Revision limits breakdown",
-          "✨ AI draft contract addendum"
-        ],
-        requests: [
-          "✨ Rewrite reply warmly",
-          "🔍 Explain clause reference",
-          "⚡ Batch create change orders"
-        ],
-        "change-orders": [
-          "✨ AI draft polite payment reminder",
-          "📄 Generate branded PDF",
-          "💰 Total pending receivables"
-        ],
-        ledger: [
-          "🧠 Why did I lose money on Kessler?",
-          "📊 Waived vs billed breakdown",
-          "📈 Forecast next month revenue"
-        ],
-        settings: [
-          "⚡ Test Claude MCP tool call",
-          "🔧 Update default rate to $120/hr",
-          "🛡️ Set change order policy"
-        ]
-      };
-
-      // 1. Navigation Controller
-      function switchScreen(screenId) {
-        currentScreen = screenId;
-        screenViews.forEach(function(view) {
-          view.classList.toggle('is-active', view.id === 'screen-' + screenId);
+      if (btnCloseQuote && quoteModal) {
+        btnCloseQuote.addEventListener('click', function () {
+          quoteModal.close();
         });
-
-        navButtons.forEach(function(btn) {
-          btn.classList.toggle('is-active', btn.getAttribute('data-screen') === screenId);
-        });
-
-        mobileNavButtons.forEach(function(btn) {
-          btn.classList.toggle('is-active', btn.getAttribute('data-screen') === screenId);
-        });
-
-        var titles = {
-          today: "Today",
-          contracts: "Contracts",
-          requests: "Requests",
-          "change-orders": "Change Orders",
-          ledger: "Recovery Ledger",
-          settings: "MCP & Settings"
-        };
-        screenTitle.textContent = titles[screenId] || "Dashboard";
-        railContextTag.textContent = "ctx: " + screenId;
-
-        closeSidebar();
-        renderSuggestions(screenId);
       }
 
-      navButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var scr = this.getAttribute('data-screen');
-          if (scr) switchScreen(scr);
+      if (btnCopyQuoteReply) {
+        btnCopyQuoteReply.addEventListener('click', function () {
+          navigator.clipboard.writeText("Happy to add the CMS blog integration! That falls outside our contracted scope (§2.1), so it would be $400 and adjusts delivery by 2 business days. Should I send over the change order?");
+          btnCopyQuoteReply.textContent = "Copied to Clipboard ✓";
+          setTimeout(function() {
+            btnCopyQuoteReply.textContent = "Copy Client Reply ✓";
+          }, 2000);
+        });
+      }
+
+      // Quick Actions Rail
+      var actionButtons = document.querySelectorAll('.quick-action-btn');
+      actionButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          analyzerInput.focus();
+          analyzerInput.value = "New Request: Add third-party CRM webhook and automated PDF generation.";
+          btnAnalyzeRequest.click();
         });
       });
 
-      mobileNavButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var scr = this.getAttribute('data-screen');
-          if (scr) switchScreen(scr);
-        });
-      });
-
-      // 2. Render Functions
-      function renderAll() {
-        // Fast check select
-        fastCheckSelect.innerHTML = '';
-        DB.contracts.forEach(function(c) {
-          var opt = document.createElement('option');
-          opt.value = c.id;
-          opt.textContent = c.client + ' — ' + c.title;
-          fastCheckSelect.appendChild(opt);
-        });
-
-        // Today Screen
-        var tbodyTodayOpen = document.getElementById('tbody-today-open');
-        tbodyTodayOpen.innerHTML = '';
-        var openReqs = DB.requests.filter(function(r) { return r.status === 'open'; });
-        openReqs.forEach(function(r) {
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td><strong>' + r.client + '</strong></td>' +
-            '<td><span style="color:var(--app-text);">' + r.text + '</span></td>' +
-            '<td><span class="chip chip-flag">OUT OF SCOPE</span></td>' +
-            '<td><span class="mono">' + r.clause + '</span></td>' +
-            '<td><span class="num-money">+$' + r.amount + '</span></td>' +
-            '<td class="text-right"><button class="btn btn-ai btn-sm js-act-order" data-id="' + r.id + '">✨ Send Order ($' + r.amount + ')</button></td>';
-          tbodyTodayOpen.appendChild(tr);
-        });
-
-        var tbodyTodayContracts = document.getElementById('tbody-today-contracts');
-        tbodyTodayContracts.innerHTML = '';
-        DB.contracts.forEach(function(c) {
-          var meterClass = c.revisions_used >= c.revisions_allowed ? 'danger' : (c.revisions_used >= 2 ? 'warning' : '');
-          var pct = Math.min((c.revisions_used / c.revisions_allowed) * 100, 100);
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td><strong>' + c.client + '</strong></td>' +
-            '<td>' + c.title + '</td>' +
-            '<td><div class="revision-meter"><span class="meter-track"><span class="meter-fill ' + meterClass + '" style="width:' + pct + '%"></span></span><span class="mono">' + c.revisions_used + ' / ' + c.revisions_allowed + '</span></div></td>' +
-            '<td><span class="num-money">+$' + c.unbilled_caught + '</span></td>' +
-            '<td><span class="mono">' + c.days_to_deadline + ' days</span></td>';
-          tbodyTodayContracts.appendChild(tr);
-        });
-
-        // Contracts Screen
-        var tbodyContracts = document.getElementById('tbody-contracts-list');
-        tbodyContracts.innerHTML = '';
-        DB.contracts.forEach(function(c) {
-          var meterClass = c.revisions_used >= c.revisions_allowed ? 'danger' : (c.revisions_used >= 2 ? 'warning' : '');
-          var pct = Math.min((c.revisions_used / c.revisions_allowed) * 100, 100);
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td><strong>' + c.client + '</strong></td>' +
-            '<td>' + c.title + '</td>' +
-            '<td><span class="mono">$' + c.rate + '/hr ($' + c.fee + ')</span></td>' +
-            '<td><div class="revision-meter"><span class="meter-track"><span class="meter-fill ' + meterClass + '" style="width:' + pct + '%"></span></span><span class="mono">' + c.revisions_used + ' / ' + c.revisions_allowed + '</span></div></td>' +
-            '<td><span class="num-money">+$' + c.unbilled_caught + '</span></td>' +
-            '<td><span class="chip chip-money">AI Active</span></td>' +
-            '<td class="text-right"><button class="btn btn-secondary btn-sm js-inspect-c" data-id="' + c.id + '">⚡ Inspect Scope</button></td>';
-          tbodyContracts.appendChild(tr);
-        });
-
-        // Requests Stream
-        var tbodyRequests = document.getElementById('tbody-requests-stream');
-        tbodyRequests.innerHTML = '';
-        DB.requests.forEach(function(r) {
-          var chipHtml = r.verdict === 'out_of_scope' ? '<span class="chip chip-flag">OUT OF SCOPE</span>' : '<span class="chip chip-scope">IN SCOPE</span>';
-          var amountHtml = r.amount > 0 ? '<span class="num-money">+$' + r.amount + '</span>' : '<span class="mono" style="color:var(--app-muted);">$0</span>';
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td><span class="mono" style="color:var(--app-muted); font-size:0.75rem;">' + r.date + '</span></td>' +
-            '<td><strong>' + r.client + '</strong></td>' +
-            '<td><span style="color:var(--app-text);">' + r.text + '</span></td>' +
-            '<td>' + chipHtml + '</td>' +
-            '<td><span class="mono" style="font-size:0.75rem;">' + r.clause + '</span></td>' +
-            '<td>' + amountHtml + '</td>' +
-            '<td class="text-right"><button class="btn btn-ghost btn-sm js-view-reply" data-id="' + r.id + '">✨ AI Reply</button></td>';
-          tbodyRequests.appendChild(tr);
-        });
-
-        // Change Orders Pipeline
-        ['draft', 'sent', 'accepted', 'paid'].forEach(function(col) {
-          var container = document.getElementById('p-list-' + col);
-          container.innerHTML = '';
-          var items = DB.change_orders.filter(function(co) { return co.status === col; });
-          document.getElementById('p-count-' + col).textContent = items.length;
-          items.forEach(function(co) {
-            var card = document.createElement('div');
-            card.className = 'pipeline-card';
-            card.innerHTML = '<div class="p-card-header"><span class="p-card-client">' + co.client + '</span><span class="p-card-amount">+$' + co.amount + '</span></div>' +
-              '<div class="p-card-body">' + co.title + '</div>' +
-              '<div class="p-card-footer"><span>+' + co.days + ' days delivery</span><span>' + co.id.toUpperCase() + '</span></div>';
-            container.appendChild(card);
-          });
-        });
-
-        // Ledger Events
-        var tbodyLedger = document.getElementById('tbody-ledger-events');
-        tbodyLedger.innerHTML = '';
-        DB.ledger.forEach(function(ev) {
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td><span class="mono" style="font-size:0.75rem; color:var(--app-muted);">' + ev.date + '</span></td>' +
-            '<td><span class="chip chip-muted">' + ev.type + '</span></td>' +
-            '<td><strong>' + ev.client + '</strong></td>' +
-            '<td>' + ev.context + '</td>' +
-            '<td class="text-right"><span class="num-money">' + ev.amount + '</span></td>';
-          tbodyLedger.appendChild(tr);
-        });
-
-        // Wire Action buttons
-        document.querySelectorAll('.js-act-order').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var reqId = this.getAttribute('data-id');
-            var req = DB.requests.find(function(r) { return r.id === reqId; });
-            if (req) {
-              openChatRail();
-              sendCopilotMessage("I want to send the AI drafted change order for " + req.client + " (" + req.clause + " - $" + req.amount + ").");
-            }
-          });
-        });
-
-        document.querySelectorAll('.js-inspect-c').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var cId = this.getAttribute('data-id');
-            var c = DB.contracts.find(function(item) { return item.id === cId; });
-            if (c) openContractDetail(c);
-          });
-        });
-
-        document.querySelectorAll('.js-view-reply').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var reqId = this.getAttribute('data-id');
-            var req = DB.requests.find(function(r) { return r.id === reqId; });
-            if (req) {
-              openChatRail();
-              sendCopilotMessage("Show the AI drafted change order reply for " + req.client + ": '" + req.text + "'");
-            }
-          });
+      // Rail Chat Form
+      var chatForm = document.getElementById('copilot-chat-form');
+      var chatInput = document.getElementById('copilot-chat-input');
+      if (chatForm && chatInput) {
+        chatForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var q = chatInput.value.trim();
+          if (!q) return;
+          chatInput.value = "";
+          alert("AI Copilot: I analyzed \"" + q + "\" against your 3 active contracts. All clauses are currently healthy.");
         });
       }
-
-      function renderSuggestions(screenId) {
-        railSuggestions.innerHTML = '';
-        var list = screenSuggestions[screenId] || screenSuggestions.today;
-        list.forEach(function(prompt) {
-          var btn = document.createElement('button');
-          btn.className = 'suggestion-btn';
-          btn.innerHTML = '<span>✨</span> ' + prompt;
-          btn.addEventListener('click', function() {
-            sendCopilotMessage(prompt);
-          });
-          railSuggestions.appendChild(btn);
-        });
-      }
-
-      // 3. Fast-Check Scope Engine (Core loop)
-      btnRunFastCheck.addEventListener('click', function() {
-        var text = fastCheckInput.value.trim();
-        var contractId = fastCheckSelect.value;
-        if (!text) return;
-
-        var contract = DB.contracts.find(function(c) { return c.id === contractId; });
-        var clientName = contract ? contract.client : "Client";
-
-        // Evaluate scope with AI simulation
-        var tLower = text.toLowerCase();
-        var isOutOfScope = true;
-        var amount = 400;
-        var days = 3;
-        var clause = "§2 — Deliverable Expansion";
-
-        if (tLower.includes('logo') || tLower.includes('color') || tLower.includes('minor') || tLower.includes('tweak')) {
-          isOutOfScope = false;
-          amount = 0;
-          days = 0;
-          clause = "§4 — Included Revision Round";
-        } else if (tLower.includes('urgent') || tLower.includes('asap') || tLower.includes('weekend')) {
-          amount = 500;
-          days = 0;
-          clause = "§7 — Rush Delivery Protocol";
-        }
-
-        var newReq = {
-          id: "req_" + Date.now(),
-          contract_id: contractId,
-          client: clientName,
-          text: text,
-          verdict: isOutOfScope ? "out_of_scope" : "in_scope",
-          clause: clause,
-          amount: amount,
-          days: days,
-          status: isOutOfScope ? "open" : "closed",
-          reply: isOutOfScope
-            ? "Happy to accommodate this. That's outside our initial scope (" + clause + "), so it would be $" + amount + " and adjusts delivery by " + days + " days. Should I send over the change order?"
-            : "On it! That falls right within our agreed scope (" + clause + "). I will have the update ready for you shortly.",
-          date: "Just now"
-        };
-
-        DB.requests.unshift(newReq);
-        if (isOutOfScope) {
-          DB.ledger.unshift({
-            date: "Just now",
-            type: "AI_SCOPE_CAUGHT",
-            client: clientName,
-            context: text.substring(0, 40) + " (" + clause + ")",
-            amount: "+$" + amount + ".00"
-          });
-        }
-        saveDB();
-        renderAll();
-        fastCheckInput.value = '';
-
-        // Inject into Copilot rail with AI reasoning steps
-        openChatRail();
-        sendCopilotMessage("I just forwarded this from " + clientName + ": '" + text + "'. Run scope check and draft polite change order.");
-      });
-
-      // 4. Copilot Chat Stream & Tool Simulator with AI Reasoning Trace
-      function appendChatMessage(role, htmlContent, thoughts) {
-        var msg = document.createElement('div');
-        msg.className = 'chat-msg ' + role;
-
-        var inner = '';
-        if (thoughts && thoughts.length > 0) {
-          inner += '<div class="ai-thought-trace">';
-          thoughts.forEach(function(t) {
-            inner += '<div class="ai-thought-step">⚡ ' + t + '</div>';
-          });
-          inner += '</div>';
-        }
-        inner += '<div class="chat-bubble">' + htmlContent + '</div>';
-
-        msg.innerHTML = inner;
-        railMessages.appendChild(msg);
-        railMessages.scrollTop = railMessages.scrollHeight;
-      }
-
-      function sendCopilotMessage(userText) {
-        appendChatMessage('user', userText);
-
-        // Streaming Tool Call & Reasoning Simulation
-        setTimeout(function() {
-          var qLower = userText.toLowerCase();
-          if (qLower.includes('blog') || qLower.includes('acme')) {
-            appendChatMessage('assistant', 
-              '<span class="tool-chip">§ mcp.check_request(contract="ct_101")</span><br>' +
-              'Acme\'s request for a blog section violates <strong>§2 (5 pages max)</strong>.<br><br>' +
-              '<strong>Suggested Change Order:</strong> +$400 / +3 days.<br><br>' +
-              '<em>"Happy to add a blog section. That\'s outside our original five pages, so it\'d be $400 and moves delivery to the 14th. Want me to send the change order?"</em>' +
-              '<div class="chat-action-card">' +
-                '<span class="action-card-header">Autonomous Change Order Ready</span>' +
-                '<span>Create Change Order CO-104 ($400) and email to Acme?</span>' +
-                '<button class="btn btn-primary btn-sm" onclick="alert(\'Change order dispatched via PDF and recorded in Ledger!\')">Confirm &amp; Send Change Order →</button>' +
-              '</div>',
-              [
-                "Loaded contract ct_101 scope AST (5 deliverables, 3 exclusions)",
-                "Compared semantic vector of 'blog section' with Deliverable #1",
-                "Flagged as OUT_OF_SCOPE with 99.4% confidence (Clause §2)"
-              ]
-            );
-          } else if (qLower.includes('softer') || qLower.includes('rewrite') || qLower.includes('tone') || qLower.includes('warm')) {
-            appendChatMessage('assistant', 
-              '<span class="tool-chip">§ mcp.draft_reply(tone="' + currentTone + '")</span><br>' +
-              'Here is the ' + currentTone + ' rewrite:<br><br>' +
-              '<em>"Hey Sarah! I’d love to help with the blog section. Since that goes beyond our initial 5-page scope, we can add it for $400 and an extra 3 days. Let me know if you’d like me to send a quick change order over!"</em>',
-              [
-                "Applying " + currentTone + " interpersonal framing model",
-                "Preserved price anchor ($400) and timeline adjustment (+3 days)"
-              ]
-            );
-          } else if (qLower.includes('recovered') || qLower.includes('money') || qLower.includes('ledger') || qLower.includes('kessler')) {
-            appendChatMessage('assistant',
-              '<span class="tool-chip">§ mcp.get_recovery_report(month="current")</span><br>' +
-              'You have caught <strong>$2,340</strong> in unbilled scope this month across 3 clients.<br>' +
-              '• Billed: $1,900<br>' +
-              '• Waived: $440 (absorbed voluntarily)<br>' +
-              '• Collected: $1,500<br><br>' +
-              '<strong>Kessler Analysis:</strong> 3 revision rounds were exhausted on Day 14. Extra edits are now yielding +$120/hr billable revenue.',
-              [
-                "Queried append-only event ledger (4 audit rows)",
-                "Reconstructed net recovery yield per active client"
-              ]
-            );
-          } else {
-            appendChatMessage('assistant',
-              '<span class="tool-chip">§ mcp.get_contract_health()</span><br>' +
-              'I\'ve synchronized with your active contracts. All scope clauses and revision meters are aligned with your Claude Desktop daemon.',
-              [
-                "Verified active contract bounds against daemon cache",
-                "Zero anomalies found in revision meters"
-              ]
-            );
-          }
-        }, 450);
-      }
-
-      railForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        var val = railInput.value.trim();
-        if (!val) return;
-        railInput.value = '';
-        sendCopilotMessage(val);
-      });
-
-      // 5. AI Contract Detail Modal
-      function openContractDetail(c) {
-        var modal = document.getElementById('modal-contract-detail');
-        document.getElementById('c-detail-title').textContent = c.client + ' — ' + c.title;
-        var body = document.getElementById('c-detail-body');
-        body.innerHTML = '<div>' +
-          '<div style="margin-bottom:1.25rem; display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:space-between; align-items:center; background:rgba(0,242,254,0.05); border:1px solid rgba(0,242,254,0.2); padding:0.75rem 1rem; border-radius:6px;">' +
-            '<div><strong>AI Scope Protection:</strong> Active | <strong>Rate:</strong> $' + c.rate + '/hr</div>' +
-            '<span class="chip chip-ai">AI Confidence: 99.8%</span>' +
-          '</div>' +
-          '<h4 style="font-family:var(--mono); font-size:0.75rem; text-transform:uppercase; color:var(--ai-cyan); margin-bottom:0.5rem;">Parsed Structured Scope (JSONB AST)</h4>' +
-          '<pre class="mono" style="background:var(--app-bg); border:1px solid var(--app-line); padding:1rem; border-radius:4px; font-size:0.75rem; color:var(--ai-cyan); overflow-x:auto;">' + JSON.stringify(c.scope_json, null, 2) + '</pre>' +
-        '</div>';
-        modal.showModal();
-      }
-
-      // Add Contract Form with AI Parser
-      var modalAddContract = document.getElementById('modal-add-contract');
-      document.getElementById('btn-open-new-contract').addEventListener('click', function() { modalAddContract.showModal(); });
-      document.getElementById('btn-add-contract-2').addEventListener('click', function() { modalAddContract.showModal(); });
-
-      document.getElementById('form-new-contract').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var client = document.getElementById('new-c-client').value;
-        var title = document.getElementById('new-c-title').value;
-        var fee = parseInt(document.getElementById('new-c-fee').value, 10) || 4000;
-        var revisions = parseInt(document.getElementById('new-c-revisions').value, 10) || 3;
-        var raw = document.getElementById('new-c-raw').value;
-
-        var newC = {
-          id: "ct_" + Date.now(),
-          client: client,
-          title: title,
-          rate: 100,
-          fee: fee,
-          revisions_allowed: revisions,
-          revisions_used: 0,
-          unbilled_caught: 0,
-          days_to_deadline: 30,
-          scope_json: {
-            deliverables: [title, revisions + " Design Revisions"],
-            raw_excerpt: raw.substring(0, 100)
-          }
-        };
-
-        DB.contracts.unshift(newC);
-        saveDB();
-        renderAll();
-        modalAddContract.close();
-
-        openChatRail();
-        sendCopilotMessage("AI has ingested and indexed contract for " + client + " (" + title + "). Ready to monitor incoming requests.");
-      });
-
-      // Innovative Audio FX Engine (Synthesized Web Audio API)
-      var SoundFX = (function() {
-        var ctx = null;
-        var enabled = false;
-
-        function init() {
-          if (!ctx && (window.AudioContext || window.webkitAudioContext)) {
-            var AudioCtx = window.AudioContext || window.webkitAudioContext;
-            ctx = new AudioCtx();
-          }
-        }
-
-        return {
-          toggle: function() {
-            init();
-            if (ctx && ctx.state === 'suspended') ctx.resume();
-            enabled = !enabled;
-            return enabled;
-          },
-          isEnabled: function() { return enabled; },
-          click: function() {
-            if (!enabled || !ctx) return;
-            try {
-              var osc = ctx.createOscillator();
-              var gain = ctx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(800, ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
-              gain.gain.setValueAtTime(0.04, ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start();
-              osc.stop(ctx.currentTime + 0.04);
-            } catch(e){}
-          },
-          chime: function() {
-            if (!enabled || !ctx) return;
-            try {
-              var notes = [523.25, 659.25, 783.99, 1046.50];
-              notes.forEach(function(freq, i) {
-                var osc = ctx.createOscillator();
-                var gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.03, ctx.currentTime + (i * 0.06));
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (i * 0.06) + 0.25);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start(ctx.currentTime + (i * 0.06));
-                osc.stop(ctx.currentTime + (i * 0.06) + 0.25);
-              });
-            } catch(e){}
-          },
-          scan: function() {
-            if (!enabled || !ctx) return;
-            try {
-              var osc = ctx.createOscillator();
-              var gain = ctx.createGain();
-              osc.type = 'sawtooth';
-              osc.frequency.setValueAtTime(260, ctx.currentTime);
-              osc.frequency.linearRampToValueAtTime(950, ctx.currentTime + 0.16);
-              gain.gain.setValueAtTime(0.025, ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
-              osc.connect(gain);
-              gain.connect(ctx.destination);
-              osc.start();
-              osc.stop(ctx.currentTime + 0.16);
-            } catch(e){}
-          }
-        };
-      })();
-
-      // Sound Toggle Button Handler
-      var soundBtnApp = document.getElementById('btn-sound-toggle-app');
-      if (soundBtnApp) {
-        soundBtnApp.addEventListener('click', function() {
-          var active = SoundFX.toggle();
-          soundBtnApp.innerHTML = active ? '🔊' : '🔇';
-          soundBtnApp.classList.toggle('is-active', active);
-          soundBtnApp.setAttribute('title', active ? 'Sound Enabled (Click to Mute)' : 'Enable AI Audio Haptics');
-          if (active) SoundFX.chime();
-        });
-      }
-
-      // Theme Switcher Management (Default: Light)
-      var currentTheme = localStorage.getItem('billable_theme') || 'light';
-      function applyTheme(theme) {
-        currentTheme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('billable_theme', theme);
-        document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
-          btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
-          btn.setAttribute('title', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
-        });
-      }
-
-      document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-          applyTheme(nextTheme);
-          SoundFX.click();
-        });
-      });
-
-      applyTheme(currentTheme);
-
-      // Neural Scope Telemetry Radar Canvas
-      var radarCanvas = document.getElementById('ai-radar-canvas');
-      if (radarCanvas && radarCanvas.getContext) {
-        var rCtx = radarCanvas.getContext('2d');
-        var rWidth, rHeight;
-        function resizeRadar() {
-          var rect = radarCanvas.getBoundingClientRect();
-          radarCanvas.width = rect.width * (window.devicePixelRatio || 1);
-          radarCanvas.height = 75 * (window.devicePixelRatio || 1);
-          rWidth = radarCanvas.width;
-          rHeight = radarCanvas.height;
-        }
-        window.addEventListener('resize', resizeRadar);
-        resizeRadar();
-
-        var t = 0;
-        function drawRadar() {
-          t += 0.03;
-          rCtx.clearRect(0, 0, rWidth, rHeight);
-
-          // Grid lines
-          rCtx.strokeStyle = currentTheme === 'dark' ? 'rgba(0, 242, 254, 0.08)' : 'rgba(2, 132, 199, 0.08)';
-          rCtx.lineWidth = 1;
-          for (var x = 0; x < rWidth; x += 40) {
-            rCtx.beginPath();
-            rCtx.moveTo(x, 0);
-            rCtx.lineTo(x, rHeight);
-            rCtx.stroke();
-          }
-
-          // Dynamic harmonic waveform
-          rCtx.beginPath();
-          rCtx.strokeStyle = currentTheme === 'dark' ? '#00F2FE' : '#0284C7';
-          rCtx.lineWidth = 2;
-          for (var i = 0; i < rWidth; i += 2) {
-            var y = (rHeight / 2) + Math.sin((i * 0.015) + t) * (rHeight * 0.22) + Math.sin((i * 0.03) - (t * 1.5)) * (rHeight * 0.12);
-            if (i === 0) rCtx.moveTo(i, y);
-            else rCtx.lineTo(i, y);
-          }
-          rCtx.stroke();
-
-          // Recovered revenue second harmonic wave
-          rCtx.beginPath();
-          rCtx.strokeStyle = currentTheme === 'dark' ? '#10B981' : '#059669';
-          rCtx.lineWidth = 1.5;
-          for (var j = 0; j < rWidth; j += 3) {
-            var y2 = (rHeight / 2) + Math.cos((j * 0.02) + (t * 0.8)) * (rHeight * 0.18);
-            if (j === 0) rCtx.moveTo(j, y2);
-            else rCtx.lineTo(j, y2);
-          }
-          rCtx.stroke();
-
-          // Active node pings
-          var pingPositions = [0.25, 0.55, 0.82];
-          pingPositions.forEach(function(pos, idx) {
-            var px = rWidth * pos;
-            var py = (rHeight / 2) + Math.sin((px * 0.015) + t) * (rHeight * 0.22) + Math.sin((px * 0.03) - (t * 1.5)) * (rHeight * 0.12);
-            
-            var pulseR = 4 + (Math.sin(t * 3 + idx) + 1) * 3;
-            rCtx.beginPath();
-            rCtx.arc(px, py, pulseR, 0, Math.PI * 2);
-            rCtx.strokeStyle = currentTheme === 'dark' ? 'rgba(0, 242, 254, 0.4)' : 'rgba(2, 132, 199, 0.4)';
-            rCtx.stroke();
-
-            rCtx.beginPath();
-            rCtx.arc(px, py, 3, 0, Math.PI * 2);
-            rCtx.fillStyle = idx === 1 ? '#10B981' : (currentTheme === 'dark' ? '#00F2FE' : '#0284C7');
-            rCtx.fill();
-          });
-
-          requestAnimationFrame(drawRadar);
-        }
-        drawRadar();
-      }
-
-      // Initial Render
-      renderAll();
-      renderSuggestions('today');
 
     })();
   </script>
