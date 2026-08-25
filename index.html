@@ -78,6 +78,9 @@
       flex-direction: column;
       background-color: var(--paper);
       color: var(--ink);
+      background-image: radial-gradient(#E2E5E1 0.75px, transparent 0.75px);
+      background-size: 32px 32px;
+      background-position: -19px -19px;
     }
 
     /* Focus States */
@@ -121,8 +124,9 @@
     /* Header Nav */
     .site-header {
       border-bottom: 1px solid var(--rule);
-      padding-block: 1.25rem;
-      background-color: var(--paper);
+      padding-block: 1.15rem;
+      background-color: rgba(247, 248, 247, 0.92);
+      backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
       z-index: 40;
@@ -150,6 +154,7 @@
       padding: 0.15rem 0.4rem;
       border-radius: 2px;
       line-height: 1;
+      background-color: var(--card);
     }
 
     .brand-name {
@@ -159,20 +164,30 @@
       letter-spacing: -0.02em;
     }
 
-    .header-badge {
+    .header-status {
+      display: none;
+      align-items: center;
+      gap: 0.45rem;
       font-family: var(--mono);
       font-size: 0.7rem;
       font-weight: 500;
       letter-spacing: 0.05em;
       color: var(--ink-muted);
       text-transform: uppercase;
-      display: none;
     }
 
     @media (min-width: 640px) {
-      .header-badge {
-        display: inline-block;
+      .header-status {
+        display: inline-flex;
       }
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--ink);
+      opacity: 0.8;
     }
 
     .header-cta {
@@ -184,14 +199,18 @@
       padding: 0.45rem 0.85rem;
       border: 1px solid var(--ink);
       border-radius: 2px;
-      background-color: transparent;
+      background-color: var(--card);
       cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
     }
 
     .header-cta:hover {
       background-color: var(--ink);
       color: var(--card);
+    }
+
+    .header-cta:active {
+      transform: translateY(1px);
     }
 
     /* Buttons */
@@ -210,25 +229,49 @@
       padding: 0.9rem 1.6rem;
       text-decoration: none;
       cursor: pointer;
-      transition: opacity 0.15s ease, transform 0.1s ease;
+      transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px rgba(20, 22, 15, 0.06);
     }
 
     .btn-primary:hover {
       opacity: 0.92;
+      box-shadow: 0 4px 12px rgba(20, 22, 15, 0.1);
     }
 
     .btn-primary:active {
       transform: translateY(1px);
     }
 
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink);
+      background-color: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background-color: var(--card);
+    }
+
     /* Block 1: Hero */
     .hero-section {
-      padding-top: clamp(3rem, 7vw, 5.5rem);
+      padding-top: clamp(3.5rem, 8vw, 6rem);
       padding-bottom: clamp(2.5rem, 5vw, 4rem);
     }
 
     .hero-content {
-      max-width: 780px;
+      max-width: 820px;
     }
 
     .hero-eyebrow {
@@ -260,7 +303,7 @@
       line-height: 1.6;
       color: var(--ink-muted);
       margin-bottom: 2rem;
-      max-width: 620px;
+      max-width: 640px;
     }
 
     .hero-cta-group {
@@ -279,25 +322,35 @@
       gap: 0.4rem;
     }
 
-    /* Block 2: Demo Pane */
+    /* Block 2: Interactive Demo Pane */
     .demo-section {
-      padding-block: clamp(2rem, 4vw, 3.5rem);
+      padding-block: clamp(1.5rem, 4vw, 3rem);
     }
 
     .demo-container {
       background-color: var(--card);
       border: 1px solid var(--rule);
       border-radius: 4px;
+      box-shadow: 0 8px 30px rgba(20, 22, 15, 0.04);
       overflow: hidden;
+      transition: border-color 0.2s ease;
     }
 
     .demo-toolbar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      gap: 0.75rem;
       padding: 0.75rem 1.25rem;
       background-color: var(--paper);
       border-bottom: 1px solid var(--rule);
+    }
+
+    .demo-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .demo-toolbar-label {
@@ -309,10 +362,41 @@
       color: var(--ink-muted);
     }
 
+    .demo-preset-chips {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .demo-chip {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      background-color: var(--card);
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .demo-chip:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .demo-chip[aria-current="true"] {
+      border-color: var(--ink);
+      background-color: var(--ink);
+      color: var(--card);
+    }
+
     .demo-dots-controls {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .demo-dot-btn {
@@ -345,13 +429,13 @@
 
     /* Left Pane: Client Message */
     .demo-pane-client {
-      padding: clamp(1.5rem, 3vw, 2.25rem);
+      padding: clamp(1.25rem, 3vw, 2rem);
       border-right: 1px solid var(--rule);
       background-color: #FAFBFA;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 280px;
+      min-height: 310px;
     }
 
     @media (max-width: 768px) {
@@ -366,7 +450,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
 
     .client-tag {
@@ -387,28 +471,55 @@
     .client-bubble {
       background-color: var(--card);
       border: 1px solid var(--rule);
-      padding: 1.25rem;
+      padding: 1.15rem;
       border-radius: 4px;
       font-size: 1.0625rem;
       line-height: 1.5;
       color: var(--ink);
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(20, 22, 15, 0.03);
+    }
+
+    /* Custom input field inside demo */
+    .demo-custom-form {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .demo-custom-input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      font-family: var(--body);
+      font-size: 0.875rem;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      background-color: var(--card);
+      color: var(--ink);
+    }
+
+    .demo-custom-input:focus {
+      outline: 2px solid var(--ink);
     }
 
     .client-footer-note {
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       font-family: var(--mono);
       font-size: 0.7rem;
       color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     /* Right Pane: Ledger Verdict */
     .demo-pane-verdict {
-      padding: clamp(1.5rem, 3vw, 2.25rem);
+      padding: clamp(1.25rem, 3vw, 2rem);
       background-color: var(--card);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 280px;
+      min-height: 310px;
     }
 
     .ledger-table {
@@ -416,7 +527,7 @@
       border-collapse: collapse;
       font-family: var(--mono);
       font-size: 0.875rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .ledger-table tr {
@@ -428,7 +539,7 @@
     }
 
     .ledger-table td {
-      padding-block: 0.6rem;
+      padding-block: 0.55rem;
       vertical-align: middle;
     }
 
@@ -437,7 +548,7 @@
       text-transform: uppercase;
       font-size: 0.75rem;
       letter-spacing: 0.08em;
-      width: 32%;
+      width: 30%;
     }
 
     .ledger-val {
@@ -449,6 +560,7 @@
       display: inline-block;
       font-weight: 700;
       letter-spacing: 0.04em;
+      transition: transform 0.15s ease;
     }
 
     .verdict-flag {
@@ -468,8 +580,16 @@
     .reply-box {
       background-color: var(--paper);
       border: 1px solid var(--rule);
-      padding: 1rem 1.15rem;
+      padding: 0.9rem 1.1rem;
       border-radius: 3px;
+      position: relative;
+    }
+
+    .reply-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
     }
 
     .reply-box-label {
@@ -478,8 +598,22 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--ink-muted);
-      margin-bottom: 0.5rem;
-      display: block;
+    }
+
+    .btn-copy-reply {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--ink);
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.2rem 0.45rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-copy-reply:hover {
+      border-color: var(--ink);
     }
 
     .reply-box-text {
@@ -495,15 +629,21 @@
       color: var(--money);
     }
 
-    /* Block 3: Running Total */
+    /* Block 3: Running Total & Interactive Scope Leakage Calculator */
     .total-section {
-      padding-block: clamp(3.5rem, 8vw, 6rem);
+      padding-block: clamp(3rem, 7vw, 5.5rem);
       border-top: 1px solid var(--rule);
       border-bottom: 1px solid var(--rule);
       background-color: var(--paper);
     }
 
     .total-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .total-main {
       text-align: left;
     }
 
@@ -519,6 +659,131 @@
       line-height: 1;
       color: var(--money);
       letter-spacing: -0.03em;
+    }
+
+    /* Interactive Scope Leak Calculator Card */
+    .leak-calculator {
+      background-color: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      max-width: 860px;
+    }
+
+    .calc-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 0.75rem;
+    }
+
+    .calc-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .calc-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    .slider-val {
+      font-weight: 500;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calc-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--rule);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--ink);
+      cursor: pointer;
+      border: 2px solid var(--card);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .calc-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--ink);
+      cursor: pointer;
+      border: 2px solid var(--card);
+    }
+
+    .calc-result-box {
+      background-color: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 1rem;
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .calc-result-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+    }
+
+    .calc-result-number {
+      font-family: var(--mono);
+      font-size: 1.75rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--money);
+      line-height: 1.1;
+    }
+
+    .calc-result-sub {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
     }
 
     /* Block 4: How it works */
@@ -546,6 +811,7 @@
     .step-item {
       border-top: 1px solid var(--rule);
       padding-top: 1.25rem;
+      transition: transform 0.15s ease;
     }
 
     .step-num {
@@ -681,6 +947,12 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(20, 22, 15, 0.02);
+      transition: border-color 0.15s ease;
+    }
+
+    .pricing-card:hover {
+      border-color: var(--ink);
     }
 
     .pricing-tier-name {
@@ -843,15 +1115,15 @@
       border-radius: 4px;
       background: var(--card);
       color: var(--ink);
-      max-width: 520px;
+      max-width: 540px;
       width: calc(100% - 2rem);
-      box-shadow: 0 20px 40px rgba(20, 22, 15, 0.08);
+      box-shadow: 0 24px 48px rgba(20, 22, 15, 0.12);
       z-index: 100;
     }
 
     dialog::backdrop {
-      background: rgba(20, 22, 15, 0.4);
-      backdrop-filter: blur(2px);
+      background: rgba(20, 22, 15, 0.45);
+      backdrop-filter: blur(3px);
     }
 
     .dialog-header {
@@ -919,6 +1191,19 @@
       background-color: var(--card);
     }
 
+    .mcp-code-preview {
+      background-color: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 0.75rem;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+      line-height: 1.4;
+    }
+
     .form-submit {
       width: 100%;
     }
@@ -972,7 +1257,10 @@
         <span class="brand-mark">§</span>
         <span class="brand-name">Billable</span>
       </a>
-      <span class="header-badge">Online / MCP Active</span>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>MCP PROTOCOL ACTIVE</span>
+      </div>
       <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect your contract →</button>
     </div>
   </header>
@@ -1001,33 +1289,46 @@
       </div>
     </section>
 
-    <!-- Block 2 — The Demo (Signature Element) -->
+    <!-- Block 2 — The Demo (Signature Element & Interactive Sandbox) -->
     <section class="demo-section" aria-label="Interactive Demo">
       <div class="container">
         <div class="demo-container" id="demo-box">
           <div class="demo-toolbar">
-            <span class="demo-toolbar-label" id="demo-indicator">EXAMPLE 1 OF 3</span>
-            <div class="demo-dots-controls" role="tablist" aria-label="Demo Examples">
-              <button class="demo-dot-btn" role="tab" aria-selected="true" aria-current="true" aria-label="Example 1: Blog section out of scope" data-index="0"></button>
-              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Example 2: Logo resize in scope" data-index="1"></button>
-              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Example 3: Revision cap out of scope" data-index="2"></button>
+            <div class="demo-toolbar-left">
+              <span class="demo-toolbar-label" id="demo-indicator">EXAMPLE 1 OF 3</span>
+              <div class="demo-preset-chips" role="tablist" aria-label="Scenario presets">
+                <button class="demo-chip" role="tab" aria-selected="true" aria-current="true" data-index="0">§2 Blog section</button>
+                <button class="demo-chip" role="tab" aria-selected="false" aria-current="false" data-index="1">§4 Logo resize</button>
+                <button class="demo-chip" role="tab" aria-selected="false" aria-current="false" data-index="2">§5 Round 4 edits</button>
+              </div>
+            </div>
+            <div class="demo-dots-controls">
+              <button class="demo-dot-btn" role="tab" aria-selected="true" aria-current="true" aria-label="Example 1" data-index="0"></button>
+              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" data-label="Example 2" data-index="1"></button>
+              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" data-label="Example 3" data-index="2"></button>
             </div>
           </div>
 
           <div class="demo-grid">
-            <!-- Left Pane: Client Message -->
+            <!-- Left Pane: Client Message / Interactive Simulator -->
             <div class="demo-pane-client">
               <div>
                 <div class="client-msg-header">
-                  <span class="client-tag">INCOMING REQUEST</span>
+                  <span class="client-tag">CLIENT REQUEST</span>
                   <span class="client-time" id="demo-client-time">10:42 AM</span>
                 </div>
                 <div class="client-bubble" id="demo-client-text">
                   Hey! Quick one — while you're in there, can we also add a blog section? Shouldn't take long 🙂
                 </div>
+                <!-- Interactive custom scope checker -->
+                <form id="custom-scope-form" class="demo-custom-form" title="Test any custom client request">
+                  <input type="text" id="custom-request-input" class="demo-custom-input" placeholder="Or type any client message..." aria-label="Type custom client request">
+                  <button type="submit" class="btn-secondary">Check Scope ↵</button>
+                </form>
               </div>
               <div class="client-footer-note">
-                Forwarded from Slack / Email / WhatsApp
+                <span>Forwarded from Slack / Email / WhatsApp</span>
+                <span>(Hover pauses loop)</span>
               </div>
             </div>
 
@@ -1055,7 +1356,10 @@
               </table>
 
               <div class="reply-box">
-                <span class="reply-box-label">DRAFTED CHANGE ORDER REPLY</span>
+                <div class="reply-box-header">
+                  <span class="reply-box-label">DRAFTED CHANGE ORDER REPLY</span>
+                  <button class="btn-copy-reply" id="btn-copy-reply" title="Copy drafted reply">Copy reply</button>
+                </div>
                 <div class="reply-box-text" id="demo-reply-text">
                   Happy to add a blog section. That's outside our original five pages, so it'd be <strong>$400</strong> and moves delivery to the 14th. Want me to send the change order?
                 </div>
@@ -1066,12 +1370,45 @@
       </div>
     </section>
 
-    <!-- Block 3 — The Running Total -->
+    <!-- Block 3 — The Running Total & Scope Leakage Calculator -->
     <section class="total-section" aria-labelledby="total-heading">
       <div class="container">
         <div class="total-wrapper">
-          <span id="total-heading" class="eyebrow total-label">UNBILLED WORK CAUGHT THIS MONTH</span>
-          <div class="total-number" id="running-total" data-target="14200">$14,200</div>
+          <div class="total-main">
+            <span id="total-heading" class="eyebrow total-label">UNBILLED WORK CAUGHT THIS MONTH</span>
+            <div class="total-number" id="running-total" data-target="14200">$14,200</div>
+          </div>
+
+          <!-- Interactive Scope Leakage Calculator -->
+          <div class="leak-calculator">
+            <div class="calc-header">
+              <span class="calc-title">Interactive Leak Calculator</span>
+              <span class="eyebrow">Estimate your monthly unbilled work</span>
+            </div>
+            <div class="calc-grid">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Hourly rate</span>
+                  <span class="slider-val" id="rate-val">$100/hr</span>
+                </div>
+                <input type="range" class="calc-slider" id="rate-slider" min="40" max="250" step="5" value="100" aria-label="Hourly Rate">
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>"Quick ask" requests / mo</span>
+                  <span class="slider-val" id="asks-val">6 asks</span>
+                </div>
+                <input type="range" class="calc-slider" id="asks-slider" min="1" max="20" step="1" value="6" aria-label="Quick asks per month">
+              </div>
+
+              <div class="calc-result-box">
+                <span class="calc-result-label">Recoverable Revenue</span>
+                <span class="calc-result-number" id="calc-recoverable">+$900 / mo</span>
+                <span class="calc-result-sub" id="calc-annual-leak">~$10,800 lost each year without contract guard</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1259,15 +1596,19 @@
         <div class="form-group">
           <label class="form-label" for="assistant-select">Primary Assistant</label>
           <select class="form-select" id="assistant-select" name="assistant">
-            <option value="claude">Claude (Anthropic)</option>
-            <option value="chatgpt">ChatGPT (OpenAI)</option>
+            <option value="claude">Claude (Desktop / Web MCP)</option>
+            <option value="chatgpt">ChatGPT (Custom GPT / Action)</option>
+            <option value="cursor">Cursor / VS Code MCP</option>
             <option value="web">Web Browser / Direct Upload</option>
           </select>
+        </div>
+        <div class="mcp-code-preview" id="mcp-preview">
+          <code>{"mcpServers": {"billable": {"command": "npx", "args": ["-y", "@billable/mcp"]}}}</code>
         </div>
         <button type="submit" class="btn-primary form-submit">Get MCP Access →</button>
       </form>
       <div id="form-success" class="form-success-msg" style="display: none;">
-        <strong>Spot reserved.</strong> Check your inbox for your private contract connector instructions and MCP manifest.
+        <strong>Spot reserved.</strong> Check your inbox for your private connector key and MCP manifest.
       </div>
     </div>
   </dialog>
@@ -1285,7 +1626,7 @@
     </div>
   </dialog>
 
-  <!-- Script: Demo Loop, Counter, Billing Toggle, Analytics & Modals -->
+  <!-- Script: Demo Loop, Live Sandbox, Leak Calculator, Counter, Pricing & Analytics -->
   <script>
     (function () {
       'use strict';
@@ -1297,7 +1638,6 @@
         } else if (window.umami) {
           window.umami.track(name, props);
         }
-        // Custom event for downstream logging
         window.dispatchEvent(new CustomEvent('billable_metric', { detail: { event: name, props: props } }));
       }
 
@@ -1350,27 +1690,35 @@
       var delaysEl = document.getElementById('demo-delays');
       var replyTextEl = document.getElementById('demo-reply-text');
       var dotBtns = document.querySelectorAll('.demo-dot-btn');
+      var chipBtns = document.querySelectorAll('.demo-chip');
+      var btnCopyReply = document.getElementById('btn-copy-reply');
+      var customScopeForm = document.getElementById('custom-scope-form');
+      var customRequestInput = document.getElementById('custom-request-input');
 
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function renderDemo(index, animate) {
-        currentIndex = index;
-        var data = demoExamples[index];
+      function renderDemo(index, animate, customData) {
+        var data = customData || demoExamples[index];
+        if (!customData) currentIndex = index;
 
-        // Update toolbar & indicators
-        indicator.textContent = 'EXAMPLE ' + (index + 1) + ' OF 3';
+        indicator.textContent = customData ? 'CUSTOM CHECK' : ('EXAMPLE ' + (index + 1) + ' OF 3');
+        
         dotBtns.forEach(function (btn, i) {
-          var active = (i === index);
+          var active = (!customData && i === index);
           btn.setAttribute('aria-selected', active);
           btn.setAttribute('aria-current', active);
         });
 
-        // Left pane
+        chipBtns.forEach(function (chip, i) {
+          var active = (!customData && i === index);
+          chip.setAttribute('aria-selected', active);
+          chip.setAttribute('aria-current', active);
+        });
+
         clientTime.textContent = data.time;
         clientText.textContent = data.request;
 
         if (prefersReducedMotion || !animate) {
-          // Instant static final state
           statusEl.textContent = data.status;
           statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
           clauseEl.textContent = data.clause;
@@ -1380,28 +1728,23 @@
           return;
         }
 
-        // Animated progression:
-        // Clear previous state
         statusEl.textContent = 'CHECKING CONTRACT...';
         statusEl.className = 'verdict-badge verdict-scope';
-        clauseEl.textContent = 'Analyzing scope...';
+        clauseEl.textContent = 'Analyzing scope clauses...';
         addsEl.textContent = '—';
         delaysEl.textContent = '—';
-        replyTextEl.innerHTML = '<span style="color: var(--ink-muted);">Drafting reply...</span>';
+        replyTextEl.innerHTML = '<span style="color: var(--ink-muted);">Drafting polite response...</span>';
 
         if (typingTimeout) clearTimeout(typingTimeout);
 
-        // 700ms pause then verdict stamps in
         typingTimeout = setTimeout(function () {
           statusEl.textContent = data.status;
           statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
           clauseEl.textContent = data.clause;
           addsEl.textContent = data.adds;
           delaysEl.textContent = data.delays;
-
-          // Type out drafted reply
           replyTextEl.innerHTML = data.replyText;
-        }, 700);
+        }, 650);
       }
 
       function startDemoCycle() {
@@ -1417,11 +1760,9 @@
         }, 6000);
       }
 
-      // Initial demo render
       renderDemo(0, false);
       startDemoCycle();
 
-      // Demo hover pause
       if (demoBox) {
         demoBox.addEventListener('mouseenter', function () { isPaused = true; });
         demoBox.addEventListener('mouseleave', function () { isPaused = false; });
@@ -1429,16 +1770,85 @@
         demoBox.addEventListener('focusout', function () { isPaused = false; });
       }
 
-      // Dot click controls
+      function handleSelectIndex(idx) {
+        renderDemo(idx, true);
+        trackEvent('demo_cycled', { manual_selection: idx + 1 });
+      }
+
       dotBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
-          var targetIndex = parseInt(this.getAttribute('data-index'), 10);
-          renderDemo(targetIndex, true);
-          trackEvent('demo_cycled', { manual_click: targetIndex + 1 });
+          var idx = parseInt(this.getAttribute('data-index'), 10);
+          handleSelectIndex(idx);
         });
       });
 
-      // 3. Block 3: Running Total Counter on Scroll
+      chipBtns.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var idx = parseInt(this.getAttribute('data-index'), 10);
+          handleSelectIndex(idx);
+        });
+      });
+
+      // Custom Scope Check Sandbox
+      if (customScopeForm && customRequestInput) {
+        customScopeForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var query = customRequestInput.value.trim();
+          if (!query) return;
+
+          isPaused = true;
+          var qLower = query.toLowerCase();
+          var isOutOfScope = true;
+          var amount = "+$350.00";
+          var delays = "+2 days";
+          var clause = "§3 — Additional Deliverable";
+
+          if (qLower.includes('logo') || qLower.includes('color') || qLower.includes('font') || qLower.includes('minor') || qLower.includes('tweak')) {
+            isOutOfScope = false;
+            amount = "$0.00";
+            delays = "+0 days";
+            clause = "§4 — Included Revision Round";
+          } else if (qLower.includes('weekend') || qLower.includes('urgent') || qLower.includes('asap') || qLower.includes('rush')) {
+            amount = "+$500.00";
+            delays = "0 days (Rush)";
+            clause = "§7 — Expedited Delivery Rate";
+          } else if (qLower.includes('app') || qLower.includes('backend') || qLower.includes('database') || qLower.includes('auth')) {
+            amount = "+$1,200.00";
+            delays = "+7 days";
+            clause = "§9 — Major Architecture Expansion";
+          }
+
+          var customObj = {
+            time: "Just now",
+            request: '"' + query + '"',
+            status: isOutOfScope ? "OUT OF SCOPE" : "IN SCOPE",
+            isFlag: isOutOfScope,
+            clause: clause,
+            adds: amount,
+            delays: delays,
+            replyText: isOutOfScope
+              ? "Happy to accommodate this. That's outside our initial scope (" + clause + "), so it would be <strong>" + amount.replace('+', '') + "</strong> and adjusts delivery by " + delays + ". Should I send over the change order?"
+              : "On it! That falls right within our agreed scope (" + clause + "). I will have the update ready for you shortly."
+          };
+
+          renderDemo(0, true, customObj);
+          trackEvent('custom_scope_tested', { query_length: query.length, verdict: customObj.status });
+        });
+      }
+
+      // Copy drafted reply to clipboard
+      if (btnCopyReply) {
+        btnCopyReply.addEventListener('click', function () {
+          var cleanText = replyTextEl.innerText || replyTextEl.textContent;
+          navigator.clipboard.writeText(cleanText).then(function () {
+            btnCopyReply.textContent = "Copied ✓";
+            setTimeout(function () { btnCopyReply.textContent = "Copy reply"; }, 2000);
+            trackEvent('reply_copied');
+          });
+        });
+      }
+
+      // 3. Block 3: Running Total Counter on Scroll & Interactive Calculator
       var totalEl = document.getElementById('running-total');
       if (totalEl) {
         var counted = false;
@@ -1451,7 +1861,6 @@
                 return;
               }
 
-              var start = 0;
               var target = parseInt(totalEl.getAttribute('data-target'), 10) || 14200;
               var duration = 1200;
               var startTime = null;
@@ -1459,7 +1868,6 @@
               function step(timestamp) {
                 if (!startTime) startTime = timestamp;
                 var progress = Math.min((timestamp - startTime) / duration, 1);
-                // Ease out cubic
                 var ease = 1 - Math.pow(1 - progress, 3);
                 var current = Math.floor(ease * target);
                 totalEl.textContent = '$' + current.toLocaleString('en-US');
@@ -1477,6 +1885,35 @@
         }, { threshold: 0.2 });
 
         observer.observe(totalEl);
+      }
+
+      // Interactive Scope Leak Calculator
+      var rateSlider = document.getElementById('rate-slider');
+      var asksSlider = document.getElementById('asks-slider');
+      var rateVal = document.getElementById('rate-val');
+      var asksVal = document.getElementById('asks-val');
+      var calcRecoverable = document.getElementById('calc-recoverable');
+      var calcAnnualLeak = document.getElementById('calc-annual-leak');
+
+      function updateCalculator() {
+        if (!rateSlider || !asksSlider) return;
+        var rate = parseInt(rateSlider.value, 10);
+        var asks = parseInt(asksSlider.value, 10);
+
+        rateVal.textContent = '$' + rate + '/hr';
+        asksVal.textContent = asks + (asks === 1 ? ' ask' : ' asks');
+
+        // Estimate: average unbilled ask is ~1.5 hours of creep
+        var monthlyLeak = Math.round(asks * 1.5 * rate);
+        var annualLeak = monthlyLeak * 12;
+
+        calcRecoverable.textContent = '+$' + monthlyLeak.toLocaleString('en-US') + ' / mo';
+        calcAnnualLeak.textContent = '~$' + annualLeak.toLocaleString('en-US') + ' lost each year without contract guard';
+      }
+
+      if (rateSlider && asksSlider) {
+        rateSlider.addEventListener('input', updateCalculator);
+        asksSlider.addEventListener('input', updateCalculator);
       }
 
       // 4. Block 6: Pricing Observer & Annual Toggle
@@ -1507,7 +1944,6 @@
         btnAnnual.setAttribute('aria-pressed', isAnnual);
 
         if (isAnnual) {
-          // 2 months free: Solo is $190/yr ($15.83 -> $15/mo equivalent), Studio is $490/yr ($40.83 -> $39/mo equivalent)
           soloPrice.textContent = '15';
           studioPrice.textContent = '39';
           soloAnnualNote.textContent = 'Billed $190 yearly (2 months free)';
@@ -1525,12 +1961,27 @@
         btnAnnual.addEventListener('click', function () { setPricingMode(true); });
       }
 
-      // 5. Connect Contract Modal Dialog
+      // 5. Connect Contract Modal Dialog & Assistant Config Preview
       var contractDialog = document.getElementById('contract-dialog');
       var connectForm = document.getElementById('connect-form');
       var formSuccess = document.getElementById('form-success');
       var openModalBtns = document.querySelectorAll('.js-open-modal');
       var closeDialogBtns = document.querySelectorAll('.js-close-dialog');
+      var assistantSelect = document.getElementById('assistant-select');
+      var mcpPreview = document.getElementById('mcp-preview');
+
+      if (assistantSelect && mcpPreview) {
+        assistantSelect.addEventListener('change', function () {
+          var val = this.value;
+          if (val === 'claude' || val === 'cursor') {
+            mcpPreview.innerHTML = '<code>{"mcpServers": {"billable": {"command": "npx", "args": ["-y", "@billable/mcp"]}}}</code>';
+          } else if (val === 'chatgpt') {
+            mcpPreview.innerHTML = '<code>Custom GPT Action: https://billable.copilotai.live/api/v1/openapi.json</code>';
+          } else {
+            mcpPreview.innerHTML = '<code>Direct Contract Upload: Drag & Drop PDF / DOCX in dashboard</code>';
+          }
+        });
+      }
 
       openModalBtns.forEach(function (btn) {
         btn.addEventListener('click', function (e) {
@@ -1551,7 +2002,6 @@
         });
       });
 
-      // Close dialog when clicking backdrop
       [contractDialog, document.getElementById('legal-dialog')].forEach(function (dialog) {
         if (!dialog) return;
         dialog.addEventListener('click', function (event) {
@@ -1572,13 +2022,11 @@
         connectForm.addEventListener('submit', function (e) {
           e.preventDefault();
           var emailInput = document.getElementById('user-email');
-          var assistantSelect = document.getElementById('assistant-select');
           var email = emailInput ? emailInput.value : '';
           var assistant = assistantSelect ? assistantSelect.value : 'claude';
 
           trackEvent('email_submitted', { email: email, assistant: assistant });
 
-          // Local storage record
           try {
             var waitlist = JSON.parse(localStorage.getItem('billable_waitlist') || '[]');
             waitlist.push({ email: email, assistant: assistant, date: new Date().toISOString() });
@@ -1621,6 +2069,14 @@
             legalDialog.showModal();
           }
         });
+      });
+
+      // Keyboard navigation shortcuts
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          if (contractDialog && contractDialog.open) contractDialog.close();
+          if (legalDialog && legalDialog.open) legalDialog.close();
+        }
       });
 
     })();
