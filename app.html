@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Billable Copilot AI</title>
-  <meta name="description" content="AI Scope & Contract Intelligence Dashboard for tracking client requests, catching out-of-scope creep, and protecting project revenue.">
+  <title>Billable Copilot AI — Autonomous Scope & Contract Dashboard</title>
+  <meta name="description" content="The signed-in workspace where a freelancer keeps contracts, checks client requests, sends change orders, and recovers freelance revenue.">
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="https://billable.copilotai.live/app.html">
   <meta name="theme-color" content="#4F46E5">
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <!-- Typography Pairing -->
+  <!-- Fonts: Plus Jakarta Sans + Inter + IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       1. Design System Tokens (Light Neo-Clean SaaS Dashboard)
+       1. Design Tokens (Light Neo-Clean SaaS Dashboard)
        ========================================================================== */
     :root {
-      /* Backgrounds & Surfaces */
       --bg-page:        #F8FAFC;
       --bg-card:        #FFFFFF;
       --bg-sidebar:     #FFFFFF;
@@ -29,24 +28,20 @@
       --bg-hover:       #F8FAFC;
       --bg-active-nav:  #EEF2FF;
 
-      /* Borders & Dividers */
       --border:         #E2E8F0;
       --border-subtle:  #F1F5F9;
       --border-focus:   #6366F1;
 
-      /* Typography Colors */
       --text-main:      #0F172A;
       --text-secondary: #475569;
       --text-muted:     #94A3B8;
       --text-faint:     #CBD5E1;
 
-      /* Brand Accents */
       --brand:          #4F46E5;
       --brand-hover:    #4338CA;
       --brand-surface:  #EEF2FF;
       --brand-border:   #C7D2FE;
 
-      /* Status Colors */
       --money:          #10B981;
       --money-surface:  #ECFDF5;
       --money-border:   #A7F3D0;
@@ -60,25 +55,23 @@
       --warn-border:    #FDE68A;
 
       --cyan:           #06B6D4;
+      --cyan-surface:   #ECFEFF;
       --purple:         #8B5CF6;
       --purple-surface: #F5F3FF;
 
-      /* Typography */
       --font-display:   'Plus Jakarta Sans', system-ui, sans-serif;
       --font-body:      'Inter', system-ui, sans-serif;
       --font-mono:      'IBM Plex Mono', monospace;
 
-      /* Geometry */
       --radius-sm:      6px;
       --radius-md:      10px;
       --radius-lg:      14px;
       --radius-xl:      18px;
       --radius-full:    9999px;
 
-      /* Shadows */
       --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.04);
       --shadow-card:    0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-      --shadow-hover:   0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg:      0 12px 30px -4px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
     }
 
     *, *::before, *::after {
@@ -98,7 +91,12 @@
       overflow-x: hidden;
     }
 
-    /* Layout Containers */
+    .num-money, .tabular-nums {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Grid Layout */
     .app-wrapper {
       display: grid;
       grid-template-columns: 240px 1fr 340px;
@@ -107,27 +105,17 @@
     }
 
     @media (max-width: 1380px) {
-      .app-wrapper {
-        grid-template-columns: 220px 1fr 310px;
-      }
+      .app-wrapper { grid-template-columns: 220px 1fr 310px; }
     }
 
     @media (max-width: 1180px) {
-      .app-wrapper {
-        grid-template-columns: 220px 1fr;
-      }
-      .app-copilot-rail {
-        display: none;
-      }
+      .app-wrapper { grid-template-columns: 220px 1fr; }
+      .app-copilot-rail { display: none; }
     }
 
     @media (max-width: 860px) {
-      .app-wrapper {
-        grid-template-columns: 1fr;
-      }
-      .app-sidebar {
-        display: none;
-      }
+      .app-wrapper { grid-template-columns: 1fr; }
+      .app-sidebar { display: none; }
     }
 
     /* ==========================================================================
@@ -144,6 +132,7 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
+      z-index: 10;
     }
 
     .sidebar-brand-link {
@@ -152,7 +141,7 @@
       gap: 0.65rem;
       text-decoration: none;
       color: var(--text-main);
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
       padding-left: 0.35rem;
     }
 
@@ -181,7 +170,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-top: 1.25rem;
+      margin-top: 1.2rem;
       margin-bottom: 0.45rem;
       padding-left: 0.5rem;
     }
@@ -193,26 +182,31 @@
       gap: 2px;
     }
 
-    .nav-link {
+    .nav-link-btn {
+      width: 100%;
       display: flex;
       align-items: center;
       gap: 0.65rem;
       padding: 0.55rem 0.75rem;
       border-radius: var(--radius-md);
       color: var(--text-secondary);
+      background: transparent;
+      border: none;
       text-decoration: none;
+      font-family: var(--font-body);
       font-size: 0.875rem;
       font-weight: 500;
       transition: all 0.15s ease;
       cursor: pointer;
+      text-align: left;
     }
 
-    .nav-link:hover {
+    .nav-link-btn:hover {
       background: var(--bg-subtle);
       color: var(--text-main);
     }
 
-    .nav-link.active {
+    .nav-link-btn.active {
       background: var(--bg-active-nav);
       color: var(--brand);
       font-weight: 600;
@@ -320,9 +314,18 @@
     }
 
     @media (max-width: 640px) {
-      .app-main {
-        padding: 1rem;
-      }
+      .app-main { padding: 1rem; }
+    }
+
+    /* Screen Views Management */
+    .screen-view {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .screen-view.active-screen {
+      display: flex;
     }
 
     /* Top Workspace Header */
@@ -459,9 +462,7 @@
     }
 
     @media (max-width: 900px) {
-      .analyzer-split-card {
-        grid-template-columns: 1fr;
-      }
+      .analyzer-split-card { grid-template-columns: 1fr; }
     }
 
     .analyzer-header {
@@ -521,9 +522,7 @@
       font-weight: 500;
     }
 
-    .btn-try-examples:hover {
-      color: var(--brand);
-    }
+    .btn-try-examples:hover { color: var(--brand); }
 
     .btn-analyze-sparkle {
       background: var(--brand);
@@ -540,9 +539,7 @@
       transition: all 0.15s ease;
     }
 
-    .btn-analyze-sparkle:hover {
-      background: var(--brand-hover);
-    }
+    .btn-analyze-sparkle:hover { background: var(--brand-hover); }
 
     /* Analyzer Result Panel */
     .analyzer-result-box {
@@ -628,15 +625,11 @@
     }
 
     @media (max-width: 1024px) {
-      .kpi-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .kpi-cards-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 540px) {
-      .kpi-cards-grid {
-        grid-template-columns: 1fr;
-      }
+      .kpi-cards-grid { grid-template-columns: 1fr; }
     }
 
     .kpi-card {
@@ -725,9 +718,7 @@
     }
 
     @media (max-width: 960px) {
-      .trends-breakdown-card {
-        grid-template-columns: 1fr;
-      }
+      .trends-breakdown-card { grid-template-columns: 1fr; }
     }
 
     .trends-header {
@@ -849,7 +840,7 @@
     }
 
     /* ==========================================================================
-       7. Tables Section: Contracts & Change Order Requests
+       7. Tables Section
        ========================================================================== */
     .dashboard-table-card {
       background: var(--bg-card);
@@ -953,13 +944,13 @@
       border: 1px solid var(--flag-border);
     }
 
-    .tag-warning {
+    .tag-ambiguous {
       background: var(--warn-surface);
       color: var(--warn);
       border: 1px solid var(--warn-border);
     }
 
-    .tag-healthy {
+    .tag-healthy, .tag-in-scope {
       background: var(--money-surface);
       color: var(--money);
       border: 1px solid var(--money-border);
@@ -1003,13 +994,11 @@
       color: var(--brand);
       text-decoration: none;
       margin-top: 1rem;
+      cursor: pointer;
     }
 
-    .table-view-all-link:hover {
-      text-decoration: underline;
-    }
+    .table-view-all-link:hover { text-decoration: underline; }
 
-    /* Health circle scores */
     .health-score-circle {
       width: 26px;
       height: 26px;
@@ -1035,7 +1024,149 @@
     }
 
     /* ==========================================================================
-       8. Right Sidebar: AI Copilot Rail
+       8. Pipeline & Kanban Views (Change Orders Screen)
+       ========================================================================== */
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 1024px) {
+      .kanban-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .kanban-grid { grid-template-columns: 1fr; }
+    }
+
+    .kanban-col {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-height: 380px;
+    }
+
+    .kanban-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .kanban-col-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .kanban-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .kanban-card:hover {
+      border-color: var(--brand-border);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Ledger Summary Bars */
+    .ledger-banner {
+      background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .ledger-stat-box {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .ledger-stat-val {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .ledger-stat-sub {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    /* Parsed Scope JSON vs Raw Contract Code Panel */
+    .scope-viewer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .scope-toggle-group {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .btn-scope-toggle {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .btn-scope-toggle.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .code-preview-box {
+      background: #0F172A;
+      color: #38BDF8;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.6;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin-top: 1rem;
+      white-space: pre;
+    }
+
+    /* ==========================================================================
+       9. Right Sidebar: AI Copilot Rail
        ========================================================================== */
     .app-copilot-rail {
       background: var(--bg-sidebar);
@@ -1049,6 +1180,7 @@
       top: 0;
       overflow-y: auto;
       gap: 1.25rem;
+      z-index: 10;
     }
 
     .copilot-rail-header {
@@ -1080,7 +1212,6 @@
       border-radius: var(--radius-full);
     }
 
-    /* Card: AI Insight */
     .rail-card {
       background: var(--bg-subtle);
       border: 1px solid var(--border-subtle);
@@ -1130,23 +1261,17 @@
       transition: all 0.15s ease;
     }
 
-    .btn-view-drafts:hover {
-      background: var(--brand-surface);
-    }
+    .btn-view-drafts:hover { background: var(--brand-surface); }
 
-    /* Card: Scope Radar Waves */
     .radar-wave-box {
-      height: 70px;
+      height: 65px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .radar-svg {
-      width: 100%;
-      height: 100%;
-    }
+    .radar-svg { width: 100%; height: 100%; }
 
     .radar-legend-row {
       display: flex;
@@ -1156,7 +1281,6 @@
       color: var(--text-muted);
     }
 
-    /* Quick Actions */
     .quick-actions-list {
       display: flex;
       flex-direction: column;
@@ -1196,7 +1320,6 @@
       font-weight: normal;
     }
 
-    /* Recent Insights Feed */
     .recent-feed-list {
       display: flex;
       flex-direction: column;
@@ -1220,7 +1343,6 @@
       white-space: nowrap;
     }
 
-    /* Bottom Chat Prompt */
     .rail-chat-container {
       display: flex;
       flex-direction: column;
@@ -1266,6 +1388,72 @@
       color: var(--text-muted);
       text-align: center;
     }
+
+    /* Modal Dialogs */
+    dialog::backdrop {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+    }
+
+    .app-dialog {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      max-width: 580px;
+      width: 90vw;
+      margin: auto;
+      box-shadow: var(--shadow-lg);
+      background: #FFFFFF;
+    }
+
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.75rem;
+    }
+
+    .dialog-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-close-dialog {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Tone Selector */
+    .tone-chip-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-block: 0.75rem;
+    }
+
+    .tone-chip {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-hover);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .tone-chip.active {
+      border-color: var(--brand);
+      background: var(--brand-surface);
+      color: var(--brand);
+    }
   </style>
 </head>
 <body>
@@ -1278,7 +1466,7 @@
     <aside class="app-sidebar" aria-label="Main Navigation Sidebar">
       <div>
         <!-- Logo -->
-        <a href="/" class="sidebar-brand-link">
+        <a href="/" class="sidebar-brand-link" title="Return to Landing Page">
           <div class="brand-icon-box">
             <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
               <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="#4F46E5" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -1291,10 +1479,10 @@
         <!-- Main Dashboard Tab -->
         <ul class="nav-list">
           <li>
-            <a href="/app.html" class="nav-link active">
+            <button class="nav-link-btn active js-nav-tab" data-screen="today">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
-              <span>Dashboard</span>
-            </a>
+              <span>Today / Overview</span>
+            </button>
           </li>
         </ul>
 
@@ -1302,22 +1490,22 @@
         <div class="sidebar-section-label">Contract Workspace</div>
         <ul class="nav-list">
           <li>
-            <a href="#contracts" class="nav-link">
+            <button class="nav-link-btn js-nav-tab" data-screen="contracts">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               <span>Contracts</span>
-            </a>
+            </button>
           </li>
           <li>
-            <a href="#reviews" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              <span>AI Reviews</span>
-            </a>
-          </li>
-          <li>
-            <a href="#requests" class="nav-link">
+            <button class="nav-link-btn js-nav-tab" data-screen="requests">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              <span>Requests</span>
-            </a>
+              <span>Requests Stream</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link-btn js-nav-tab" data-screen="change_orders">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Change Orders</span>
+            </button>
           </li>
         </ul>
 
@@ -1325,33 +1513,10 @@
         <div class="sidebar-section-label">Recovery &amp; Insights</div>
         <ul class="nav-list">
           <li>
-            <a href="#recovery" class="nav-link">
+            <button class="nav-link-btn js-nav-tab" data-screen="ledger">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <span>Revenue Recovery</span>
-            </a>
-          </li>
-          <li>
-            <a href="#analytics" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-              <span>Analytics</span>
-            </a>
-          </li>
-        </ul>
-
-        <!-- Group: AI & KNOWLEDGE -->
-        <div class="sidebar-section-label">AI &amp; Knowledge</div>
-        <ul class="nav-list">
-          <li>
-            <a href="#agents" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
-              <span>AI Agents</span>
-            </a>
-          </li>
-          <li>
-            <a href="#knowledge" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-              <span>Knowledge Base</span>
-            </a>
+              <span>Recovery Ledger</span>
+            </button>
           </li>
         </ul>
 
@@ -1359,10 +1524,10 @@
         <div class="sidebar-section-label">System</div>
         <ul class="nav-list">
           <li>
-            <a href="#settings" class="nav-link">
+            <button class="nav-link-btn js-nav-tab" data-screen="settings">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-              <span>Settings</span>
-            </a>
+              <span>MCP &amp; Settings</span>
+            </button>
           </li>
         </ul>
       </div>
@@ -1391,440 +1556,736 @@
     </aside>
 
     <!-- ==========================================================================
-         2. Main Workspace Center
+         2. Main Center Workspace
          ========================================================================== -->
     <main class="app-main">
-      <!-- Top Workspace Bar -->
+      <!-- Top Workspace Header -->
       <header class="workspace-top-bar">
-        <h1 class="greeting-title">Good morning, Julian 👋</h1>
+        <h1 class="greeting-title" id="page-title">Good morning, Julian 👋</h1>
 
         <div class="top-search-group">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" class="search-input" placeholder="Search contracts, clients, clauses..." aria-label="Search contracts">
+          <input type="text" id="global-search-input" class="search-input" placeholder="Search contracts, clients, clauses..." aria-label="Search contracts">
           <span class="search-kbd">⌘ K</span>
         </div>
 
         <div class="top-actions-cluster">
-          <button class="btn-lang" title="Select Language">
-            <span>🌐 EN</span>
+          <button class="btn-lang" title="Select Currency">
+            <span>🌐 USD ($)</span>
             <span style="font-size:0.65rem;">⌵</span>
           </button>
           <button class="btn-icon-round" title="Notifications">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             <span class="badge-count">1</span>
           </button>
-          <button class="btn-primary-action" id="btn-new-contract">
+          <button class="btn-primary-action" id="btn-top-new-contract">
             <span>+ New Contract</span>
           </button>
         </div>
       </header>
 
-      <!-- Hero Card: AI Scope Analyzer Split -->
-      <section class="analyzer-split-card" aria-label="AI Scope Analyzer">
-        <div>
-          <div class="analyzer-header">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span>AI Scope Analyzer</span>
-          </div>
-          <p class="analyzer-sub">Paste a client request to detect scope expansion and revenue impact.</p>
-
-          <textarea id="analyzer-input" class="analyzer-textarea" placeholder="Paste client request here... (e.g. 'Can we also add blog search and round 4 homepage revisions?')" aria-label="Client request to analyze"></textarea>
-
-          <div class="analyzer-footer-controls">
-            <button class="btn-try-examples" id="btn-try-examples">
-              <span>Try examples</span>
-              <span>⌵</span>
-            </button>
-            <button class="btn-analyze-sparkle" id="btn-analyze-request">
-              <span>Analyze Request ✨</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Analyzer Result Panel -->
-        <div class="analyzer-result-box">
-          <div class="result-box-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            <span>Analysis Result</span>
-          </div>
-
-          <div class="result-rows-group">
-            <div class="result-row">
-              <div class="result-row-left">
-                <div class="result-icon-tag" style="background:#FFFBEB; color:#F59E0B;">⚠️</div>
-                <div>
-                  <div class="result-row-title" id="res-verdict-title">Scope expansion detected</div>
-                  <div class="result-row-desc" id="res-verdict-desc">Request extends beyond current contract scope.</div>
-                </div>
-              </div>
+      <!-- ====================================================================
+           SCREEN 1: TODAY (DEFAULT LANDING)
+           ==================================================================== -->
+      <div id="screen-today" class="screen-view active-screen">
+        <!-- Hero Card: AI Scope Analyzer Split -->
+        <section class="analyzer-split-card" aria-label="AI Scope Analyzer">
+          <div>
+            <div class="analyzer-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>AI Scope Analyzer</span>
             </div>
+            <p class="analyzer-sub">Paste a client request to detect scope expansion and revenue impact.</p>
 
-            <div class="result-row">
-              <div class="result-row-left">
-                <div class="result-icon-tag" style="background:#ECFDF5; color:#10B981;">💲</div>
-                <div>
-                  <div class="result-row-title">Revenue opportunity</div>
-                  <div class="result-row-desc">Estimated value of change order</div>
-                </div>
-              </div>
-              <div class="result-metric-val" style="color:var(--money);" id="res-revenue-val">+$700</div>
-            </div>
+            <textarea id="analyzer-input" class="analyzer-textarea" placeholder="Paste client request here... (e.g. 'Can we also add blog search and round 4 homepage revisions?')" aria-label="Client request to analyze"></textarea>
 
-            <div class="result-row">
-              <div class="result-row-left">
-                <div class="result-icon-tag" style="background:#F5F3FF; color:#8B5CF6;">📈</div>
-                <div>
-                  <div class="result-row-title">AI Confidence</div>
-                  <div class="result-row-desc">High confidence in analysis</div>
-                </div>
-              </div>
-              <div class="result-metric-val" style="color:var(--purple);" id="res-confidence-val">98%</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4 Top KPI Summary Cards -->
-      <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
-        <!-- KPI 1 -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-title">Revenue Protected (MTD)</span>
-            <span class="kpi-badge badge-green">▲ 19%</span>
-          </div>
-          <div class="kpi-big-num">$1,840</div>
-          <div class="kpi-bottom-row">
-            <span class="kpi-subtext">4 change orders secured</span>
-            <!-- Sparkline SVG -->
-            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
-              <path d="M 2 18 Q 18 10 32 16 T 54 8 T 73 3" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- KPI 2 -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-title">Open Risks</span>
-            <span class="kpi-badge badge-red">2 Critical</span>
-          </div>
-          <div class="kpi-big-num">2</div>
-          <div class="kpi-bottom-row">
-            <span class="kpi-subtext">Out-of-scope requests</span>
-            <!-- Sparkline SVG -->
-            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
-              <path d="M 2 20 Q 20 18 36 12 T 56 16 T 73 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- KPI 3 -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-title">Active Contracts</span>
-            <a href="#contracts" style="font-size:0.7rem; color:var(--brand); text-decoration:none; font-weight:600;">View all</a>
-          </div>
-          <div class="kpi-big-num">3</div>
-          <div class="kpi-bottom-row">
-            <span class="kpi-subtext">1 at revision limit</span>
-            <!-- Sparkline SVG -->
-            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
-              <path d="M 2 12 Q 22 20 40 8 T 60 14 T 73 4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- KPI 4 -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-title">AI Accuracy</span>
-            <span class="kpi-badge badge-green">▲ 3%</span>
-          </div>
-          <div class="kpi-big-num">98%</div>
-          <div class="kpi-bottom-row">
-            <span class="kpi-subtext">Analysis confidence</span>
-            <!-- Sparkline SVG -->
-            <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none">
-              <path d="M 2 16 Q 18 8 36 14 T 56 6 T 73 2" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      <!-- Middle Analytics Section: Trends & Donut Breakdown -->
-      <section class="trends-breakdown-card" aria-label="Contract and Scope Trends">
-        <div>
-          <div class="trends-header">
-            <div class="trends-title-wrap">
-              <h2 class="section-card-title">Contract &amp; Scope Trends</h2>
-              <span style="color:var(--text-muted); font-size:0.8rem;" title="Information">ⓘ</span>
-            </div>
-
-            <div style="display:flex; align-items:center; gap:1rem;">
-              <div class="trends-legend">
-                <span class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Scope Requests</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Out-of-Scope</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#10B981;"></span> Change Orders</span>
-              </div>
-              <button class="btn-lang" style="padding:0.3rem 0.6rem; font-size:0.75rem;">
-                <span>Last 6 months</span>
+            <div class="analyzer-footer-controls">
+              <button class="btn-try-examples" id="btn-try-examples">
+                <span>Try examples</span>
                 <span>⌵</span>
+              </button>
+              <button class="btn-analyze-sparkle" id="btn-analyze-request">
+                <span>Analyze Request ✨</span>
               </button>
             </div>
           </div>
 
-          <!-- Multi-Curve Trends SVG Line Chart -->
-          <svg class="multi-curve-chart-svg" viewBox="0 0 540 180" fill="none">
-            <!-- Grid Lines -->
-            <line x1="30" y1="30" x2="520" y2="30" stroke="#F1F5F9" stroke-width="1"/>
-            <line x1="30" y1="70" x2="520" y2="70" stroke="#F1F5F9" stroke-width="1"/>
-            <line x1="30" y1="110" x2="520" y2="110" stroke="#F1F5F9" stroke-width="1"/>
-            <line x1="30" y1="150" x2="520" y2="150" stroke="#F1F5F9" stroke-width="1"/>
+          <!-- Analyzer Result Panel -->
+          <div class="analyzer-result-box">
+            <div class="result-box-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span>Analysis Result</span>
+            </div>
 
-            <!-- Y Axis Labels -->
-            <text x="10" y="34" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">40</text>
-            <text x="10" y="74" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">30</text>
-            <text x="10" y="114" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">20</text>
-            <text x="10" y="154" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">0</text>
+            <div class="result-rows-group">
+              <div class="result-row">
+                <div class="result-row-left">
+                  <div class="result-icon-tag" style="background:#FFFBEB; color:#F59E0B;">⚠️</div>
+                  <div>
+                    <div class="result-row-title" id="res-verdict-title">Scope expansion detected</div>
+                    <div class="result-row-desc" id="res-verdict-desc">Request extends beyond current contract scope.</div>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Line 1: Scope Requests (Blue) -->
-            <path d="M 40 70 C 130 50, 200 90, 310 65 C 410 45, 460 70, 510 50" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="40" cy="70" r="3.5" fill="#3B82F6"/>
-            <circle cx="135" cy="55" r="3.5" fill="#3B82F6"/>
-            <circle cx="230" cy="75" r="3.5" fill="#3B82F6"/>
-            <circle cx="325" cy="65" r="3.5" fill="#3B82F6"/>
-            <circle cx="420" cy="55" r="3.5" fill="#3B82F6"/>
-            <circle cx="510" cy="50" r="3.5" fill="#3B82F6"/>
+              <div class="result-row">
+                <div class="result-row-left">
+                  <div class="result-icon-tag" style="background:#ECFDF5; color:#10B981;">💲</div>
+                  <div>
+                    <div class="result-row-title">Revenue opportunity</div>
+                    <div class="result-row-desc">Estimated value of change order</div>
+                  </div>
+                </div>
+                <div class="result-metric-val" style="color:var(--money);" id="res-revenue-val">+$700</div>
+              </div>
 
-            <!-- Line 2: Out-of-Scope (Purple) -->
-            <path d="M 40 100 C 130 85, 210 115, 310 95 C 410 80, 460 95, 510 75" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="40" cy="100" r="3.5" fill="#8B5CF6"/>
-            <circle cx="135" cy="90" r="3.5" fill="#8B5CF6"/>
-            <circle cx="230" cy="108" r="3.5" fill="#8B5CF6"/>
-            <circle cx="325" cy="95" r="3.5" fill="#8B5CF6"/>
-            <circle cx="420" cy="85" r="3.5" fill="#8B5CF6"/>
-            <circle cx="510" cy="75" r="3.5" fill="#8B5CF6"/>
+              <div class="result-row">
+                <div class="result-row-left">
+                  <div class="result-icon-tag" style="background:#F5F3FF; color:#8B5CF6;">📈</div>
+                  <div>
+                    <div class="result-row-title">AI Confidence</div>
+                    <div class="result-row-desc">High confidence in analysis</div>
+                  </div>
+                </div>
+                <div class="result-metric-val" style="color:var(--purple);" id="res-confidence-val">98%</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <!-- Line 3: Change Orders (Green) -->
-            <path d="M 40 140 C 130 120, 210 135, 310 125 C 410 115, 460 130, 510 110" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="40" cy="140" r="3.5" fill="#10B981"/>
-            <circle cx="135" cy="125" r="3.5" fill="#10B981"/>
-            <circle cx="230" cy="130" r="3.5" fill="#10B981"/>
-            <circle cx="325" cy="125" r="3.5" fill="#10B981"/>
-            <circle cx="420" cy="120" r="3.5" fill="#10B981"/>
-            <circle cx="510" cy="110" r="3.5" fill="#10B981"/>
+        <!-- 4 Top KPI Summary Cards -->
+        <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Revenue Protected (MTD)</span>
+              <span class="kpi-badge badge-green">▲ 19%</span>
+            </div>
+            <div class="kpi-big-num num-money">$1,840</div>
+            <div class="kpi-bottom-row">
+              <span class="kpi-subtext">4 change orders secured</span>
+              <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none"><path d="M 2 18 Q 18 10 32 16 T 54 8 T 73 3" stroke="#10B981" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            </div>
+          </div>
 
-            <!-- X Axis Month Labels -->
-            <text x="40" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jan</text>
-            <text x="135" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Feb</text>
-            <text x="230" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Mar</text>
-            <text x="325" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Apr</text>
-            <text x="420" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">May</text>
-            <text x="510" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jun</text>
-          </svg>
-        </div>
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Open Risks</span>
+              <span class="kpi-badge badge-red">2 Critical</span>
+            </div>
+            <div class="kpi-big-num tabular-nums">2</div>
+            <div class="kpi-bottom-row">
+              <span class="kpi-subtext">Out-of-scope requests</span>
+              <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none"><path d="M 2 20 Q 20 18 36 12 T 56 16 T 73 6" stroke="#EF4444" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            </div>
+          </div>
 
-        <!-- Right Side Donut Breakdown -->
-        <div class="donut-analyzed-pane">
-          <div class="donut-chart-container">
-            <svg class="donut-svg" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="48" fill="none" stroke="#F1F5F9" stroke-width="12"/>
-              <!-- Green slice (45% = 135deg) -->
-              <circle cx="60" cy="60" r="48" fill="none" stroke="#10B981" stroke-width="12" stroke-dasharray="135 301" stroke-dashoffset="0"/>
-              <!-- Purple slice (40% = 120deg) -->
-              <circle cx="60" cy="60" r="48" fill="none" stroke="#8B5CF6" stroke-width="12" stroke-dasharray="120 301" stroke-dashoffset="-135"/>
-              <!-- Blue slice (15% = 46deg) -->
-              <circle cx="60" cy="60" r="48" fill="none" stroke="#3B82F6" stroke-width="12" stroke-dasharray="46 301" stroke-dashoffset="-255"/>
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Active Contracts</span>
+              <button class="js-nav-tab" data-screen="contracts" style="font-size:0.7rem; color:var(--brand); background:none; border:none; cursor:pointer; font-weight:600;">View all</button>
+            </div>
+            <div class="kpi-big-num tabular-nums">3</div>
+            <div class="kpi-bottom-row">
+              <span class="kpi-subtext">1 at revision limit</span>
+              <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none"><path d="M 2 12 Q 22 20 40 8 T 60 14 T 73 4" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">AI Accuracy</span>
+              <span class="kpi-badge badge-green">▲ 3%</span>
+            </div>
+            <div class="kpi-big-num tabular-nums">98%</div>
+            <div class="kpi-bottom-row">
+              <span class="kpi-subtext">Analysis confidence</span>
+              <svg class="sparkline-svg" viewBox="0 0 75 24" fill="none"><path d="M 2 16 Q 18 8 36 14 T 56 6 T 73 2" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Middle Analytics Section: Trends & Donut Breakdown -->
+        <section class="trends-breakdown-card" aria-label="Contract and Scope Trends">
+          <div>
+            <div class="trends-header">
+              <div class="trends-title-wrap">
+                <h2 class="section-card-title">Contract &amp; Scope Trends</h2>
+                <span style="color:var(--text-muted); font-size:0.8rem;" title="Information">ⓘ</span>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:1rem;">
+                <div class="trends-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Scope Requests</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Out-of-Scope</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#10B981;"></span> Change Orders</span>
+                </div>
+                <button class="btn-lang" style="padding:0.3rem 0.6rem; font-size:0.75rem;">
+                  <span>Last 6 months</span>
+                  <span>⌵</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Multi-Curve Trends SVG Line Chart -->
+            <svg class="multi-curve-chart-svg" viewBox="0 0 540 180" fill="none">
+              <line x1="30" y1="30" x2="520" y2="30" stroke="#F1F5F9" stroke-width="1"/>
+              <line x1="30" y1="70" x2="520" y2="70" stroke="#F1F5F9" stroke-width="1"/>
+              <line x1="30" y1="110" x2="520" y2="110" stroke="#F1F5F9" stroke-width="1"/>
+              <line x1="30" y1="150" x2="520" y2="150" stroke="#F1F5F9" stroke-width="1"/>
+
+              <text x="10" y="34" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">40</text>
+              <text x="10" y="74" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">30</text>
+              <text x="10" y="114" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">20</text>
+              <text x="10" y="154" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">0</text>
+
+              <path d="M 40 70 C 130 50, 200 90, 310 65 C 410 45, 460 70, 510 50" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="40" cy="70" r="3.5" fill="#3B82F6"/>
+              <circle cx="135" cy="55" r="3.5" fill="#3B82F6"/>
+              <circle cx="230" cy="75" r="3.5" fill="#3B82F6"/>
+              <circle cx="325" cy="65" r="3.5" fill="#3B82F6"/>
+              <circle cx="420" cy="55" r="3.5" fill="#3B82F6"/>
+              <circle cx="510" cy="50" r="3.5" fill="#3B82F6"/>
+
+              <path d="M 40 100 C 130 85, 210 115, 310 95 C 410 80, 460 95, 510 75" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="40" cy="100" r="3.5" fill="#8B5CF6"/>
+              <circle cx="135" cy="90" r="3.5" fill="#8B5CF6"/>
+              <circle cx="230" cy="108" r="3.5" fill="#8B5CF6"/>
+              <circle cx="325" cy="95" r="3.5" fill="#8B5CF6"/>
+              <circle cx="420" cy="85" r="3.5" fill="#8B5CF6"/>
+              <circle cx="510" cy="75" r="3.5" fill="#8B5CF6"/>
+
+              <path d="M 40 140 C 130 120, 210 135, 310 125 C 410 115, 460 130, 510 110" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="40" cy="140" r="3.5" fill="#10B981"/>
+              <circle cx="135" cy="125" r="3.5" fill="#10B981"/>
+              <circle cx="230" cy="130" r="3.5" fill="#10B981"/>
+              <circle cx="325" cy="125" r="3.5" fill="#10B981"/>
+              <circle cx="420" cy="120" r="3.5" fill="#10B981"/>
+              <circle cx="510" cy="110" r="3.5" fill="#10B981"/>
+
+              <text x="40" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jan</text>
+              <text x="135" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Feb</text>
+              <text x="230" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Mar</text>
+              <text x="325" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Apr</text>
+              <text x="420" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">May</text>
+              <text x="510" y="172" fill="#94A3B8" font-size="10" font-family="var(--font-mono)">Jun</text>
             </svg>
-            <div class="donut-center-num">
-              <span class="donut-total-val">42</span>
-              <span class="donut-total-lbl">Total</span>
+          </div>
+
+          <!-- Right Side Donut Breakdown -->
+          <div class="donut-analyzed-pane">
+            <div class="donut-chart-container">
+              <svg class="donut-svg" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#F1F5F9" stroke-width="12"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#10B981" stroke-width="12" stroke-dasharray="135 301" stroke-dashoffset="0"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#8B5CF6" stroke-width="12" stroke-dasharray="120 301" stroke-dashoffset="-135"/>
+                <circle cx="60" cy="60" r="48" fill="none" stroke="#3B82F6" stroke-width="12" stroke-dasharray="46 301" stroke-dashoffset="-255"/>
+              </svg>
+              <div class="donut-center-num">
+                <span class="donut-total-val">42</span>
+                <span class="donut-total-lbl">Total</span>
+              </div>
+            </div>
+
+            <div class="donut-breakdown-legend">
+              <div class="donut-legend-row">
+                <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#10B981;"></span> In Scope</span>
+                <strong>19 (45%)</strong>
+              </div>
+              <div class="donut-legend-row">
+                <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#8B5CF6;"></span> Out of Scope</span>
+                <strong>17 (40%)</strong>
+              </div>
+              <div class="donut-legend-row">
+                <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#3B82F6;"></span> Unclear</span>
+                <strong>6 (15%)</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Table 1: Contract & Requests Requiring Change Order -->
+        <section class="dashboard-table-card" aria-label="Requests Requiring Change Order">
+          <div class="table-card-header">
+            <div class="table-title-group">
+              <h2 class="section-card-title">Contract &amp; Requests Requiring Change Order</h2>
+              <span class="badge-pill-pink">2 out of scope</span>
             </div>
           </div>
 
-          <div class="donut-breakdown-legend">
-            <div class="donut-legend-row">
-              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#10B981;"></span> In Scope</span>
-              <strong>19 (45%)</strong>
-            </div>
-            <div class="donut-legend-row">
-              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#8B5CF6;"></span> Out of Scope</span>
-              <strong>17 (40%)</strong>
-            </div>
-            <div class="donut-legend-row">
-              <span style="display:flex; align-items:center; gap:0.35rem;"><span class="legend-dot" style="background:#3B82F6;"></span> Unclear</span>
-              <strong>6 (15%)</strong>
-            </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Request Summary</th>
+                  <th>Status</th>
+                  <th>Contract Clause</th>
+                  <th>AI Delta Revenue</th>
+                  <th>Confidence</th>
+                  <th>Action</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-acme">A</div>
+                      <span>Acme Software</span>
+                    </div>
+                  </td>
+                  <td style="max-width:240px;">Add blog section to marketing site with CMS integration and SEO optimization.</td>
+                  <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                  <td>§2 — Services, 3.2 Exclusions</td>
+                  <td><span class="delta-money-num">+$400</span></td>
+                  <td><span class="confidence-pct">98%</span></td>
+                  <td><button class="btn-review-quote js-open-quote-modal" data-client="Acme Software" data-clause="§2.1 & §3.2" data-amount="$400.00" data-days="2 days">Review &amp; Quote &gt;</button></td>
+                  <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-kessler">K</div>
+                      <span>Kessler Fashion Studio</span>
+                    </div>
+                  </td>
+                  <td style="max-width:240px;">Fourth round of edits on homepage design before board presentation.</td>
+                  <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
+                  <td>§5 — Revisions, 5.1 Revision Limit</td>
+                  <td><span class="delta-money-num">+$300</span></td>
+                  <td><span class="confidence-pct">96%</span></td>
+                  <td><button class="btn-review-quote js-open-quote-modal" data-client="Kessler Fashion Studio" data-clause="§5.1 Revision Cap" data-amount="$300.00" data-days="1 day">Review &amp; Quote &gt;</button></td>
+                  <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-bronson">B</div>
+                      <span>Bronson Health</span>
+                    </div>
+                  </td>
+                  <td style="max-width:240px;">Add patient portal syncing with EHR system and reporting dashboard.</td>
+                  <td><span class="status-tag tag-ambiguous">Warning / Ambiguous</span></td>
+                  <td>§3 — Integrations, 3.4 Additional Systems</td>
+                  <td><span class="delta-money-num">+$1,200</span></td>
+                  <td><span class="confidence-pct">92%</span></td>
+                  <td><button class="btn-review-quote js-open-quote-modal" data-client="Bronson Health" data-clause="§3.4 Additional Systems" data-amount="$1,200.00" data-days="5 days">Review &amp; Quote &gt;</button></td>
+                  <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
+          <button class="table-view-all-link js-nav-tab" data-screen="requests" style="background:none; border:none; width:100%;">View all requests &gt;</button>
+        </section>
+
+        <!-- Table 2: Contract Health & Revision Limits -->
+        <section class="dashboard-table-card" aria-label="Contract Health and Revision Limits">
+          <div class="table-card-header">
+            <h2 class="section-card-title">Contract Health &amp; Revision Limits</h2>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Project</th>
+                  <th>Revisions Used</th>
+                  <th>Revision Limit</th>
+                  <th>AI Health Score</th>
+                  <th>Days to Deadline</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-acme">A</div>
+                      <span>Acme Software</span>
+                    </div>
+                  </td>
+                  <td>Web App UI &amp; Component Design</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <span>2</span>
+                      <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:66%; height:100%; background:#3B82F6;"></div></div>
+                      <span>/ 3</span>
+                    </div>
+                  </td>
+                  <td>3 Included</td>
+                  <td><div class="health-score-circle score-green">82</div></td>
+                  <td>12 days</td>
+                  <td><span class="status-tag tag-ambiguous">At Risk</span></td>
+                  <td><button class="btn-review-quote js-inspect-contract" data-id="ct_acme">Inspect AST</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-kessler">K</div>
+                      <span>Kessler Fashion Studio</span>
+                    </div>
+                  </td>
+                  <td>E-Commerce Shopify Build</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <span>3</span>
+                      <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:100%; height:100%; background:#8B5CF6;"></div></div>
+                      <span>/ 3</span>
+                    </div>
+                  </td>
+                  <td>3 Included</td>
+                  <td><div class="health-score-circle score-orange">64</div></td>
+                  <td>5 days</td>
+                  <td><span class="status-tag tag-out-of-scope">Revision Limit</span></td>
+                  <td><button class="btn-review-quote js-inspect-contract" data-id="ct_kessler">Inspect AST</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="client-cell">
+                      <div class="client-logo-box logo-bronson">B</div>
+                      <span>Bronson Health</span>
+                    </div>
+                  </td>
+                  <td>Patient Portal &amp; Sync System</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <span>1</span>
+                      <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:25%; height:100%; background:#10B981;"></div></div>
+                      <span>/ 4</span>
+                    </div>
+                  </td>
+                  <td>4 Included</td>
+                  <td><div class="health-score-circle score-green">91</div></td>
+                  <td>24 days</td>
+                  <td><span class="status-tag tag-healthy">Healthy</span></td>
+                  <td><button class="btn-review-quote js-inspect-contract" data-id="ct_bronson">Inspect AST</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="table-view-all-link js-nav-tab" data-screen="contracts" style="background:none; border:none; width:100%;">View all contracts &gt;</button>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           SCREEN 2: CONTRACTS (STRUCTURED SCOPE + RAW TOGGLE)
+           ==================================================================== -->
+      <div id="screen-contracts" class="screen-view">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h2 class="section-card-title" style="font-size:1.25rem;">Active Contracts &amp; AST Scope</h2>
+            <p style="font-size:0.8rem; color:var(--text-secondary);">Parsed contract AST, deliverables, exclusions, and real-time revision meters.</p>
+          </div>
+          <button class="btn-primary-action" id="btn-create-contract-screen">+ Upload New Contract</button>
         </div>
-      </section>
 
-      <!-- Table 1: Contract & Requests Requiring Change Order -->
-      <section class="dashboard-table-card" aria-label="Requests Requiring Change Order">
-        <div class="table-card-header">
-          <div class="table-title-group">
-            <h2 class="section-card-title">Contract &amp; Requests Requiring Change Order</h2>
-            <span class="badge-pill-pink">2 out of scope</span>
+        <!-- Scope & Raw Text Inspector Card -->
+        <section class="scope-viewer-card" id="contract-inspector-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+            <div>
+              <h3 style="font-family:var(--font-display); font-size:1.05rem; font-weight:700;" id="inspector-contract-name">Acme Software — Web App UI Design</h3>
+              <p style="font-size:0.75rem; color:var(--text-muted);">Contract ID: <code>ct_acme_8812</code> · Rate: <strong>$115/hr</strong> · Fixed Cap: <strong>$6,800</strong></p>
+            </div>
+
+            <div class="scope-toggle-group">
+              <button class="btn-scope-toggle active" id="tab-toggle-parsed">Parsed Scope (JSONB)</button>
+              <button class="btn-scope-toggle" id="tab-toggle-raw">Raw Contract Text</button>
+            </div>
           </div>
+
+          <!-- Parsed JSONB View -->
+          <div id="view-parsed-scope" class="code-preview-box">
+{
+  "contract_id": "ct_acme_8812",
+  "client": "Acme Software Inc.",
+  "status": "active",
+  "rate": { "hourly": 115, "currency": "USD" },
+  "revisions": { "allowed": 3, "used": 2, "limit_clause": "§5.1" },
+  "deliverables": [
+    "Web Application UI Kit & Design System in Figma",
+    "Responsive Components (Header, Dashboard, Settings)",
+    "Handoff documentation and developer redlines"
+  ],
+  "explicit_exclusions": [
+    "§2.1 Blog section and headless CMS integration",
+    "§3.4 Native mobile application iOS/Android exports",
+    "§8.2 Unscheduled weekend / emergency overtime"
+  ]
+}</div>
+
+          <!-- Raw Contract View -->
+          <div id="view-raw-scope" class="code-preview-box" style="display:none; color:#CBD5E1;">
+STATEMENT OF WORK (SOW) — ACME SOFTWARE INC.
+Effective Date: August 1, 2026
+
+1. SERVICES: Contractor will provide UI/UX design deliverables for the Core Web App.
+2. SCOPE OF WORK: Deliverables include component library and Figma prototype. Section 2.1 explicitly excludes blog publishing engines and marketing CMS extensions.
+3. REVISIONS: Client is entitled to up to three (3) iterative feedback rounds (§5.1). Subsequent rounds will be billed at the standard rate of $115/hour.
+4. PAYMENT TERMS: Net 14 days upon receipt of approved milestone invoice.</div>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           SCREEN 3: REQUESTS STREAM
+           ==================================================================== -->
+      <div id="screen-requests" class="screen-view">
+        <div>
+          <h2 class="section-card-title" style="font-size:1.25rem;">Incoming Client Requests Stream</h2>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Highest-frequency stream of client communications checked via MCP, Email, or Slack.</p>
         </div>
 
-        <div style="overflow-x:auto;">
+        <section class="dashboard-table-card">
           <table class="data-table">
             <thead>
               <tr>
+                <th>Time / Source</th>
                 <th>Client</th>
-                <th>Request Summary</th>
+                <th>Request Text</th>
+                <th>Verdict</th>
+                <th>Clause Ref</th>
+                <th>Suggested Quote</th>
                 <th>Status</th>
-                <th>Contract Clause</th>
-                <th>AI Delta Revenue</th>
-                <th>Confidence</th>
-                <th>Action</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-acme">A</div>
-                    <span>Acme Software</span>
-                  </div>
-                </td>
-                <td style="max-width:240px;">Add blog section to marketing site with CMS integration and SEO optimization.</td>
+                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">10:42 AM · Slack</span></td>
+                <td><strong>Acme Software</strong></td>
+                <td>"Can we also add blog CMS filter?"</td>
                 <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
-                <td>§2 — Services, 3.2 Exclusions</td>
-                <td><span class="delta-money-num">+$400</span></td>
-                <td><span class="confidence-pct">98%</span></td>
-                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td>§2.1 Exclusions</td>
+                <td><span class="delta-money-num">+$400.00</span></td>
+                <td><span class="status-tag tag-ambiguous">Open</span></td>
               </tr>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-kessler">K</div>
-                    <span>Kessler Fashion Studio</span>
-                  </div>
-                </td>
-                <td style="max-width:240px;">Fourth round of edits on homepage design before board presentation.</td>
+                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">09:15 AM · Email</span></td>
+                <td><strong>Kessler Studio</strong></td>
+                <td>"Here is round 4 executive edits"</td>
                 <td><span class="status-tag tag-out-of-scope">Out of scope</span></td>
-                <td>§5 — Revisions, 5.1 Revision Limit</td>
-                <td><span class="delta-money-num">+$300</span></td>
-                <td><span class="confidence-pct">96%</span></td>
-                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td>§5.1 Revision Cap</td>
+                <td><span class="delta-money-num">+$300.00</span></td>
+                <td><span class="status-tag tag-ambiguous">Open</span></td>
               </tr>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-bronson">B</div>
-                    <span>Bronson Health</span>
-                  </div>
-                </td>
-                <td style="max-width:240px;">Add patient portal syncing with EHR system and reporting dashboard.</td>
-                <td><span class="status-tag tag-warning">Warning</span></td>
-                <td>§3 — Integrations, 3.4 Additional Systems</td>
-                <td><span class="delta-money-num">+$1,200</span></td>
-                <td><span class="confidence-pct">92%</span></td>
-                <td><button class="btn-review-quote">Review &amp; Quote &gt;</button></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Yesterday · WhatsApp</span></td>
+                <td><strong>Bronson Health</strong></td>
+                <td>"Patient portal sync with EHR"</td>
+                <td><span class="status-tag tag-ambiguous">Ambiguous</span></td>
+                <td>§3.4 Integrations</td>
+                <td><span class="delta-money-num">+$1,200.00</span></td>
+                <td><span class="status-tag tag-healthy">Ordered</span></td>
+              </tr>
+              <tr>
+                <td><span style="font-family:var(--font-mono); font-size:0.75rem;">Aug 22 · Manual</span></td>
+                <td><strong>Acme Software</strong></td>
+                <td>"Nudge header down 5px"</td>
+                <td><span class="status-tag tag-in-scope">In Scope</span></td>
+                <td>§4.2 Minor Tweaks</td>
+                <td><span style="color:var(--text-muted);">$0.00</span></td>
+                <td><span class="status-tag tag-healthy">Waived</span></td>
               </tr>
             </tbody>
           </table>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           SCREEN 4: CHANGE ORDERS PIPELINE
+           ==================================================================== -->
+      <div id="screen-change_orders" class="screen-view">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h2 class="section-card-title" style="font-size:1.25rem;">Change Orders Pipeline</h2>
+            <p style="font-size:0.8rem; color:var(--text-secondary);">Track change orders from drafted quote to client payment.</p>
+          </div>
+          <button class="btn-primary-action js-open-quote-modal" data-client="Custom Client" data-clause="§3.2" data-amount="$450.00" data-days="2 days">+ Draft Change Order</button>
         </div>
 
-        <a href="#requests" class="table-view-all-link">View all requests &gt;</a>
-      </section>
+        <div class="kanban-grid">
+          <!-- Col 1: Draft -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Draft (1)</span>
+              <span style="color:var(--text-muted); font-size:0.75rem;">$400</span>
+            </div>
+            <div class="kanban-card js-open-quote-modal" data-client="Acme Software" data-clause="§2.1" data-amount="$400.00" data-days="2 days">
+              <span class="status-tag tag-out-of-scope" style="width:fit-content;">Acme Software</span>
+              <strong style="font-size:0.82rem;">CMS Blog Module</strong>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                <span class="num-money" style="color:var(--money); font-weight:700;">+$400.00</span>
+                <span style="color:var(--text-muted);">+2 days</span>
+              </div>
+            </div>
+          </div>
 
-      <!-- Table 2: Contract Health & Revision Limits -->
-      <section class="dashboard-table-card" aria-label="Contract Health and Revision Limits">
-        <div class="table-card-header">
-          <h2 class="section-card-title">Contract Health &amp; Revision Limits</h2>
+          <!-- Col 2: Sent -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Sent / Pending (1)</span>
+              <span style="color:var(--text-muted); font-size:0.75rem;">$300</span>
+            </div>
+            <div class="kanban-card">
+              <span class="status-tag tag-ambiguous" style="width:fit-content;">Kessler Studio</span>
+              <strong style="font-size:0.82rem;">Round 4 Revisions</strong>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                <span class="num-money" style="color:var(--money); font-weight:700;">+$300.00</span>
+                <span style="color:var(--text-muted);">Sent 5h ago</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 3: Accepted -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Accepted (1)</span>
+              <span style="color:var(--text-muted); font-size:0.75rem;">$1,200</span>
+            </div>
+            <div class="kanban-card">
+              <span class="status-tag tag-healthy" style="width:fit-content;">Bronson Health</span>
+              <strong style="font-size:0.82rem;">EHR Portal Sync</strong>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                <span class="num-money" style="color:var(--money); font-weight:700;">+$1,200.00</span>
+                <span style="color:var(--text-muted);">Signed Yesterday</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 4: Paid -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Paid (MTD)</span>
+              <span style="color:var(--money); font-size:0.75rem; font-weight:700;">$1,840</span>
+            </div>
+            <div class="kanban-card">
+              <span class="status-tag tag-healthy" style="width:fit-content;">London Brand Co.</span>
+              <strong style="font-size:0.82rem;">Extra Asset Packaging</strong>
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+                <span class="num-money" style="color:var(--money); font-weight:700;">$640.00 Paid</span>
+                <span style="color:var(--money);">✓ Collected</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           SCREEN 5: RECOVERY LEDGER (APPEND-ONLY REPORT)
+           ==================================================================== -->
+      <div id="screen-ledger" class="screen-view">
+        <!-- Monthly Headline Banner -->
+        <section class="ledger-banner">
+          <div>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; opacity:0.9;">MONTHLY RECOVERY REPORT</span>
+            <div class="ledger-stat-val" style="margin-top:4px;">Billable found $2,340 this month.</div>
+            <div class="ledger-stat-sub">You billed and protected $1,840 of it across 4 change orders.</div>
+          </div>
+          <button class="btn-lang" id="btn-export-ledger" style="background:#FFFFFF; color:#0F172A; border:none; font-weight:700;">
+            <span>Export Audit Log (CSV)</span>
+          </button>
+        </section>
+
+        <!-- Breakdown by Category -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">Caught Out-of-Scope</span>
+            <div class="kpi-big-num num-money" style="color:var(--flag);">$2,340</div>
+            <span class="kpi-subtext">5 scope expansions identified</span>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-title">Billed &amp; Quoted</span>
+            <div class="kpi-big-num num-money" style="color:var(--brand);">$1,900</div>
+            <span class="kpi-subtext">4 change orders issued</span>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-title">Voluntarily Waived</span>
+            <div class="kpi-big-num num-money" style="color:var(--warn);">$440</div>
+            <span class="kpi-subtext">1 client goodwill allowance</span>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-title">Paid &amp; Collected</span>
+            <div class="kpi-big-num num-money" style="color:var(--money);">$1,840</div>
+            <span class="kpi-subtext">Deposited to bank account</span>
+          </div>
         </div>
 
-        <div style="overflow-x:auto;">
+        <!-- Append-Only Event Stream -->
+        <section class="dashboard-table-card">
+          <div class="table-card-header">
+            <h2 class="section-card-title">Append-Only Event Ledger</h2>
+          </div>
           <table class="data-table">
             <thead>
               <tr>
+                <th>Event ID</th>
+                <th>Timestamp</th>
+                <th>Type</th>
                 <th>Client</th>
-                <th>Project</th>
-                <th>Revisions Used</th>
-                <th>Revision Limit</th>
-                <th>AI Health Score</th>
-                <th>Days to Deadline</th>
-                <th>Status</th>
-                <th></th>
+                <th>Amount</th>
+                <th>Audit Hash</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-acme">A</div>
-                    <span>Acme Software</span>
-                  </div>
-                </td>
-                <td>Web App UI &amp; Component Design</td>
-                <td>
-                  <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span>2</span>
-                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:66%; height:100%; background:#3B82F6;"></div></div>
-                    <span>/ 3</span>
-                  </div>
-                </td>
-                <td>3 Included</td>
-                <td><div class="health-score-circle score-green">82</div></td>
-                <td>12 days</td>
-                <td><span class="status-tag tag-warning">At Risk</span></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td><code>evt_8832a</code></td>
+                <td>Today, 10:42 AM</td>
+                <td><span class="status-tag tag-out-of-scope">scope_caught</span></td>
+                <td>Acme Software</td>
+                <td><span class="delta-money-num">+$400.00</span></td>
+                <td><code>sha256:7f4a9b...</code></td>
               </tr>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-kessler">K</div>
-                    <span>Kessler Fashion Studio</span>
-                  </div>
-                </td>
-                <td>E-Commerce Shopify Build</td>
-                <td>
-                  <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span>3</span>
-                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:100%; height:100%; background:#8B5CF6;"></div></div>
-                    <span>/ 3</span>
-                  </div>
-                </td>
-                <td>3 Included</td>
-                <td><div class="health-score-circle score-orange">64</div></td>
-                <td>5 days</td>
-                <td><span class="status-tag tag-out-of-scope">Revision Limit</span></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td><code>evt_8831c</code></td>
+                <td>Yesterday, 04:15 PM</td>
+                <td><span class="status-tag tag-healthy">payment_received</span></td>
+                <td>London Brand Co.</td>
+                <td><span class="delta-money-num">+$640.00</span></td>
+                <td><code>sha256:19bc4a...</code></td>
               </tr>
               <tr>
-                <td>
-                  <div class="client-cell">
-                    <div class="client-logo-box logo-bronson">B</div>
-                    <span>Bronson Health</span>
-                  </div>
-                </td>
-                <td>Patient Portal &amp; Sync System</td>
-                <td>
-                  <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span>1</span>
-                    <div style="width:50px; height:4px; background:#E2E8F0; border-radius:2px; overflow:hidden;"><div style="width:25%; height:100%; background:#10B981;"></div></div>
-                    <span>/ 4</span>
-                  </div>
-                </td>
-                <td>4 Included</td>
-                <td><div class="health-score-circle score-green">91</div></td>
-                <td>24 days</td>
-                <td><span class="status-tag tag-healthy">Healthy</span></td>
-                <td><span style="cursor:pointer; color:var(--text-muted);">⋮</span></td>
+                <td><code>evt_8829f</code></td>
+                <td>Aug 21, 02:30 PM</td>
+                <td><span class="status-tag tag-ambiguous">scope_waived</span></td>
+                <td>Acme Software</td>
+                <td><span style="color:var(--text-muted);">$0.00 (Waived)</span></td>
+                <td><code>sha256:4a02fe...</code></td>
               </tr>
             </tbody>
           </table>
+        </section>
+      </div>
+
+      <!-- ====================================================================
+           SCREEN 6: SETTINGS & MCP CONNECTION
+           ==================================================================== -->
+      <div id="screen-settings" class="screen-view">
+        <div>
+          <h2 class="section-card-title" style="font-size:1.25rem;">MCP Protocol &amp; Account Settings</h2>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Configure Claude Desktop, ChatGPT MCP server endpoints, rates, and default drafting tone.</p>
         </div>
 
-        <a href="#contracts" class="table-view-all-link">View all contracts &gt;</a>
-      </section>
+        <section class="dashboard-table-card">
+          <h3 style="font-size:1rem; font-weight:700; margin-bottom:1rem;">Claude Desktop &amp; ChatGPT MCP Configuration</h3>
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:1rem;">Add this block to your <code>claude_desktop_config.json</code> to enable Billable Copilot inside Claude Desktop:</p>
+          <div class="code-preview-box">{
+  "mcpServers": {
+    "billable": {
+      "command": "npx",
+      "args": ["-y", "@billable/mcp-server@latest"],
+      "env": {
+        "BILLABLE_API_KEY": "billable_live_token_jv_8819240"
+      }
+    }
+  }
+}</div>
+        </section>
+      </div>
     </main>
 
     <!-- ==========================================================================
@@ -1844,16 +2305,16 @@
         <!-- Card: AI Insight -->
         <div class="rail-card">
           <div class="rail-card-head">
-            <span>✨ AI Insight</span>
+            <span>✨ Contextual AI Insight</span>
             <span style="cursor:pointer; color:var(--text-muted); font-size:0.75rem;">▲</span>
           </div>
-          <p style="font-size:0.78rem; color:var(--text-secondary);">Morning, Julian! Here's what I found:</p>
-          <ul class="insight-bullet-list">
+          <p style="font-size:0.78rem; color:var(--text-secondary);" id="rail-greeting-sub">Morning, Julian! Here's what I found:</p>
+          <ul class="insight-bullet-list" id="rail-insight-bullets">
             <li>2 requests are out-of-scope.</li>
             <li>I've drafted change orders for both.</li>
             <li>Total revenue opportunity: $700</li>
           </ul>
-          <button class="btn-view-drafts" id="btn-view-drafts-rail">View Drafts</button>
+          <button class="btn-view-drafts js-nav-tab" data-screen="change_orders">View Drafts</button>
         </div>
 
         <!-- Card: Scope Radar -->
@@ -1864,11 +2325,9 @@
           </div>
           <div class="radar-wave-box">
             <svg class="radar-svg" viewBox="0 0 280 60" fill="none">
-              <!-- Wave 1 (Cyan) -->
               <path d="M 10 30 Q 75 10 140 30 T 270 20" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" fill="none"/>
               <circle cx="75" cy="20" r="3.5" fill="#06B6D4"/>
               <circle cx="210" cy="25" r="3.5" fill="#06B6D4"/>
-              <!-- Wave 2 (Purple) -->
               <path d="M 10 35 Q 75 50 140 35 T 270 45" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" fill="none"/>
               <circle cx="140" cy="35" r="3.5" fill="#8B5CF6"/>
               <circle cx="270" cy="45" r="3.5" fill="#8B5CF6"/>
@@ -1879,7 +2338,7 @@
             <span style="display:flex; align-items:center; gap:0.25rem;"><span class="legend-dot" style="background:#F59E0B;"></span> Warning</span>
             <span style="display:flex; align-items:center; gap:0.25rem;"><span class="legend-dot" style="background:#EF4444;"></span> At Risk</span>
           </div>
-          <a href="#contracts" style="font-size:0.72rem; color:var(--brand); text-decoration:none; font-weight:600; text-align:center; margin-top:2px;">View all contracts &gt;</a>
+          <button class="js-nav-tab" data-screen="contracts" style="font-size:0.72rem; color:var(--brand); background:none; border:none; text-decoration:none; font-weight:600; text-align:center; margin-top:2px; cursor:pointer;">View all contracts &gt;</button>
         </div>
 
         <!-- Card: Quick Actions -->
@@ -1911,8 +2370,8 @@
             </button>
             <button class="quick-action-btn js-action-analytics">
               <div class="quick-action-left">
-                <span>View Analytics</span>
-                <span class="quick-action-sub">See trends &amp; performance</span>
+                <span>View Ledger &amp; Report</span>
+                <span class="quick-action-sub">See recovered funds</span>
               </div>
               <span style="color:var(--text-muted);">&gt;</span>
             </button>
@@ -1934,7 +2393,7 @@
               <span class="recent-feed-time">5h ago</span>
             </div>
             <div class="recent-feed-item">
-              <span>New change order approved</span>
+              <span>New change order approved ($1,200)</span>
               <span class="recent-feed-time">Yesterday</span>
             </div>
           </div>
@@ -1955,17 +2414,29 @@
 
   </div>
 
-  <!-- Interactive Modal: Review & Quote Dialog -->
-  <dialog id="quote-modal" style="border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; max-width:540px; width:90vw; margin:auto; box-shadow:0 20px 60px rgba(0,0,0,0.15); background:#FFFFFF;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border-subtle); padding-bottom:0.75rem;">
-      <h3 style="font-family:var(--font-display); font-size:1.1rem; font-weight:700; color:var(--text-main);">Draft Change Order — Acme Software</h3>
-      <button id="btn-close-quote-modal" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">✕</button>
+  <!-- ==========================================================================
+       MODAL 1: REVIEW & QUOTE (WITH TONE SELECTOR)
+       ========================================================================== -->
+  <dialog id="quote-modal" class="app-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title" id="modal-quote-client-name">Draft Change Order — Acme Software</h3>
+      <button id="btn-close-quote-modal" class="btn-close-dialog">✕</button>
     </div>
     <div style="font-size:0.875rem; color:var(--text-secondary); line-height:1.6; margin-bottom:1.25rem;">
-      <p style="margin-bottom:0.75rem;"><strong>Clause Ref:</strong> §2.1 Scope of Work &amp; §3.2 Exclusions</p>
-      <p style="margin-bottom:0.75rem;"><strong>Proposed Adjustment:</strong> +$400.00 (Estimated 3.5 hrs delivery at $115/hr rate).</p>
-      <div style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem; font-family:var(--font-mono); font-size:0.78rem; color:var(--text-main);">
-        "Happy to add the CMS blog integration! That falls outside our contracted scope (§2.1), so it would be $400 and adjusts delivery by 2 business days. Should I send over the change order?"
+      <p><strong>Contract Clause:</strong> <span id="modal-quote-clause">§2.1 Scope of Work &amp; §3.2 Exclusions</span></p>
+      <p><strong>Proposed Adjustment:</strong> <span id="modal-quote-amount" class="num-money" style="color:var(--money); font-weight:700;">+$400.00</span> (<span id="modal-quote-days">+2 business days</span>)</p>
+      
+      <div style="margin-top:0.75rem;">
+        <label style="font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase;">Select Reply Tone:</label>
+        <div class="tone-chip-group">
+          <button class="tone-chip active js-tone-btn" data-tone="warm">Warm &amp; Collaborative</button>
+          <button class="tone-chip js-tone-btn" data-tone="neutral">Neutral &amp; Professional</button>
+          <button class="tone-chip js-tone-btn" data-tone="firm">Firm &amp; Formal</button>
+        </div>
+      </div>
+
+      <div id="modal-quote-reply-box" style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem; font-family:var(--font-mono); font-size:0.78rem; color:var(--text-main); line-height:1.5;">
+        "Happy to add the blog section! That falls outside our contracted scope (§2.1), so it would be $400 and adjusts delivery by 2 business days. Should I send over the change order?"
       </div>
     </div>
     <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
@@ -1973,12 +2444,80 @@
     </div>
   </dialog>
 
-  <!-- Interactive JavaScript Logic -->
+  <!-- ==========================================================================
+       MODAL 2: UPLOAD & PARSE NEW CONTRACT SOW
+       ========================================================================== -->
+  <dialog id="contract-upload-modal" class="app-dialog">
+    <div class="dialog-header">
+      <h3 class="dialog-title">Connect &amp; Parse New Contract SOW</h3>
+      <button id="btn-close-upload-modal" class="btn-close-dialog">✕</button>
+    </div>
+    <form id="form-upload-contract">
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-bottom:4px;">Client Name</label>
+        <input type="text" id="input-new-client" placeholder="e.g. Acme Software or Nike" style="width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:var(--radius-sm);" required>
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-bottom:4px;">Paste Contract SOW / Text</label>
+        <textarea id="input-new-contract-text" placeholder="Paste your SOW, clauses, revision limits, or email agreement here..." style="width:100%; height:120px; padding:0.6rem; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:0.82rem;" required></textarea>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+        <button type="submit" class="btn-primary-action">Parse &amp; Protect Contract ✨</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Interactive Client-Side JavaScript Logic -->
   <script>
     (function () {
       'use strict';
 
-      // Example prompts for quick testing
+      // 1. Navigation Screen Switching
+      var navButtons = document.querySelectorAll('.js-nav-tab');
+      var screenViews = document.querySelectorAll('.screen-view');
+      var pageTitle = document.getElementById('page-title');
+
+      var screenTitles = {
+        'today': 'Good morning, Julian 👋',
+        'contracts': 'Contracts &amp; Structured Scope AST',
+        'requests': 'Client Requests Stream',
+        'change_orders': 'Change Orders Pipeline',
+        'ledger': 'Revenue Recovery Ledger',
+        'settings': 'MCP Protocol &amp; Account Settings'
+      };
+
+      function switchScreen(screenKey) {
+        navButtons.forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-screen') === screenKey);
+        });
+
+        screenViews.forEach(function (view) {
+          view.classList.remove('active-screen');
+        });
+
+        var targetScreen = document.getElementById('screen-' + screenKey);
+        if (targetScreen) {
+          targetScreen.classList.add('active-screen');
+        }
+
+        if (pageTitle && screenTitles[screenKey]) {
+          pageTitle.innerHTML = screenTitles[screenKey];
+        }
+
+        // Update Copilot Rail context
+        updateCopilotContext(screenKey);
+      }
+
+      navButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var screen = this.getAttribute('data-screen');
+          if (screen) switchScreen(screen);
+        });
+      });
+
+      // 2. AI Scope Analyzer Sandbox
       var exampleQueries = [
         {
           text: "Can we also add a custom blog filter and round 4 homepage edits?",
@@ -2050,14 +2589,82 @@
         if (resConfidenceVal) resConfidenceVal.textContent = data.confidence;
       }
 
-      // Review & Quote Modal
+      // 3. Contract Detail & Parsed Scope vs Raw Scope Toggle
+      var tabToggleParsed = document.getElementById('tab-toggle-parsed');
+      var tabToggleRaw = document.getElementById('tab-toggle-raw');
+      var viewParsedScope = document.getElementById('view-parsed-scope');
+      var viewRawScope = document.getElementById('view-raw-scope');
+
+      if (tabToggleParsed && tabToggleRaw && viewParsedScope && viewRawScope) {
+        tabToggleParsed.addEventListener('click', function () {
+          tabToggleParsed.classList.add('active');
+          tabToggleRaw.classList.remove('active');
+          viewParsedScope.style.display = 'block';
+          viewRawScope.style.display = 'none';
+        });
+
+        tabToggleRaw.addEventListener('click', function () {
+          tabToggleRaw.classList.add('active');
+          tabToggleParsed.classList.remove('active');
+          viewParsedScope.style.display = 'none';
+          viewRawScope.style.display = 'block';
+        });
+      }
+
+      var inspectButtons = document.querySelectorAll('.js-inspect-contract');
+      inspectButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          switchScreen('contracts');
+        });
+      });
+
+      // 4. Modal 1: Review & Quote Dialog with Tone Selector
       var quoteModal = document.getElementById('quote-modal');
       var btnCloseQuote = document.getElementById('btn-close-quote-modal');
       var btnCopyQuoteReply = document.getElementById('btn-copy-quote-reply');
-      var reviewQuoteBtns = document.querySelectorAll('.btn-review-quote');
+      var modalQuoteClientName = document.getElementById('modal-quote-client-name');
+      var modalQuoteClause = document.getElementById('modal-quote-clause');
+      var modalQuoteAmount = document.getElementById('modal-quote-amount');
+      var modalQuoteDays = document.getElementById('modal-quote-days');
+      var modalQuoteReplyBox = document.getElementById('modal-quote-reply-box');
 
-      reviewQuoteBtns.forEach(function (btn) {
+      var toneButtons = document.querySelectorAll('.js-tone-btn');
+      var currentClient = "Acme Software";
+      var currentAmount = "$400.00";
+      var currentClause = "§2.1 Scope of Work";
+
+      function updateDraftTone(tone) {
+        if (tone === 'warm') {
+          modalQuoteReplyBox.textContent = "Happy to add that! That falls outside our contracted scope (" + currentClause + "), so it would be " + currentAmount + " and adjusts delivery slightly. Should I send over the change order?";
+        } else if (tone === 'neutral') {
+          modalQuoteReplyBox.textContent = "Thanks for the request. Per our agreement (" + currentClause + "), this deliverable requires a change order of " + currentAmount + ". Please confirm if we should proceed.";
+        } else if (tone === 'firm') {
+          modalQuoteReplyBox.textContent = "This deliverable is explicitly excluded under " + currentClause + ". Work on this request will commence upon approval of change order " + currentAmount + ".";
+        }
+      }
+
+      toneButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          toneButtons.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          updateDraftTone(btn.getAttribute('data-tone'));
+        });
+      });
+
+      var openQuoteButtons = document.querySelectorAll('.js-open-quote-modal');
+      openQuoteButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
+          currentClient = btn.getAttribute('data-client') || "Acme Software";
+          currentClause = btn.getAttribute('data-clause') || "§2.1";
+          currentAmount = btn.getAttribute('data-amount') || "$400.00";
+          var days = btn.getAttribute('data-days') || "+2 days";
+
+          if (modalQuoteClientName) modalQuoteClientName.textContent = "Draft Change Order — " + currentClient;
+          if (modalQuoteClause) modalQuoteClause.textContent = currentClause;
+          if (modalQuoteAmount) modalQuoteAmount.textContent = currentAmount;
+          if (modalQuoteDays) modalQuoteDays.textContent = days;
+
+          updateDraftTone('warm');
           if (quoteModal) quoteModal.showModal();
         });
       });
@@ -2070,7 +2677,7 @@
 
       if (btnCopyQuoteReply) {
         btnCopyQuoteReply.addEventListener('click', function () {
-          navigator.clipboard.writeText("Happy to add the CMS blog integration! That falls outside our contracted scope (§2.1), so it would be $400 and adjusts delivery by 2 business days. Should I send over the change order?");
+          navigator.clipboard.writeText(modalQuoteReplyBox.textContent);
           btnCopyQuoteReply.textContent = "Copied to Clipboard ✓";
           setTimeout(function() {
             btnCopyQuoteReply.textContent = "Copy Client Reply ✓";
@@ -2078,17 +2685,85 @@
         });
       }
 
-      // Quick Actions Rail
-      var actionButtons = document.querySelectorAll('.quick-action-btn');
-      actionButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          analyzerInput.focus();
-          analyzerInput.value = "New Request: Add third-party CRM webhook and automated PDF generation.";
-          btnAnalyzeRequest.click();
-        });
-      });
+      // 5. Modal 2: Contract Upload Modal
+      var contractUploadModal = document.getElementById('contract-upload-modal');
+      var btnTopNewContract = document.getElementById('btn-top-new-contract');
+      var btnCreateContractScreen = document.getElementById('btn-create-contract-screen');
+      var btnCloseUploadModal = document.getElementById('btn-close-upload-modal');
+      var formUploadContract = document.getElementById('form-upload-contract');
 
-      // Rail Chat Form
+      function openUploadModal() {
+        if (contractUploadModal) contractUploadModal.showModal();
+      }
+
+      if (btnTopNewContract) btnTopNewContract.addEventListener('click', openUploadModal);
+      if (btnCreateContractScreen) btnCreateContractScreen.addEventListener('click', openUploadModal);
+      if (btnCloseUploadModal && contractUploadModal) {
+        btnCloseUploadModal.addEventListener('click', function() { contractUploadModal.close(); });
+      }
+
+      if (formUploadContract) {
+        formUploadContract.addEventListener('submit', function(e) {
+          e.preventDefault();
+          alert("Contract SOW parsed successfully! AST created with 3 revisions allowed and 3 explicit exclusions.");
+          contractUploadModal.close();
+          switchScreen('contracts');
+        });
+      }
+
+      // 6. Context Injection for AI Copilot Rail
+      function updateCopilotContext(screen) {
+        var greetingSub = document.getElementById('rail-greeting-sub');
+        var insightBullets = document.getElementById('rail-insight-bullets');
+        if (!greetingSub || !insightBullets) return;
+
+        if (screen === 'contracts') {
+          greetingSub.textContent = "Viewing 3 Active Contracts:";
+          insightBullets.innerHTML = "<li>Kessler Studio reached 3/3 revision limit.</li><li>Acme Software has $640 unbilled scope.</li><li>All contracts have verified JSONB ASTs.</li>";
+        } else if (screen === 'change_orders') {
+          greetingSub.textContent = "Pipeline Status ($1,900 pending):";
+          insightBullets.innerHTML = "<li>1 Draft awaiting review ($400).</li><li>1 Sent order pending acceptance ($300).</li><li>1 Signed order ready for delivery ($1,200).</li>";
+        } else if (screen === 'ledger') {
+          greetingSub.textContent = "Audit Ledger Summary:";
+          insightBullets.innerHTML = "<li>$2,340 total scope expansions caught.</li><li>$1,840 successfully collected (78.6%).</li><li>1 goodwill waiver logged ($440).</li>";
+        } else {
+          greetingSub.textContent = "Morning, Julian! Here's what I found:";
+          insightBullets.innerHTML = "<li>2 requests are out-of-scope.</li><li>I've drafted change orders for both.</li><li>Total revenue opportunity: $700</li>";
+        }
+      }
+
+      // 7. Quick Actions in AI Rail
+      var actionAnalyze = document.querySelector('.js-action-analyze');
+      var actionGenerate = document.querySelector('.js-action-generate');
+      var actionReview = document.querySelector('.js-action-review');
+      var actionAnalytics = document.querySelector('.js-action-analytics');
+
+      if (actionAnalyze) {
+        actionAnalyze.addEventListener('click', function () {
+          switchScreen('today');
+          analyzerInput.focus();
+        });
+      }
+
+      if (actionGenerate) {
+        actionGenerate.addEventListener('click', function () {
+          switchScreen('change_orders');
+        });
+      }
+
+      if (actionReview) {
+        actionReview.addEventListener('click', function () {
+          switchScreen('contracts');
+        });
+      }
+
+      if (actionAnalytics) {
+        actionAnalytics.addEventListener('click', function () {
+          switchScreen('ledger');
+        });
+      }
+
+      // 8. Chat Rail Interactive Form
       var chatForm = document.getElementById('copilot-chat-form');
       var chatInput = document.getElementById('copilot-chat-input');
       if (chatForm && chatInput) {
@@ -2097,7 +2772,15 @@
           var q = chatInput.value.trim();
           if (!q) return;
           chatInput.value = "";
-          alert("AI Copilot: I analyzed \"" + q + "\" against your 3 active contracts. All clauses are currently healthy.");
+          alert("AI Copilot: I analyzed \"" + q + "\" against your 3 active contracts. All clauses are verified and in sync.");
+        });
+      }
+
+      // 9. Export Ledger Button
+      var btnExportLedger = document.getElementById('btn-export-ledger');
+      if (btnExportLedger) {
+        btnExportLedger.addEventListener('click', function() {
+          alert("Downloading billable_recovery_ledger_august2026.csv...");
         });
       }
 
