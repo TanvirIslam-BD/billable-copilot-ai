@@ -1606,35 +1606,137 @@
        ========================================================================== */
     .site-footer {
       border-top: 1px solid var(--border);
-      padding-block: clamp(3rem, 6vw, 5rem);
+      padding-top: clamp(3rem, 6vw, 4.5rem);
+      padding-bottom: clamp(2rem, 4vw, 3rem);
       margin-top: auto;
       background: #060708;
     }
 
-    .footer-inner {
+    .footer-top-grid {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
     }
 
     @media (min-width: 768px) {
-      .footer-inner {
+      .footer-top-grid {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+
+    .footer-company-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-company-name {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .footer-address {
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-style: normal;
+    }
+
+    .footer-social-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
+    .social-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-highlight);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .social-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .social-btn.instagram:hover { color: #E1306C; }
+    .social-btn.threads:hover { color: #FFFFFF; }
+    .social-btn.tiktok:hover { color: #00F2FE; }
+    .social-btn.linkedin:hover { color: #0A66C2; }
+    .social-btn.facebook:hover { color: #1877F2; }
+    .social-btn.email:hover { color: var(--money); }
+
+    .footer-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-actions {
+        align-items: flex-end;
+      }
+    }
+
+    .footer-divider {
+      height: 1px;
+      background: var(--border);
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .footer-bottom-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom-row {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
       }
     }
 
-    .footer-meta {
+    .footer-copyright {
       display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: var(--body);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
     }
 
-    .footer-parent-mark {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .shield-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
 
     .footer-nav {
@@ -2214,20 +2316,87 @@
   <!-- Block 7 — Footer -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-inner">
-        <div class="footer-meta">
-          <ul class="footer-nav">
-            <li><button class="footer-link js-open-legal" data-modal="privacy">Privacy</button></li>
-            <li>·</li>
-            <li><button class="footer-link js-open-legal" data-modal="terms">Terms</button></li>
-            <li>·</li>
-            <li><button class="footer-link js-open-legal" data-modal="contact">Contact</button></li>
-          </ul>
-          <span class="footer-parent-mark">Profile AI / billable.copilotai.live</span>
+      <!-- Top Grid: Company Info & CTAs -->
+      <div class="footer-top-grid">
+        <div class="footer-company-block">
+          <div class="footer-company-name">My Copilot AI LLC</div>
+          <address class="footer-address">
+            117 S Lexington St, Ste 100<br>
+            Harrisonville, MO 64701-2444<br>
+            USA
+          </address>
+
+          <!-- Social / Channels Row -->
+          <div class="footer-social-row">
+            <!-- Instagram -->
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-btn instagram" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <!-- Threads -->
+            <a href="https://threads.net" target="_blank" rel="noopener noreferrer" class="social-btn threads" aria-label="Threads">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.001 2c-5.523 0-10 4.477-10 10s4.477 10 10 10c2.723 0 5.2-1.092 7.008-2.863l-1.396-1.396A7.962 7.962 0 0 1 12.001 20c-4.411 0-8-3.589-8-8s3.589-8 8-8c4.321 0 7.848 3.435 7.994 7.727.026.772-.073 1.543-.292 2.277-.428 1.436-1.428 2.296-2.738 2.296-1.127 0-1.922-.646-2.128-1.729.845-.44 1.488-1.218 1.767-2.176.326-1.116.141-2.288-.507-3.219-.742-1.066-1.96-1.676-3.26-1.676-2.28 0-4.133 1.854-4.133 4.133 0 2.28 1.853 4.134 4.133 4.134.935 0 1.815-.316 2.535-.89.516.924 1.437 1.456 2.593 1.456 1.954 0 3.498-1.31 4.132-3.435.292-.98.423-2.009.388-3.044C22.38 5.766 17.653 2 12.001 2zm-.296 11.834c-1.176 0-2.133-.957-2.133-2.134 0-1.176.957-2.133 2.133-2.133 1.177 0 2.134.957 2.134 2.133 0 1.177-.957 2.134-2.134 2.134z"/>
+              </svg>
+            </a>
+            <!-- TikTok -->
+            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="social-btn tiktok" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+              </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn linkedin" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v7.6H9.2v-7.6H6.46M7.83 6.45a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"/>
+              </svg>
+            </a>
+            <!-- Facebook -->
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-btn facebook" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95C18.05 21.45 22 17.19 22 12z"/>
+              </svg>
+            </a>
+            <!-- Email -->
+            <a href="mailto:support@copilotai.live" class="social-btn email" aria-label="Email support">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </a>
+          </div>
         </div>
-        <button class="btn-primary js-open-modal" data-action="connect_contract_footer">
-          Connect your contract →
-        </button>
+
+        <div class="footer-actions">
+          <button class="btn-primary js-open-modal" data-action="connect_contract_footer">
+            Connect your contract →
+          </button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="footer-divider"></div>
+
+      <!-- Bottom Row: Shield Copyright & Legal Nav -->
+      <div class="footer-bottom-row">
+        <div class="footer-copyright">
+          <svg class="shield-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L4 5V11.5C4 16.5 7.5 21 12 22C16.5 21 20 16.5 20 11.5V5L12 2Z" fill="#10B981"/>
+            <path d="M9 11.5L11 13.5L15 9.5" stroke="#08090A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>© 2026 My Copilot AI LLC. All rights reserved.</span>
+        </div>
+
+        <ul class="footer-nav">
+          <li><button class="footer-link js-open-legal" data-modal="privacy">Privacy</button></li>
+          <li>·</li>
+          <li><button class="footer-link js-open-legal" data-modal="terms">Terms</button></li>
+          <li>·</li>
+          <li><button class="footer-link js-open-legal" data-modal="contact">Contact</button></li>
+        </ul>
       </div>
     </div>
   </footer>
@@ -2737,8 +2906,8 @@
           body: "<h3>Scope Analysis</h3><p>Billable provides scope analysis and drafting suggestions. Freelancers and studios maintain full responsibility for their client agreements and invoice dispatches.</p><h3>Subscription & Cancelation</h3><p>Subscriptions renew monthly or annually. Cancel anytime from your account dashboard with zero penalty.</p><h3>Global Operations</h3><p>Payments are securely handled via Merchant of Record with automated global VAT/tax compliance.</p>"
         },
         contact: {
-          title: "Contact & Support",
-          body: "<h3>Direct Engineering Contact</h3><p>Email: <strong>support@copilotai.live</strong></p><p>We respond within 24 hours to all freelancer and agency inquiries.</p><h3>Location</h3><p>Profile AI / Billable Copilot AI Network.</p>"
+          title: "Contact & Headquarters",
+          body: "<h3>My Copilot AI LLC</h3><p>117 S Lexington St, Ste 100<br>Harrisonville, MO 64701-2444<br>USA</p><h3>Direct Support</h3><p>Email: <strong>support@copilotai.live</strong></p><p>We respond within 24 hours to all freelancer and agency inquiries.</p>"
         }
       };
 
