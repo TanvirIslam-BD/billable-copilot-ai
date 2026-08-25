@@ -296,19 +296,19 @@
     }
 
     .chip-flag {
-      color: #FFA2B0;
+      color: var(--flag);
       background: var(--flag-surface);
       border: 1px solid var(--flag-border);
     }
 
     .chip-scope {
-      color: #BAE6FD;
+      color: var(--in-scope);
       background: var(--in-scope-surface);
       border: 1px solid var(--in-scope-border);
     }
 
     .chip-ambiguous {
-      color: #FDE68A;
+      color: var(--ambiguous);
       background: var(--ambiguous-surface);
       border: 1px solid var(--ambiguous-border);
     }
@@ -346,30 +346,36 @@
     }
 
     .btn-ai {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(139, 92, 246, 0.2) 100%);
-      border: 1px solid rgba(0, 242, 254, 0.4);
-      color: var(--app-text);
+      background: var(--ai-cyan-surf);
+      border: 1px solid var(--ai-cyan);
+      color: var(--ai-cyan);
       font-weight: 600;
-      box-shadow: 0 0 16px rgba(0, 242, 254, 0.15);
+      box-shadow: 0 0 12px var(--ai-cyan-glow);
     }
 
     .btn-ai:hover {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(139, 92, 246, 0.35) 100%);
-      border-color: var(--ai-cyan);
-      box-shadow: 0 0 24px rgba(0, 242, 254, 0.3);
+      background: var(--ai-cyan);
+      color: #FFFFFF;
+      box-shadow: 0 0 20px var(--ai-cyan-glow);
       transform: translateY(-1px);
     }
 
     .btn-primary {
       background: var(--money);
-      color: #051B12;
+      color: #FFFFFF;
       font-weight: 600;
-      border-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--money-border);
+      box-shadow: 0 2px 8px var(--money-glow);
+    }
+
+    [data-theme="dark"] .btn-primary {
+      color: #051B12;
+      background: #10B981;
     }
 
     .btn-primary:hover {
-      background: #10B981;
-      box-shadow: 0 0 18px var(--money-glow);
+      filter: brightness(1.1);
+      box-shadow: 0 4px 14px var(--money-glow);
       transform: translateY(-1px);
     }
 

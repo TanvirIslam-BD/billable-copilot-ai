@@ -458,15 +458,22 @@
     /* ==========================================================================
        2. Sticky Navigation Header
        ========================================================================== */
+    /* ==========================================================================
+       2. Sticky Navigation Header
+       ========================================================================== */
     .site-header {
       border-bottom: 1px solid var(--border);
-      padding-block: 1.1rem;
-      background: rgba(8, 9, 10, 0.75);
+      padding-block: 0.95rem;
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 60;
+    }
+
+    [data-theme="dark"] .site-header {
+      background: rgba(8, 9, 10, 0.75);
     }
 
     .header-inner {
@@ -487,23 +494,29 @@
       font-family: var(--mono);
       font-weight: 700;
       font-size: 1rem;
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      border: 1px solid rgba(5, 150, 105, 0.3);
       width: 32px;
       height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(8, 9, 10, 0.8) 100%);
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.12) 0%, rgba(255, 255, 255, 0.9) 100%);
       color: var(--money);
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+      box-shadow: 0 1px 4px rgba(5, 150, 105, 0.15);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] .brand-mark {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(8, 9, 10, 0.8) 100%);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
     }
 
     .brand:hover .brand-mark {
       transform: scale(1.08) rotate(-4deg);
       border-color: var(--money);
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.3);
     }
 
     .brand-name {
@@ -511,6 +524,12 @@
       font-weight: 800;
       font-size: 1.35rem;
       letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #0F172A 30%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    [data-theme="dark"] .brand-name {
       background: linear-gradient(180deg, #FFFFFF 30%, #CBD5E1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -524,10 +543,11 @@
       font-size: 0.75rem;
       font-weight: 500;
       color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-card);
       border: 1px solid var(--border);
       padding: 0.35rem 0.9rem;
       border-radius: var(--radius-full);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
     @media (min-width: 768px) {
@@ -545,15 +565,15 @@
       padding: 0.55rem 1.1rem;
       border: 1px solid var(--border-highlight);
       border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card);
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
     .header-cta:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: var(--bg-card-hover);
+      border-color: var(--money);
       transform: translateY(-1px);
     }
 
@@ -566,17 +586,25 @@
       font-family: var(--body);
       font-size: 1.0625rem;
       font-weight: 600;
-      color: #061A12;
-      background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      background: linear-gradient(180deg, #059669 0%, #047857 100%);
+      border: 1px solid #047857;
       border-radius: var(--radius-sm);
       padding: 0.95rem 1.95rem;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35), 0 2px 4px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25), 0 1px 3px rgba(0, 0, 0, 0.08);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    [data-theme="dark"] .btn-primary {
+      color: #061A12;
+      background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35), 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .btn-primary::after {
@@ -592,6 +620,11 @@
 
     .btn-primary:hover {
       transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
+      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+    }
+
+    [data-theme="dark"] .btn-primary:hover {
       box-shadow: 0 0 36px rgba(16, 185, 129, 0.5), 0 6px 12px rgba(0, 0, 0, 0.6);
       background: linear-gradient(180deg, #4ADE80 0%, #10B981 100%);
     }
@@ -613,17 +646,19 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border: 1px solid var(--border-highlight);
       border-radius: var(--radius-sm);
       padding: 0.45rem 0.85rem;
       cursor: pointer;
       transition: all 0.18s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      touch-action: manipulation;
     }
 
     .btn-secondary:hover {
-      border-color: var(--text-secondary);
-      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--money);
+      background: var(--bg-card-hover);
       transform: translateY(-1px);
     }
 
@@ -664,10 +699,16 @@
       letter-spacing: -0.04em;
       line-height: 1.02;
       margin-bottom: 1.5rem;
-      background: linear-gradient(180deg, #FFFFFF 20%, #A2B2C8 100%);
+      background: linear-gradient(180deg, #0F172A 20%, #334155 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: heroEntry 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
+
+    [data-theme="dark"] .hero-h1 {
+      background: linear-gradient(180deg, #FFFFFF 20%, #A2B2C8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .desktop-br {
