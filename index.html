@@ -1944,7 +1944,10 @@
         <span class="dot" style="width:6px;height:6px;border-radius:50%;background:#10B981;box-shadow:0 0 8px #10B981;"></span>
         <span>MCP PROTOCOL ACTIVE — v2.4</span>
       </div>
-      <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect your contract →</button>
+      <div style="display:flex; align-items:center; gap:0.65rem;">
+        <a href="/app.html" class="header-cta" style="border-color:var(--money-border); color:var(--money);">Launch App ↗</a>
+        <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect contract →</button>
+      </div>
     </div>
   </header>
 
@@ -2428,7 +2431,10 @@
         <button type="submit" class="btn-primary form-submit">Get MCP Access →</button>
       </form>
       <div id="form-success" class="form-success-msg" style="display: none;">
-        <strong>Spot reserved.</strong> Check your inbox for your private connector key and MCP manifest.
+        <strong>Connector Key Generated!</strong> Check your inbox for your OAuth token or enter your signed-in workspace now:
+        <div style="margin-top: 1rem;">
+          <a href="/app.html" class="btn-primary" style="display:inline-block; text-decoration:none; width:100%; text-align:center;">Enter Billable Dashboard →</a>
+        </div>
       </div>
     </div>
   </dialog>

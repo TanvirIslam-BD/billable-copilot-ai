@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billable Copilot — Freelance Contract & Scope Dashboard</title>
+  <meta name="description" content="The signed-in space where freelancers keep contracts, check scope requests, send polite change orders, and talk to their money copilot.">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Typography: Plus Jakarta Sans + Inter + IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. Design Tokens — Dark Console Aesthetic
+       ========================================================================== */
+    :root {
+      /* Working Surface Tokens */
+      --app-bg:       #0D1012;
+      --app-panel:    #161A1D;
+      --app-surface:  #1A1F23;
+      --app-surface-hover: #22282D;
+      --app-line:     #252A2D;
+      --app-line-light:#30373B;
+
+      /* Ink Tokens */
+      --app-text:     #E4E9EB;
+      --app-muted:    #8A9396;
+      --app-faint:    #5A6265;
+      --app-white:    #FFFFFF;
+
+      /* Meaning Accents — Information only */
+      --money:        #0E9F6E;  /* Recovered revenue only */
+      --money-glow:   rgba(14, 159, 110, 0.2);
+      --money-surface:rgba(14, 159, 110, 0.1);
+      --money-border: rgba(14, 159, 110, 0.3);
+
+      --flag:         #E5484D;  /* Out of scope only */
+      --flag-surface: rgba(229, 72, 77, 0.1);
+      --flag-border:  rgba(229, 72, 77, 0.3);
+
+      --ambiguous:    #F59E0B;  /* Ambiguous scope */
+      --ambiguous-surface: rgba(245, 158, 11, 0.1);
+      --ambiguous-border:  rgba(245, 158, 11, 0.3);
+
+      --in-scope:     #38BDF8;  /* In-scope */
+      --in-scope-surface: rgba(56, 189, 248, 0.1);
+      --in-scope-border:  rgba(56, 189, 248, 0.3);
+
+      /* Typography */
+      --display:      'Plus Jakarta Sans', system-ui, sans-serif;
+      --body:         'Inter', system-ui, sans-serif;
+      --mono:         'IBM Plex Mono', monospace;
+
+      /* Dimensions & Spacing */
+      --rail-width:   380px;
+      --nav-width:    230px;
+      --header-h:     60px;
+      --radius-sm:    4px;
+      --radius-md:    8px;
+      --radius-lg:    12px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      background-color: var(--app-bg);
+      color: var(--app-text);
+      font-family: var(--body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--money);
+      outline-offset: 2px;
+    }
+
+    /* Tabular Numerals Utility */
+    .mono {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .num-money {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--money);
+    }
+
+    /* Badges & Chips */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chip-flag {
+      color: #FFA2B0;
+      background: var(--flag-surface);
+      border: 1px solid var(--flag-border);
+    }
+
+    .chip-scope {
+      color: #BAE6FD;
+      background: var(--in-scope-surface);
+      border: 1px solid var(--in-scope-border);
+    }
+
+    .chip-ambiguous {
+      color: #FDE68A;
+      background: var(--ambiguous-surface);
+      border: 1px solid var(--ambiguous-border);
+    }
+
+    .chip-money {
+      color: var(--money);
+      background: var(--money-surface);
+      border: 1px solid var(--money-border);
+    }
+
+    .chip-muted {
+      color: var(--app-muted);
+      background: var(--app-surface);
+      border: 1px solid var(--app-line);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--money);
+      color: #051B12;
+      font-weight: 600;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: #10B981;
+      box-shadow: 0 0 16px var(--money-glow);
+    }
+
+    .btn-secondary {
+      background: var(--app-surface);
+      color: var(--app-text);
+      border-color: var(--app-line);
+    }
+
+    .btn-secondary:hover {
+      background: var(--app-surface-hover);
+      border-color: var(--app-line-light);
+    }
+
+    .btn-sm {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      font-family: var(--mono);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--app-muted);
+      border-color: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: var(--app-surface);
+      color: var(--app-text);
+    }
+
+    /* ==========================================================================
+       2. Layout Grid (Nav, Main Canvas, Chat Rail)
+       ========================================================================== */
+    .app-layout {
+      display: grid;
+      grid-template-columns: var(--nav-width) 1fr var(--rail-width);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    @media (max-width: 1200px) {
+      .app-layout {
+        grid-template-columns: var(--nav-width) 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Sidebar Navigation */
+    .app-sidebar {
+      background: var(--app-panel);
+      border-right: 1px solid var(--app-line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 30;
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        display: none;
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 250px;
+      }
+      .app-sidebar.is-open {
+        display: flex;
+      }
+    }
+
+    .sidebar-top {
+      padding: 1.25rem 1rem;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--app-text);
+      margin-bottom: 1.75rem;
+      padding-inline: 0.5rem;
+    }
+
+    .sidebar-brand-mark {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.9rem;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--money);
+      background: var(--money-surface);
+      color: var(--money);
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-brand-text {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .nav-item-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--app-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item-btn:hover {
+      background: var(--app-surface);
+      color: var(--app-text);
+    }
+
+    .nav-item-btn.is-active {
+      background: var(--app-surface);
+      color: var(--app-white);
+      font-weight: 600;
+      border-left: 2px solid var(--money);
+    }
+
+    .nav-btn-content {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
+    .nav-badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 99px;
+      background: var(--app-line);
+      color: var(--app-text);
+    }
+
+    .sidebar-bottom {
+      padding: 1rem;
+      border-top: 1px solid var(--app-line);
+    }
+
+    .trial-card {
+      background: linear-gradient(135deg, rgba(14, 159, 110, 0.1) 0%, rgba(22, 26, 29, 0.8) 100%);
+      border: 1px solid var(--money-border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .trial-header {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--money);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .trial-text {
+      font-size: 0.8125rem;
+      color: var(--app-text);
+      line-height: 1.4;
+      margin-bottom: 0.65rem;
+    }
+
+    .user-profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.5rem;
+    }
+
+    .user-avatar-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #232A2F;
+      border: 1px solid var(--app-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--app-text);
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--app-text);
+    }
+
+    .user-plan {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--money);
+    }
+
+    /* ==========================================================================
+       3. Main Content Stage
+       ========================================================================== */
+    .app-main {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--app-bg);
+    }
+
+    .app-topbar {
+      height: var(--header-h);
+      border-bottom: 1px solid var(--app-line);
+      padding-inline: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--app-panel);
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .main-scroll-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    /* Views */
+    .screen-view {
+      display: none;
+      animation: fadeIn 0.15s ease both;
+    }
+
+    .screen-view.is-active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sticky Top Paste Box on Stream */
+    .pinned-paste-box {
+      background: var(--app-panel);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .paste-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+
+    .paste-box-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--app-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .paste-contract-select {
+      background: var(--app-surface);
+      color: var(--app-text);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem 0.5rem;
+      font-family: var(--body);
+      font-size: 0.75rem;
+    }
+
+    .paste-input-area {
+      width: 100%;
+      min-height: 60px;
+      max-height: 140px;
+      resize: vertical;
+      background: var(--app-bg);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      font-family: var(--body);
+      font-size: 0.875rem;
+      color: var(--app-text);
+      margin-bottom: 0.65rem;
+    }
+
+    .paste-input-area:focus {
+      outline: 2px solid var(--money);
+      border-color: var(--money);
+    }
+
+    .paste-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Metric Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: var(--app-panel);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+    }
+
+    .metric-card-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--app-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.45rem;
+    }
+
+    .metric-card-value {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--app-text);
+      line-height: 1;
+    }
+
+    .metric-card-sub {
+      font-size: 0.75rem;
+      color: var(--app-muted);
+      margin-top: 0.45rem;
+    }
+
+    /* Section Cards & Tables */
+    .dashboard-section {
+      background: var(--app-panel);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.75rem;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--app-line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: var(--app-surface);
+      color: var(--app-muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.65rem 1.25rem;
+      border-bottom: 1px solid var(--app-line);
+    }
+
+    .data-table td {
+      padding: 0.95rem 1.25rem;
+      border-bottom: 1px solid var(--app-line);
+      color: var(--app-text);
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .text-right { text-align: right; }
+
+    /* Meter Bar */
+    .revision-meter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .meter-track {
+      width: 50px;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--app-surface);
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: var(--money);
+      border-radius: 99px;
+    }
+
+    .meter-fill.warning {
+      background: var(--ambiguous);
+    }
+
+    .meter-fill.danger {
+      background: var(--flag);
+    }
+
+    /* Pipeline Kanban for Change Orders */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pipeline-col {
+      background: var(--app-surface);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pipeline-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--app-muted);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--app-line);
+    }
+
+    .pipeline-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .pipeline-card {
+      background: var(--app-panel);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .pipeline-card:hover {
+      border-color: var(--app-line-light);
+      transform: translateY(-1px);
+    }
+
+    .p-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.45rem;
+    }
+
+    .p-card-client {
+      font-weight: 600;
+      font-size: 0.8125rem;
+    }
+
+    .p-card-amount {
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--money);
+      font-size: 0.875rem;
+    }
+
+    .p-card-body {
+      font-size: 0.75rem;
+      color: var(--app-muted);
+      line-height: 1.4;
+      margin-bottom: 0.65rem;
+    }
+
+    .p-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--app-faint);
+    }
+
+    /* ==========================================================================
+       4. Right-Hand Copilot Chat Rail
+       ========================================================================== */
+    .app-chat-rail {
+      background: var(--app-panel);
+      border-left: 1px solid var(--app-line);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      z-index: 25;
+    }
+
+    @media (max-width: 1200px) {
+      .app-chat-rail {
+        position: fixed;
+        inset: 0 0 0 auto;
+        width: 380px;
+        transform: translateX(100%);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+      }
+      .app-chat-rail.is-open {
+        transform: translateX(0);
+      }
+    }
+
+    .rail-header {
+      height: var(--header-h);
+      border-bottom: 1px solid var(--app-line);
+      padding-inline: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--app-surface);
+      flex-shrink: 0;
+    }
+
+    .rail-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .rail-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--money);
+      box-shadow: 0 0 8px var(--money);
+    }
+
+    .rail-title {
+      font-family: var(--display);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .rail-context-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.45rem;
+      background: var(--app-bg);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      color: var(--app-muted);
+    }
+
+    .rail-messages-stream {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-width: 92%;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+    }
+
+    .chat-msg.assistant {
+      align-self: flex-start;
+    }
+
+    .chat-bubble {
+      padding: 0.75rem 0.95rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--money);
+      color: #051B12;
+      font-weight: 500;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-msg.assistant .chat-bubble {
+      background: var(--app-surface);
+      border: 1px solid var(--app-line);
+      color: var(--app-text);
+      border-bottom-left-radius: 2px;
+    }
+
+    /* Tool Call Execution Chips in Chat */
+    .tool-chip {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--app-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--app-line);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Action Confirmation Card in Chat */
+    .chat-action-card {
+      background: var(--app-bg);
+      border: 1px solid var(--money-border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .action-card-header {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--money);
+      text-transform: uppercase;
+    }
+
+    /* Rail Suggested Prompts */
+    .rail-suggestions {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--app-line);
+      background: var(--app-bg);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .suggestion-btn {
+      text-align: left;
+      font-family: var(--body);
+      font-size: 0.75rem;
+      color: var(--app-muted);
+      background: var(--app-surface);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .suggestion-btn:hover {
+      color: var(--app-text);
+      border-color: var(--app-line-light);
+    }
+
+    /* Rail Input */
+    .rail-input-container {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--app-line);
+      background: var(--app-panel);
+    }
+
+    .rail-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .rail-input {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      background: var(--app-bg);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      color: var(--app-text);
+      font-family: var(--body);
+      font-size: 0.875rem;
+    }
+
+    .rail-input:focus {
+      outline: 2px solid var(--money);
+      border-color: var(--money);
+    }
+
+    /* Modal Dialogs */
+    dialog {
+      position: fixed;
+      inset: 0;
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--app-line-light);
+      border-radius: var(--radius-md);
+      background: var(--app-panel);
+      color: var(--app-text);
+      max-width: 600px;
+      width: calc(100% - 2rem);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      z-index: 100;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--app-line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--app-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-ctrl {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: var(--app-bg);
+      border: 1px solid var(--app-line);
+      border-radius: var(--radius-sm);
+      color: var(--app-text);
+      font-family: var(--body);
+      font-size: 0.875rem;
+    }
+
+    .form-ctrl:focus {
+      outline: 2px solid var(--money);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- ====================================================================
+         1. Left Navigation Sidebar
+         ==================================================================== -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-top">
+        <a href="/" class="sidebar-brand" title="Back to Landing Page">
+          <span class="sidebar-brand-mark">§</span>
+          <span class="sidebar-brand-text">Billable</span>
+        </a>
+
+        <nav>
+          <ul class="nav-list">
+            <li>
+              <button class="nav-item-btn is-active js-nav-tab" data-screen="today">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Today
+                </span>
+                <span class="nav-badge" id="badge-today-open">2</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn js-nav-tab" data-screen="contracts">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Contracts
+                </span>
+                <span class="nav-badge" id="badge-contracts-count">3</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn js-nav-tab" data-screen="requests">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                  Requests
+                </span>
+                <span class="nav-badge" id="badge-requests-count">5</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn js-nav-tab" data-screen="change-orders">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  Change Orders
+                </span>
+                <span class="nav-badge" id="badge-co-count">3</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn js-nav-tab" data-screen="ledger">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                  Recovery Ledger
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn js-nav-tab" data-screen="settings">
+                <span class="nav-btn-content">
+                  <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  MCP & Settings
+                </span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <!-- Day 11 Conversion / Trial Moment Card -->
+        <div class="trial-card">
+          <div class="trial-header">PRO TRIAL — DAY 11</div>
+          <div class="trial-text">Billable found <strong>$1,840</strong> for you. Trial ends in 3 days.</div>
+          <button class="btn btn-primary btn-sm" style="width:100%" onclick="alert('Subscription checkout configured via Merchant of Record (Paddle/Lemon Squeezy)')">Keep Protection ($19/mo)</button>
+        </div>
+
+        <div class="user-profile-row">
+          <div class="user-avatar-meta">
+            <div class="user-avatar">JD</div>
+            <div class="user-details">
+              <span class="user-name">Julian Vance</span>
+              <span class="user-plan">Solo Freelance</span>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="btn-toggle-rail-mobile" title="Toggle AI Copilot">§ Copilot</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         2. Main Application Content Stage
+         ==================================================================== -->
+    <main class="app-main">
+      <header class="app-topbar">
+        <h1 class="topbar-title" id="screen-title">Today</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary btn-sm" id="btn-open-new-contract">+ Add Contract</button>
+          <button class="btn btn-primary btn-sm" id="btn-focus-paste">Check Request ↵</button>
+        </div>
+      </header>
+
+      <div class="main-scroll-view">
+        <!-- Pinned Fast-Check Box (Always reachable) -->
+        <div class="pinned-paste-box">
+          <div class="paste-box-header">
+            <span class="paste-box-title">⚡ Check Client Request Against Scope</span>
+            <select class="paste-contract-select" id="fast-check-contract-select">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+          <textarea class="paste-input-area" id="fast-check-input" placeholder="Paste incoming email, Slack message, or WhatsApp ask here..."></textarea>
+          <div class="paste-actions-row">
+            <span style="font-size:0.75rem; color:var(--app-muted);">Checks deliverables, revision caps, and rates instantly</span>
+            <button class="btn btn-primary btn-sm" id="btn-run-fast-check">Run Scope Check →</button>
+          </div>
+        </div>
+
+        <!-- SCREEN 1: TODAY (Default Landing) -->
+        <div class="screen-view is-active" id="screen-today">
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-card-label">Recovered This Month</div>
+              <div class="metric-card-value num-money" id="today-stat-recovered">$1,840</div>
+              <div class="metric-card-sub">From 4 caught change orders</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Pending Action</div>
+              <div class="metric-card-value" id="today-stat-pending">2</div>
+              <div class="metric-card-sub">Out-of-scope asks awaiting reply</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Active Contracts</div>
+              <div class="metric-card-value" id="today-stat-contracts">3</div>
+              <div class="metric-card-sub">1 contract at revision limit</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Aging Change Orders</div>
+              <div class="metric-card-value" style="color:var(--ambiguous)" id="today-stat-aging">1</div>
+              <div class="metric-card-sub">&gt;14 days pending client reply</div>
+            </div>
+          </div>
+
+          <!-- Open Action Items -->
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">Open Requests Requiring Reply</h2>
+              <span class="chip chip-flag">2 Out of Scope</span>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client / Contract</th>
+                  <th>Request Extract</th>
+                  <th>Verdict</th>
+                  <th>Clause</th>
+                  <th>Recoverable</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-today-open">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Contracts At A Glance -->
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">Contract Health &amp; Revision Limits</h2>
+              <button class="btn btn-ghost btn-sm js-nav-tab" data-screen="contracts">View All Contracts →</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Project Title</th>
+                  <th>Revisions Used</th>
+                  <th>Unbilled Caught</th>
+                  <th>Days to Deadline</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-today-contracts">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SCREEN 2: CONTRACTS -->
+        <div class="screen-view" id="screen-contracts">
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">Active Client Contracts</h2>
+              <button class="btn btn-primary btn-sm" id="btn-add-contract-2">+ New Contract</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Contract Title</th>
+                  <th>Hourly / Fixed</th>
+                  <th>Revision Meter</th>
+                  <th>Unbilled Work</th>
+                  <th>Status</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-contracts-list">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: REQUESTS STREAM -->
+        <div class="screen-view" id="screen-requests">
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">All Ingested Requests Stream</h2>
+              <div style="display:flex; gap:0.5rem;">
+                <select class="paste-contract-select" id="filter-requests-verdict">
+                  <option value="all">All Verdicts</option>
+                  <option value="out_of_scope">Out of Scope</option>
+                  <option value="in_scope">In Scope</option>
+                  <option value="ambiguous">Ambiguous</option>
+                </select>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Contract</th>
+                  <th>Raw Client Text</th>
+                  <th>Verdict</th>
+                  <th>Clause</th>
+                  <th>Amount</th>
+                  <th class="text-right">Reply / Order</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-requests-stream">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: CHANGE ORDERS PIPELINE -->
+        <div class="screen-view" id="screen-change-orders">
+          <div class="pipeline-grid">
+            <!-- Draft -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span>1. Drafts</span>
+                <span id="p-count-draft">1</span>
+              </div>
+              <div class="pipeline-cards-list" id="p-list-draft"></div>
+            </div>
+            <!-- Sent -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span>2. Sent to Client</span>
+                <span id="p-count-sent">1</span>
+              </div>
+              <div class="pipeline-cards-list" id="p-list-sent"></div>
+            </div>
+            <!-- Accepted -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span>3. Accepted</span>
+                <span id="p-count-accepted">1</span>
+              </div>
+              <div class="pipeline-cards-list" id="p-list-accepted"></div>
+            </div>
+            <!-- Paid -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span>4. Paid</span>
+                <span id="p-count-paid">1</span>
+              </div>
+              <div class="pipeline-cards-list" id="p-list-paid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 5: RECOVERY LEDGER -->
+        <div class="screen-view" id="screen-ledger">
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-card-label">Total Caught (This Month)</div>
+              <div class="metric-card-value num-money">$2,340</div>
+              <div class="metric-card-sub">Identified out-of-scope work</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Billed via Change Orders</div>
+              <div class="metric-card-value num-money">$1,900</div>
+              <div class="metric-card-sub">81% conversion rate</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Waived Work (Goodwill)</div>
+              <div class="metric-card-value mono" style="color:var(--app-muted)">$440</div>
+              <div class="metric-card-sub">Voluntarily absorbed by you</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card-label">Collected &amp; Paid</div>
+              <div class="metric-card-value num-money">$1,500</div>
+              <div class="metric-card-sub">$400 pending in transit</div>
+            </div>
+          </div>
+
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">Append-Only Event Ledger (Audit Trail)</h2>
+              <button class="btn btn-secondary btn-sm" id="btn-export-ledger">Export CSV / JSON</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Event Type</th>
+                  <th>Contract / Client</th>
+                  <th>Reasoning / Context</th>
+                  <th class="text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-ledger-events">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SCREEN 6: MCP & SETTINGS -->
+        <div class="screen-view" id="screen-settings">
+          <div class="dashboard-section">
+            <div class="section-header">
+              <h2 class="section-title">MCP Protocol Configuration (Claude &amp; ChatGPT)</h2>
+              <span class="chip chip-money">OAuth 2.1 Active</span>
+            </div>
+            <div style="padding:1.5rem;">
+              <p style="color:var(--app-muted); margin-bottom:1rem;">The same contract scope engine powering this web UI connects directly to your local Claude Desktop or ChatGPT workspace via Model Context Protocol (MCP).</p>
+              
+              <div class="form-group">
+                <label class="form-label">Claude Desktop Configuration (`claude_desktop_config.json`)</label>
+                <textarea class="form-ctrl mono" style="height:120px; font-size:0.75rem;" readonly>{
+  "mcpServers": {
+    "billable": {
+      "command": "npx",
+      "args": ["-y", "@billable/mcp@latest"],
+      "env": {
+        "BILLABLE_API_KEY": "bil_live_89a74c99e12f00a4b89"
+      }
+    }
+  }
+}</textarea>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Default Hourly Rate ($)</label>
+                  <input type="number" class="form-ctrl mono" id="cfg-rate" value="100">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Default Change Order Tone</label>
+                  <select class="form-ctrl" id="cfg-tone">
+                    <option value="warm" selected>Warm &amp; Polite (Recommended)</option>
+                    <option value="neutral">Neutral &amp; Direct</option>
+                    <option value="firm">Firm &amp; Formal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         3. Right-Hand Copilot Chat Rail
+         ==================================================================== -->
+    <aside class="app-chat-rail" id="app-chat-rail">
+      <div class="rail-header">
+        <div class="rail-title-box">
+          <span class="rail-status-dot"></span>
+          <span class="rail-title">Scope Copilot</span>
+        </div>
+        <span class="rail-context-tag" id="rail-context-tag">ctx: today</span>
+      </div>
+
+      <div class="rail-messages-stream" id="rail-messages">
+        <!-- Assistant Greeting -->
+        <div class="chat-msg assistant">
+          <div class="chat-bubble">
+            Morning Julian. You have <strong>2 open requests</strong> from Acme Corp and Kessler Studio that fall outside original scope. I've prepared change order drafts for both.
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested contextual prompts -->
+      <div class="rail-suggestions" id="rail-suggestions">
+        <!-- Injected via JS based on current screen -->
+      </div>
+
+      <div class="rail-input-container">
+        <form id="rail-form" class="rail-form">
+          <input type="text" class="rail-input" id="rail-input" placeholder="Ask copilot about scope or contracts..." autocomplete="off">
+          <button type="submit" class="btn btn-primary btn-sm">Send</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ====================================================================
+       4. Modals & Dialogs
+       ==================================================================== -->
+  <!-- Add Contract Modal -->
+  <dialog id="modal-add-contract">
+    <div class="modal-header">
+      <h3 style="font-family:var(--display); font-size:1.15rem; font-weight:700;">Add Contract &amp; Parse Scope</h3>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('modal-add-contract').close()">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-new-contract">
+        <div class="form-group">
+          <label class="form-label">Client Name</label>
+          <input type="text" class="form-ctrl" id="new-c-client" placeholder="e.g. Acme Corp" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Project Title</label>
+          <input type="text" class="form-ctrl" id="new-c-title" placeholder="e.g. Brand Identity &amp; Web Redesign" required>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Fixed Project Fee ($)</label>
+            <input type="number" class="form-ctrl mono" id="new-c-fee" placeholder="4500" value="4500">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Revisions Allowed</label>
+            <input type="number" class="form-ctrl mono" id="new-c-revisions" placeholder="3" value="3">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Raw Contract Text / Scope Summary</label>
+          <textarea class="form-ctrl" id="new-c-raw" style="height:110px;" placeholder="Paste deliverables: 5 custom pages, responsive design, 3 revision rounds. Extra pages $400/ea..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Parse Scope &amp; Save Contract →</button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Contract Detail / Scope Inspector Modal -->
+  <dialog id="modal-contract-detail">
+    <div class="modal-header">
+      <h3 style="font-family:var(--display); font-size:1.15rem; font-weight:700;" id="c-detail-title">Contract Scope Inspector</h3>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('modal-contract-detail').close()">×</button>
+    </div>
+    <div class="modal-body" id="c-detail-body">
+      <!-- Injected by JS -->
+    </div>
+  </dialog>
+
+  <!-- ====================================================================
+       5. Dashboard Store & MCP Engine Script
+       ==================================================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Seed Database (Mock MCP store in LocalStorage)
+      var defaultDB = {
+        user: { name: "Julian Vance", email: "julian@vancestudio.com", rate: 100, tone: "warm" },
+        contracts: [
+          {
+            id: "ct_101",
+            client: "Acme Software",
+            title: "Web App UI & Component Design",
+            rate: 100,
+            fee: 5000,
+            revisions_allowed: 3,
+            revisions_used: 2,
+            unbilled_caught: 400,
+            days_to_deadline: 12,
+            scope_json: {
+              deliverables: ["Dashboard UI (5 screens)", "Component Library", "3 Design Revisions"],
+              exclusions: ["Backend API integration", "Copywriting", "Blog engine architecture"],
+              rates: { extra_page: 400, extra_revision: 250, hourly: 100 }
+            }
+          },
+          {
+            id: "ct_102",
+            client: "Kessler Fashion Studio",
+            title: "E-Commerce Shopify Build",
+            rate: 120,
+            fee: 7200,
+            revisions_allowed: 3,
+            revisions_used: 3,
+            unbilled_caught: 640,
+            days_to_deadline: 5,
+            scope_json: {
+              deliverables: ["Shopify Theme Setup", "Product Catalog (20 items)", "Checkout Styling"],
+              exclusions: ["Custom ERP Webhooks", "Product photography retouching"],
+              rates: { extra_page: 450, extra_revision: 300, hourly: 120 }
+            }
+          },
+          {
+            id: "ct_103",
+            client: "Beacon Health",
+            title: "Patient Portal Design System",
+            rate: 150,
+            fee: 9000,
+            revisions_allowed: 4,
+            revisions_used: 1,
+            unbilled_caught: 800,
+            days_to_deadline: 24,
+            scope_json: {
+              deliverables: ["WCAG AAA Design System", "Figma Token Library", "Developer Handoff Spec"],
+              exclusions: ["Native iOS Swift development"],
+              rates: { extra_page: 500, extra_revision: 350, hourly: 150 }
+            }
+          }
+        ],
+        requests: [
+          {
+            id: "req_1",
+            contract_id: "ct_101",
+            client: "Acme Software",
+            text: "Hey Julian, while you're in there, can we also add a blog section? Shouldn't take long 🙂",
+            verdict: "out_of_scope",
+            clause: "§2 — 5 pages, 3 revisions",
+            amount: 400,
+            days: 3,
+            status: "open",
+            reply: "Happy to add a blog section. That's outside our original five pages, so it'd be $400 and moves delivery to the 14th. Want me to send the change order?",
+            date: "Today, 10:42 AM"
+          },
+          {
+            id: "req_2",
+            contract_id: "ct_102",
+            client: "Kessler Fashion Studio",
+            text: "Client wants a fourth round of edits on the checkout before tomorrow's board meeting.",
+            verdict: "out_of_scope",
+            clause: "§5 — 3 revisions cap exceeded",
+            amount: 300,
+            days: 1,
+            status: "open",
+            reply: "Can definitely do a 4th round. As we've completed the 3 contract revisions, this is billed at our $300 revision rate. Shall I proceed?",
+            date: "Today, 09:15 AM"
+          },
+          {
+            id: "req_3",
+            contract_id: "ct_101",
+            client: "Acme Software",
+            text: "Can you adjust the logo size on the main navbar?",
+            verdict: "in_scope",
+            clause: "§4 — Revision 2 of 3",
+            amount: 0,
+            days: 0,
+            status: "closed",
+            reply: "Sure thing, adjusting the header logo now. That's revision 2 of your 3 included rounds.",
+            date: "Yesterday"
+          }
+        ],
+        change_orders: [
+          { id: "co_1", client: "Acme Software", amount: 400, title: "Blog Section Architecture", status: "draft", days: 3 },
+          { id: "co_2", client: "Kessler Fashion Studio", amount: 640, title: "ERP Inventory Sync Webhook", status: "sent", days: 4 },
+          { id: "co_3", client: "Beacon Health", amount: 800, title: "Mobile Dark Mode Token Set", status: "accepted", days: 2 },
+          { id: "co_4", client: "Nordic Tech", amount: 1500, title: "Next.js Migration Sprint", status: "paid", days: 5 }
+        ],
+        ledger: [
+          { date: "Today 10:42 AM", type: "SCOPE_CAUGHT", client: "Acme Software", context: "Blog Section (§2 Deliverables Exceeded)", amount: "+$400.00" },
+          { date: "Today 09:15 AM", type: "SCOPE_CAUGHT", client: "Kessler Fashion Studio", context: "Round 4 Edits (§5 Cap Exceeded)", amount: "+$300.00" },
+          { date: "Yesterday", type: "CHANGE_ORDER_PAID", client: "Nordic Tech", context: "Next.js Migration Sprint #12", amount: "+$1,500.00" },
+          { date: "Aug 20, 2026", type: "SCOPE_WAIVED", client: "Acme Software", context: "Favicon adjustment waived for goodwill", amount: "$0.00 (Waived $80)" }
+        ]
+      };
+
+      var DB = JSON.parse(localStorage.getItem('billable_app_db') || 'null');
+      if (!DB) {
+        DB = defaultDB;
+        localStorage.setItem('billable_app_db', JSON.stringify(DB));
+      }
+
+      function saveDB() {
+        localStorage.setItem('billable_app_db', JSON.stringify(DB));
+      }
+
+      // State Management
+      var currentScreen = 'today';
+
+      // DOM Elements
+      var navButtons = document.querySelectorAll('.js-nav-tab');
+      var screenViews = document.querySelectorAll('.screen-view');
+      var screenTitle = document.getElementById('screen-title');
+      var railContextTag = document.getElementById('rail-context-tag');
+      var railSuggestions = document.getElementById('rail-suggestions');
+      var railMessages = document.getElementById('rail-messages');
+      var railForm = document.getElementById('rail-form');
+      var railInput = document.getElementById('rail-input');
+      var fastCheckSelect = document.getElementById('fast-check-contract-select');
+      var fastCheckInput = document.getElementById('fast-check-input');
+      var btnRunFastCheck = document.getElementById('btn-run-fast-check');
+
+      // Suggested Prompts per Screen
+      var screenSuggestions = {
+        today: [
+          "Draft reply for Acme blog request",
+          "Why is Kessler marked out of scope?",
+          "How much have I recovered this month?"
+        ],
+        contracts: [
+          "Which contract is closest to deadline?",
+          "Show revision limits breakdown",
+          "Add 2 revisions to Acme contract"
+        ],
+        requests: [
+          "Rewrite that last reply, softer",
+          "Check clause reference on req_1",
+          "Convert open requests to change orders"
+        ],
+        "change-orders": [
+          "Draft polite follow-up for Kessler CO",
+          "Generate PDF invoice for Acme",
+          "Total pending receivables"
+        ],
+        ledger: [
+          "Why did I lose money on Kessler?",
+          "Show waived work summary",
+          "Calculate my hourly yield"
+        ],
+        settings: [
+          "Verify Claude MCP connection",
+          "Update default rate to $120/hr",
+          "Set tone to firm"
+        ]
+      };
+
+      // 1. Navigation Controller
+      function switchScreen(screenId) {
+        currentScreen = screenId;
+        screenViews.forEach(function(view) {
+          view.classList.toggle('is-active', view.id === 'screen-' + screenId);
+        });
+
+        navButtons.forEach(function(btn) {
+          btn.classList.toggle('is-active', btn.getAttribute('data-screen') === screenId);
+        });
+
+        var titles = {
+          today: "Today",
+          contracts: "Client Contracts",
+          requests: "Incoming Requests Stream",
+          "change-orders": "Change Orders Pipeline",
+          ledger: "Recovery Ledger & Audit",
+          settings: "MCP Protocol & Settings"
+        };
+        screenTitle.textContent = titles[screenId] || "Dashboard";
+        railContextTag.textContent = "ctx: " + screenId;
+
+        renderSuggestions(screenId);
+      }
+
+      navButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var scr = this.getAttribute('data-screen');
+          if (scr) switchScreen(scr);
+        });
+      });
+
+      // 2. Render Functions
+      function renderAll() {
+        // Fast check select
+        fastCheckSelect.innerHTML = '';
+        DB.contracts.forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.client + ' — ' + c.title;
+          fastCheckSelect.appendChild(opt);
+        });
+
+        // Today Screen
+        var tbodyTodayOpen = document.getElementById('tbody-today-open');
+        tbodyTodayOpen.innerHTML = '';
+        var openReqs = DB.requests.filter(function(r) { return r.status === 'open'; });
+        openReqs.forEach(function(r) {
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><strong>' + r.client + '</strong></td>' +
+            '<td><span style="color:var(--app-text);">' + r.text + '</span></td>' +
+            '<td><span class="chip chip-flag">OUT OF SCOPE</span></td>' +
+            '<td><span class="mono">' + r.clause + '</span></td>' +
+            '<td><span class="num-money">+$' + r.amount + '</span></td>' +
+            '<td class="text-right"><button class="btn btn-primary btn-sm js-act-order" data-id="' + r.id + '">Send Order ($' + r.amount + ')</button></td>';
+          tbodyTodayOpen.appendChild(tr);
+        });
+
+        var tbodyTodayContracts = document.getElementById('tbody-today-contracts');
+        tbodyTodayContracts.innerHTML = '';
+        DB.contracts.forEach(function(c) {
+          var meterClass = c.revisions_used >= c.revisions_allowed ? 'danger' : (c.revisions_used >= 2 ? 'warning' : '');
+          var pct = Math.min((c.revisions_used / c.revisions_allowed) * 100, 100);
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><strong>' + c.client + '</strong></td>' +
+            '<td>' + c.title + '</td>' +
+            '<td><div class="revision-meter"><span class="meter-track"><span class="meter-fill ' + meterClass + '" style="width:' + pct + '%"></span></span><span class="mono">' + c.revisions_used + ' / ' + c.revisions_allowed + '</span></div></td>' +
+            '<td><span class="num-money">+$' + c.unbilled_caught + '</span></td>' +
+            '<td><span class="mono">' + c.days_to_deadline + ' days</span></td>';
+          tbodyTodayContracts.appendChild(tr);
+        });
+
+        // Contracts Screen
+        var tbodyContracts = document.getElementById('tbody-contracts-list');
+        tbodyContracts.innerHTML = '';
+        DB.contracts.forEach(function(c) {
+          var meterClass = c.revisions_used >= c.revisions_allowed ? 'danger' : (c.revisions_used >= 2 ? 'warning' : '');
+          var pct = Math.min((c.revisions_used / c.revisions_allowed) * 100, 100);
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><strong>' + c.client + '</strong></td>' +
+            '<td>' + c.title + '</td>' +
+            '<td><span class="mono">$' + c.rate + '/hr (Fixed $' + c.fee + ')</span></td>' +
+            '<td><div class="revision-meter"><span class="meter-track"><span class="meter-fill ' + meterClass + '" style="width:' + pct + '%"></span></span><span class="mono">' + c.revisions_used + ' / ' + c.revisions_allowed + '</span></div></td>' +
+            '<td><span class="num-money">+$' + c.unbilled_caught + '</span></td>' +
+            '<td><span class="chip chip-money">Active</span></td>' +
+            '<td class="text-right"><button class="btn btn-secondary btn-sm js-inspect-c" data-id="' + c.id + '">Inspect Scope §</button></td>';
+          tbodyContracts.appendChild(tr);
+        });
+
+        // Requests Stream
+        var tbodyRequests = document.getElementById('tbody-requests-stream');
+        tbodyRequests.innerHTML = '';
+        DB.requests.forEach(function(r) {
+          var chipHtml = r.verdict === 'out_of_scope' ? '<span class="chip chip-flag">OUT OF SCOPE</span>' : '<span class="chip chip-scope">IN SCOPE</span>';
+          var amountHtml = r.amount > 0 ? '<span class="num-money">+$' + r.amount + '</span>' : '<span class="mono" style="color:var(--app-muted);">$0</span>';
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><span class="mono" style="color:var(--app-muted); font-size:0.75rem;">' + r.date + '</span></td>' +
+            '<td><strong>' + r.client + '</strong></td>' +
+            '<td><span style="color:var(--app-text);">' + r.text + '</span></td>' +
+            '<td>' + chipHtml + '</td>' +
+            '<td><span class="mono" style="font-size:0.75rem;">' + r.clause + '</span></td>' +
+            '<td>' + amountHtml + '</td>' +
+            '<td class="text-right"><button class="btn btn-ghost btn-sm js-view-reply" data-id="' + r.id + '">Drafted Reply</button></td>';
+          tbodyRequests.appendChild(tr);
+        });
+
+        // Change Orders Pipeline
+        ['draft', 'sent', 'accepted', 'paid'].forEach(function(col) {
+          var container = document.getElementById('p-list-' + col);
+          container.innerHTML = '';
+          var items = DB.change_orders.filter(function(co) { return co.status === col; });
+          document.getElementById('p-count-' + col).textContent = items.length;
+          items.forEach(function(co) {
+            var card = document.createElement('div');
+            card.className = 'pipeline-card';
+            card.innerHTML = '<div class="p-card-header"><span class="p-card-client">' + co.client + '</span><span class="p-card-amount">+$' + co.amount + '</span></div>' +
+              '<div class="p-card-body">' + co.title + '</div>' +
+              '<div class="p-card-footer"><span>+' + co.days + ' days delivery</span><span>' + co.id.toUpperCase() + '</span></div>';
+            container.appendChild(card);
+          });
+        });
+
+        // Ledger Events
+        var tbodyLedger = document.getElementById('tbody-ledger-events');
+        tbodyLedger.innerHTML = '';
+        DB.ledger.forEach(function(ev) {
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><span class="mono" style="font-size:0.75rem; color:var(--app-muted);">' + ev.date + '</span></td>' +
+            '<td><span class="chip chip-muted">' + ev.type + '</span></td>' +
+            '<td><strong>' + ev.client + '</strong></td>' +
+            '<td>' + ev.context + '</td>' +
+            '<td class="text-right"><span class="num-money">' + ev.amount + '</span></td>';
+          tbodyLedger.appendChild(tr);
+        });
+
+        // Wire Action buttons
+        document.querySelectorAll('.js-act-order').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var reqId = this.getAttribute('data-id');
+            var req = DB.requests.find(function(r) { return r.id === reqId; });
+            if (req) {
+              sendCopilotMessage("I need to send the change order for " + req.client + " (" + req.clause + " - $" + req.amount + ").");
+            }
+          });
+        });
+
+        document.querySelectorAll('.js-inspect-c').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var cId = this.getAttribute('data-id');
+            var c = DB.contracts.find(function(item) { return item.id === cId; });
+            if (c) openContractDetail(c);
+          });
+        });
+
+        document.querySelectorAll('.js-view-reply').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var reqId = this.getAttribute('data-id');
+            var req = DB.requests.find(function(r) { return r.id === reqId; });
+            if (req) {
+              sendCopilotMessage("Show the drafted change order reply for " + req.client + ": '" + req.text + "'");
+            }
+          });
+        });
+      }
+
+      function renderSuggestions(screenId) {
+        railSuggestions.innerHTML = '';
+        var list = screenSuggestions[screenId] || screenSuggestions.today;
+        list.forEach(function(prompt) {
+          var btn = document.createElement('button');
+          btn.className = 'suggestion-btn';
+          btn.textContent = '↳ ' + prompt;
+          btn.addEventListener('click', function() {
+            sendCopilotMessage(prompt);
+          });
+          railSuggestions.appendChild(btn);
+        });
+      }
+
+      // 3. Fast-Check Scope Engine (Core loop)
+      btnRunFastCheck.addEventListener('click', function() {
+        var text = fastCheckInput.value.trim();
+        var contractId = fastCheckSelect.value;
+        if (!text) return;
+
+        var contract = DB.contracts.find(function(c) { return c.id === contractId; });
+        var clientName = contract ? contract.client : "Client";
+
+        // Evaluate scope
+        var tLower = text.toLowerCase();
+        var isOutOfScope = true;
+        var amount = 400;
+        var days = 3;
+        var clause = "§2 — Deliverable Expansion";
+
+        if (tLower.includes('logo') || tLower.includes('color') || tLower.includes('minor') || tLower.includes('tweak')) {
+          isOutOfScope = false;
+          amount = 0;
+          days = 0;
+          clause = "§4 — Included Revision Round";
+        } else if (tLower.includes('urgent') || tLower.includes('asap') || tLower.includes('weekend')) {
+          amount = 500;
+          days = 0;
+          clause = "§7 — Rush Delivery Protocol";
+        }
+
+        var newReq = {
+          id: "req_" + Date.now(),
+          contract_id: contractId,
+          client: clientName,
+          text: text,
+          verdict: isOutOfScope ? "out_of_scope" : "in_scope",
+          clause: clause,
+          amount: amount,
+          days: days,
+          status: isOutOfScope ? "open" : "closed",
+          reply: isOutOfScope
+            ? "Happy to accommodate this. That's outside our initial scope (" + clause + "), so it would be $" + amount + " and adjusts delivery by " + days + " days. Should I send over the change order?"
+            : "On it! That falls right within our agreed scope (" + clause + "). I will have the update ready for you shortly.",
+          date: "Just now"
+        };
+
+        DB.requests.unshift(newReq);
+        if (isOutOfScope) {
+          DB.ledger.unshift({
+            date: "Just now",
+            type: "SCOPE_CAUGHT",
+            client: clientName,
+            context: text.substring(0, 40) + " (" + clause + ")",
+            amount: "+$" + amount + ".00"
+          });
+        }
+        saveDB();
+        renderAll();
+        fastCheckInput.value = '';
+
+        // Inject into Copilot rail
+        sendCopilotMessage("I just forwarded this from " + clientName + ": '" + text + "'. Check scope and draft reply.");
+      });
+
+      // 4. Copilot Chat Stream & Tool Simulator
+      function appendChatMessage(role, htmlContent) {
+        var msg = document.createElement('div');
+        msg.className = 'chat-msg ' + role;
+        msg.innerHTML = '<div class="chat-bubble">' + htmlContent + '</div>';
+        railMessages.appendChild(msg);
+        railMessages.scrollTop = railMessages.scrollHeight;
+      }
+
+      function sendCopilotMessage(userText) {
+        appendChatMessage('user', userText);
+
+        // Streaming Tool Call Simulation
+        setTimeout(function() {
+          var qLower = userText.toLowerCase();
+          if (qLower.includes('blog') || qLower.includes('acme')) {
+            appendChatMessage('assistant', 
+              '<span class="tool-chip">§ mcp.check_request(contract="ct_101")</span><br>' +
+              'Acme\'s request for a blog section violates <strong>§2 (5 pages max)</strong>.<br><br>' +
+              '<strong>Suggested Change Order:</strong> +$400 / +3 days.<br><br>' +
+              '<em>"Happy to add a blog section. That\'s outside our original five pages, so it\'d be $400 and moves delivery to the 14th. Want me to send the change order?"</em>' +
+              '<div class="chat-action-card">' +
+                '<span class="action-card-header">Action Required</span>' +
+                '<span>Create Change Order CO-104 ($400) and email to Acme?</span>' +
+                '<button class="btn btn-primary btn-sm" onclick="alert(\'Change order dispatched via PDF and recorded in Ledger!\')">Confirm &amp; Send Change Order →</button>' +
+              '</div>'
+            );
+          } else if (qLower.includes('softer') || qLower.includes('rewrite') || qLower.includes('tone')) {
+            appendChatMessage('assistant', 
+              '<span class="tool-chip">§ mcp.draft_reply(tone="warm")</span><br>' +
+              'Here is the softer, warm rewrite:<br><br>' +
+              '<em>"Hey Sarah! I’d love to help with the blog section. Since that goes beyond our initial 5-page scope, we can add it for $400 and an extra 3 days. Let me know if you’d like me to send a quick change order over!"</em>'
+            );
+          } else if (qLower.includes('recovered') || qLower.includes('money') || qLower.includes('ledger')) {
+            appendChatMessage('assistant',
+              '<span class="tool-chip">§ mcp.get_recovery_report(month="current")</span><br>' +
+              'You have caught <strong>$2,340</strong> in unbilled scope this month across 3 clients.<br>' +
+              '• Billed: $1,900<br>' +
+              '• Waived: $440<br>' +
+              '• Collected: $1,500'
+            );
+          } else {
+            appendChatMessage('assistant',
+              '<span class="tool-chip">§ mcp.get_contract_health()</span><br>' +
+              'I\'ve checked the active contracts against your context. Everything is synchronized with your MCP daemon.'
+            );
+          }
+        }, 500);
+      }
+
+      railForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var val = railInput.value.trim();
+        if (!val) return;
+        railInput.value = '';
+        sendCopilotMessage(val);
+      });
+
+      // 5. Contract Detail Modal
+      function openContractDetail(c) {
+        var modal = document.getElementById('modal-contract-detail');
+        document.getElementById('c-detail-title').textContent = c.client + ' — ' + c.title;
+        var body = document.getElementById('c-detail-body');
+        body.innerHTML = '<div>' +
+          '<div style="margin-bottom:1rem; display:flex; justify-content:space-between;">' +
+            '<div><strong>Rate:</strong> $' + c.rate + '/hr | <strong>Fee:</strong> $' + c.fee + '</div>' +
+            '<div><strong>Revisions:</strong> ' + c.revisions_used + ' of ' + c.revisions_allowed + '</div>' +
+          '</div>' +
+          '<h4 style="font-family:var(--mono); font-size:0.75rem; text-transform:uppercase; color:var(--app-muted); margin-bottom:0.5rem;">Parsed Structured Scope (JSONB)</h4>' +
+          '<pre class="mono" style="background:var(--app-bg); border:1px solid var(--app-line); padding:1rem; border-radius:4px; font-size:0.75rem; color:var(--money);">' + JSON.stringify(c.scope_json, null, 2) + '</pre>' +
+        '</div>';
+        modal.showModal();
+      }
+
+      // Add Contract Form
+      var modalAddContract = document.getElementById('modal-add-contract');
+      document.getElementById('btn-open-new-contract').addEventListener('click', function() { modalAddContract.showModal(); });
+      document.getElementById('btn-add-contract-2').addEventListener('click', function() { modalAddContract.showModal(); });
+
+      document.getElementById('form-new-contract').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var client = document.getElementById('new-c-client').value;
+        var title = document.getElementById('new-c-title').value;
+        var fee = parseInt(document.getElementById('new-c-fee').value, 10) || 4000;
+        var revisions = parseInt(document.getElementById('new-c-revisions').value, 10) || 3;
+        var raw = document.getElementById('new-c-raw').value;
+
+        var newC = {
+          id: "ct_" + Date.now(),
+          client: client,
+          title: title,
+          rate: 100,
+          fee: fee,
+          revisions_allowed: revisions,
+          revisions_used: 0,
+          unbilled_caught: 0,
+          days_to_deadline: 30,
+          scope_json: {
+            deliverables: [title, revisions + " Design Revisions"],
+            raw_excerpt: raw.substring(0, 100)
+          }
+        };
+
+        DB.contracts.unshift(newC);
+        saveDB();
+        renderAll();
+        modalAddContract.close();
+      });
+
+      // Mobile Copilot rail toggle
+      var btnToggleRail = document.getElementById('btn-toggle-rail-mobile');
+      if (btnToggleRail) {
+        btnToggleRail.addEventListener('click', function() {
+          document.getElementById('app-chat-rail').classList.toggle('is-open');
+        });
+      }
+
+      // Initial Render
+      renderAll();
+      renderSuggestions('today');
+
+    })();
+  </script>
+</body>
+</html>
