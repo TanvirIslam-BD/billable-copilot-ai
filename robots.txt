@@ -1,4 +1,11 @@
+# robots.txt for Billable (https://billable.copilotai.live)
 User-agent: *
 Allow: /
+Allow: /app.html
+Allow: /favicon.svg
 
+# Disallow private user-generated session data
+Disallow: /api/private/
+
+# Sitemap Location
 Sitemap: https://billable.copilotai.live/sitemap.xml
