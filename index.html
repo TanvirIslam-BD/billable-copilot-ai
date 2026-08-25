@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billable — Unbilled Work Detector</title>
+  <meta name="description" content="Forward any client request. Billable checks it against your contract, tells you if it's extra, and writes the reply that gets you paid for it. Works inside Claude and ChatGPT.">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://billable.copilotai.live/">
+  <meta property="og:title" content="Billable — You're doing free work and you don't know it.">
+  <meta property="og:description" content="Forward any client request. Billable checks it against your contract, tells you if it's extra, and writes the reply that gets you paid for it.">
+  <meta property="og:image" content="https://billable.copilotai.live/og.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://billable.copilotai.live/">
+  <meta name="twitter:title" content="Billable — Unbilled Work Detector">
+  <meta name="twitter:description" content="Forward any client request. Billable checks it against your contract, tells you if it's extra, and writes the reply that gets you paid for it.">
+  <meta name="twitter:image" content="https://billable.copilotai.live/og.png">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Single font request -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* 1. Design Tokens */
+    :root {
+      /* Surface */
+      --paper:      #F7F8F7;  /* cool paper, not warm cream */
+      --card:       #FFFFFF;
+      --rule:       #E2E5E1;  /* hairlines, dividers */
+
+      /* Ink */
+      --ink:        #14160F;  /* near-black, never pure #000 */
+      --ink-muted:  #6B6F68;
+
+      /* Meaning — these two colours carry information, not decoration */
+      --money:      #1B5E4A;  /* deep ledger green: recovered revenue only */
+      --flag:       #C4322B;  /* out-of-scope verdict only */
+
+      /* Type */
+      --display:    'Bricolage Grotesque', system-ui, sans-serif;
+      --body:       'Inter', system-ui, sans-serif;
+      --mono:       'IBM Plex Mono', ui-monospace, monospace;
+
+      /* Rhythm */
+      --gap:        clamp(1rem, 2vw, 1.5rem);
+      --section:    clamp(4rem, 9vw, 7rem);
+      --max:        1080px;
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--paper);
+      color: var(--ink);
+    }
+
+    /* Focus States */
+    :focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    /* Layout Containers */
+    .container {
+      width: 100%;
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    /* Typography Utilities */
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-muted);
+      display: block;
+    }
+
+    .numeral-money {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      color: var(--money);
+    }
+
+    .numeral-mono {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+
+    /* Header Nav */
+    .site-header {
+      border-bottom: 1px solid var(--rule);
+      padding-block: 1.25rem;
+      background-color: var(--paper);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-mark {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid var(--ink);
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
+      line-height: 1;
+    }
+
+    .brand-name {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .header-badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .header-badge {
+        display: inline-block;
+      }
+    }
+
+    .header-cta {
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 0.45rem 0.85rem;
+      border: 1px solid var(--ink);
+      border-radius: 2px;
+      background-color: transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .header-cta:hover {
+      background-color: var(--ink);
+      color: var(--card);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--body);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--card);
+      background-color: var(--ink);
+      border: 1px solid var(--ink);
+      border-radius: 3px;
+      padding: 0.9rem 1.6rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    /* Block 1: Hero */
+    .hero-section {
+      padding-top: clamp(3rem, 7vw, 5.5rem);
+      padding-bottom: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .hero-content {
+      max-width: 780px;
+    }
+
+    .hero-eyebrow {
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-h1 {
+      font-family: var(--display);
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .desktop-br {
+      display: inline;
+    }
+
+    @media (max-width: 640px) {
+      .desktop-br {
+        display: none;
+      }
+    }
+
+    .hero-sub {
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      margin-bottom: 2rem;
+      max-width: 620px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .hero-note {
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      color: var(--ink-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Block 2: Demo Pane */
+    .demo-section {
+      padding-block: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .demo-container {
+      background-color: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .demo-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.25rem;
+      background-color: var(--paper);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .demo-toolbar-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+    }
+
+    .demo-dots-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-dot-btn {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 50%;
+      border: 1px solid var(--ink-muted);
+      background-color: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .demo-dot-btn[aria-current="true"] {
+      background-color: var(--ink);
+      border-color: var(--ink);
+      transform: scale(1.15);
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 768px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Pane: Client Message */
+    .demo-pane-client {
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      border-right: 1px solid var(--rule);
+      background-color: #FAFBFA;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 280px;
+    }
+
+    @media (max-width: 768px) {
+      .demo-pane-client {
+        border-right: none;
+        border-bottom: 1px solid var(--rule);
+        min-height: auto;
+      }
+    }
+
+    .client-msg-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .client-tag {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+    }
+
+    .client-time {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    .client-bubble {
+      background-color: var(--card);
+      border: 1px solid var(--rule);
+      padding: 1.25rem;
+      border-radius: 4px;
+      font-size: 1.0625rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .client-footer-note {
+      margin-top: 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+    }
+
+    /* Right Pane: Ledger Verdict */
+    .demo-pane-verdict {
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      background-color: var(--card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 280px;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ledger-table tr {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .ledger-table tr:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .ledger-table td {
+      padding-block: 0.6rem;
+      vertical-align: middle;
+    }
+
+    .ledger-label {
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      width: 32%;
+    }
+
+    .ledger-val {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .verdict-badge {
+      display: inline-block;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .verdict-flag {
+      color: var(--flag);
+    }
+
+    .verdict-scope {
+      color: var(--ink);
+    }
+
+    .ledger-money {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      color: var(--money);
+    }
+
+    .reply-box {
+      background-color: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 1rem 1.15rem;
+      border-radius: 3px;
+    }
+
+    .reply-box-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .reply-box-text {
+      font-size: 0.9375rem;
+      line-height: 1.55;
+      color: var(--ink);
+      min-height: 3.8em;
+    }
+
+    .reply-box-text strong {
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--money);
+    }
+
+    /* Block 3: Running Total */
+    .total-section {
+      padding-block: clamp(3.5rem, 8vw, 6rem);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      background-color: var(--paper);
+    }
+
+    .total-wrapper {
+      text-align: left;
+    }
+
+    .total-label {
+      margin-bottom: 0.75rem;
+    }
+
+    .total-number {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 500;
+      line-height: 1;
+      color: var(--money);
+      letter-spacing: -0.03em;
+    }
+
+    /* Block 4: How it works */
+    .steps-section {
+      padding-block: var(--section);
+    }
+
+    .section-eyebrow {
+      margin-bottom: 2rem;
+    }
+
+    .steps-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    @media (max-width: 768px) {
+      .steps-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step-item {
+      border-top: 1px solid var(--rule);
+      padding-top: 1.25rem;
+    }
+
+    .step-num {
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-muted);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .step-text {
+      font-size: 1.0625rem;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+
+    .step-text strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Block 5: Objections */
+    .objections-section {
+      padding-block: var(--section);
+      border-top: 1px solid var(--rule);
+    }
+
+    .objections-dl {
+      max-width: 760px;
+    }
+
+    .objection-item {
+      border-top: 1px solid var(--rule);
+      padding-block: 1.75rem;
+    }
+
+    .objection-item:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .objection-q {
+      font-family: var(--display);
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+
+    .objection-a {
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      color: var(--ink-muted);
+    }
+
+    /* Block 6: Pricing */
+    .pricing-section {
+      padding-block: var(--section);
+      border-top: 1px solid var(--rule);
+    }
+
+    .pricing-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 2.5rem;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .pricing-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+
+    .pricing-title {
+      font-family: var(--display);
+      font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    /* Billing Toggle */
+    .billing-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.35rem;
+      background-color: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+    }
+
+    .toggle-btn {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.4rem 0.75rem;
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .toggle-btn[aria-pressed="true"] {
+      background-color: var(--ink);
+      color: var(--card);
+    }
+
+    /* Pricing Ledger Table / Cards */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(1rem, 2vw, 1.5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pricing-card {
+      background-color: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pricing-tier-name {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-tier-desc {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+    }
+
+    .pricing-amount-row {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+
+    .pricing-currency {
+      font-family: var(--mono);
+      font-size: 1.75rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .pricing-figure {
+      font-family: var(--mono);
+      font-size: 2.75rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .pricing-period {
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      color: var(--ink-muted);
+    }
+
+    .pricing-annual-note {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      margin-top: -1rem;
+      margin-bottom: 1.25rem;
+      min-height: 1.2em;
+    }
+
+    .tier-features {
+      list-style: none;
+      border-top: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+
+    .tier-feature-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-block: 0.65rem;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.9375rem;
+    }
+
+    .tier-feature-name {
+      color: var(--ink-muted);
+    }
+
+    .tier-feature-val {
+      font-family: var(--mono);
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .pricing-cta {
+      width: 100%;
+      text-align: center;
+    }
+
+    .pricing-ledger-footer {
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--money);
+      margin-top: 1rem;
+    }
+
+    /* Block 7: Footer */
+    .site-footer {
+      border-top: 1px solid var(--rule);
+      padding-block: clamp(2.5rem, 5vw, 4rem);
+      margin-top: auto;
+      background-color: var(--paper);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .footer-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-parent-mark {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    .footer-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      list-style: none;
+    }
+
+    .footer-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .footer-link:hover {
+      color: var(--ink);
+      text-decoration: underline;
+    }
+
+    /* Accessible Dialog / Modal */
+    dialog {
+      position: fixed;
+      inset: 0;
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--card);
+      color: var(--ink);
+      max-width: 520px;
+      width: calc(100% - 2rem);
+      box-shadow: 0 20px 40px rgba(20, 22, 15, 0.08);
+      z-index: 100;
+    }
+
+    dialog::backdrop {
+      background: rgba(20, 22, 15, 0.4);
+      backdrop-filter: blur(2px);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      background-color: var(--paper);
+    }
+
+    .dialog-title {
+      font-family: var(--display);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .dialog-close {
+      font-family: var(--mono);
+      font-size: 1.25rem;
+      line-height: 1;
+      background: none;
+      border: none;
+      color: var(--ink-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    .dialog-close:hover {
+      color: var(--ink);
+    }
+
+    .dialog-body {
+      padding: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      font-family: var(--body);
+      font-size: 1rem;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background-color: var(--paper);
+      color: var(--ink);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: 2px solid var(--ink);
+      background-color: var(--card);
+    }
+
+    .form-submit {
+      width: 100%;
+    }
+
+    .form-success-msg {
+      padding: 1.25rem;
+      background-color: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .dialog-text-content {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--ink);
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .dialog-text-content h3 {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .dialog-text-content p {
+      margin-bottom: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    /* Motion & Transitions */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Statement Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand" aria-label="Billable Homepage">
+        <span class="brand-mark">§</span>
+        <span class="brand-name">Billable</span>
+      </a>
+      <span class="header-badge">Online / MCP Active</span>
+      <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect your contract →</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Block 1 — Hero -->
+    <section class="hero-section" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-content">
+          <span class="eyebrow hero-eyebrow">UNBILLED WORK DETECTOR</span>
+          <h1 id="hero-title" class="hero-h1">
+            You're doing free work<br class="desktop-br"> and you don't know it.
+          </h1>
+          <p class="hero-sub">
+            Forward any client request. Billable checks it against your contract, tells you if it's extra, and writes the reply that gets you paid for it.
+          </p>
+          <div class="hero-cta-group">
+            <button class="btn-primary js-open-modal" data-action="connect_contract_hero">
+              Connect your contract →
+            </button>
+            <div class="hero-note">
+              <span>Works inside Claude and ChatGPT. Nothing new to learn.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Block 2 — The Demo (Signature Element) -->
+    <section class="demo-section" aria-label="Interactive Demo">
+      <div class="container">
+        <div class="demo-container" id="demo-box">
+          <div class="demo-toolbar">
+            <span class="demo-toolbar-label" id="demo-indicator">EXAMPLE 1 OF 3</span>
+            <div class="demo-dots-controls" role="tablist" aria-label="Demo Examples">
+              <button class="demo-dot-btn" role="tab" aria-selected="true" aria-current="true" aria-label="Example 1: Blog section out of scope" data-index="0"></button>
+              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Example 2: Logo resize in scope" data-index="1"></button>
+              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Example 3: Revision cap out of scope" data-index="2"></button>
+            </div>
+          </div>
+
+          <div class="demo-grid">
+            <!-- Left Pane: Client Message -->
+            <div class="demo-pane-client">
+              <div>
+                <div class="client-msg-header">
+                  <span class="client-tag">INCOMING REQUEST</span>
+                  <span class="client-time" id="demo-client-time">10:42 AM</span>
+                </div>
+                <div class="client-bubble" id="demo-client-text">
+                  Hey! Quick one — while you're in there, can we also add a blog section? Shouldn't take long 🙂
+                </div>
+              </div>
+              <div class="client-footer-note">
+                Forwarded from Slack / Email / WhatsApp
+              </div>
+            </div>
+
+            <!-- Right Pane: Invoice Line Item & Verdict -->
+            <div class="demo-pane-verdict" aria-live="polite" id="demo-verdict-pane">
+              <table class="ledger-table">
+                <tbody>
+                  <tr>
+                    <td class="ledger-label">STATUS</td>
+                    <td class="ledger-val"><span id="demo-status" class="verdict-badge verdict-flag">OUT OF SCOPE</span></td>
+                  </tr>
+                  <tr>
+                    <td class="ledger-label">CLAUSE</td>
+                    <td class="ledger-val" id="demo-clause">§2 — 5 pages, 3 revisions</td>
+                  </tr>
+                  <tr>
+                    <td class="ledger-label">ADDS</td>
+                    <td class="ledger-val"><span id="demo-adds" class="ledger-money">+$400.00</span></td>
+                  </tr>
+                  <tr>
+                    <td class="ledger-label">DELAYS</td>
+                    <td class="ledger-val" id="demo-delays">+3 days</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="reply-box">
+                <span class="reply-box-label">DRAFTED CHANGE ORDER REPLY</span>
+                <div class="reply-box-text" id="demo-reply-text">
+                  Happy to add a blog section. That's outside our original five pages, so it'd be <strong>$400</strong> and moves delivery to the 14th. Want me to send the change order?
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Block 3 — The Running Total -->
+    <section class="total-section" aria-labelledby="total-heading">
+      <div class="container">
+        <div class="total-wrapper">
+          <span id="total-heading" class="eyebrow total-label">UNBILLED WORK CAUGHT THIS MONTH</span>
+          <div class="total-number" id="running-total" data-target="14200">$14,200</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Block 4 — How it works -->
+    <section class="steps-section" aria-labelledby="steps-title">
+      <div class="container">
+        <span id="steps-title" class="eyebrow section-eyebrow">HOW IT WORKS</span>
+        <ol class="steps-list">
+          <li class="step-item">
+            <span class="step-num">01</span>
+            <p class="step-text"><strong>Paste your contract once.</strong> Scope, revision count, rate. Takes a minute.</p>
+          </li>
+          <li class="step-item">
+            <span class="step-num">02</span>
+            <p class="step-text"><strong>Forward requests as they land.</strong> Email, Slack, WhatsApp — paste it in, or call it from your assistant.</p>
+          </li>
+          <li class="step-item">
+            <span class="step-num">03</span>
+            <p class="step-text"><strong>Send the change order.</strong> Pre-written, polite, priced. One click.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Block 5 — Objections -->
+    <section class="objections-section" aria-labelledby="objections-title">
+      <div class="container">
+        <span id="objections-title" class="eyebrow section-eyebrow">OBJECTIONS</span>
+        <dl class="objections-dl">
+          <div class="objection-item">
+            <dt class="objection-q">"I don't want to seem difficult."</dt>
+            <dd class="objection-a">The drafted reply is warm, not confrontational. Most clients quietly drop the request once a price is attached — and the ones who don't, pay.</dd>
+          </div>
+          <div class="objection-item">
+            <dt class="objection-q">"My contracts are confidential."</dt>
+            <dd class="objection-a">Never used for training. Encrypted at rest. Delete any contract at any time.</dd>
+          </div>
+          <div class="objection-item">
+            <dt class="objection-q">"I already use Bonsai / Harvest / Toggl."</dt>
+            <dd class="objection-a">Those track hours after you've worked them. Billable reads the request before you start.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Block 6 — Pricing -->
+    <section class="pricing-section" id="pricing-block" aria-labelledby="pricing-heading">
+      <div class="container">
+        <div class="pricing-header">
+          <div>
+            <span class="eyebrow section-eyebrow">PRICING</span>
+            <h2 id="pricing-heading" class="pricing-title">Simple, flat tiers.</h2>
+          </div>
+          <div class="billing-toggle" role="group" aria-label="Billing frequency">
+            <button class="toggle-btn" id="btn-monthly" aria-pressed="true">Monthly</button>
+            <button class="toggle-btn" id="btn-annual" aria-pressed="false">Annual (2 mos free)</button>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Solo Tier -->
+          <div class="pricing-card">
+            <div>
+              <h3 class="pricing-tier-name">Solo</h3>
+              <div class="pricing-tier-desc">One freelancer</div>
+              
+              <div class="pricing-amount-row">
+                <span class="pricing-currency">$</span>
+                <span class="pricing-figure" id="solo-price">19</span>
+                <span class="pricing-period">/mo</span>
+              </div>
+              <div class="pricing-annual-note" id="solo-annual-note"></div>
+
+              <ul class="tier-features">
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">For</span>
+                  <span class="tier-feature-val">One freelancer</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Contracts</span>
+                  <span class="tier-feature-val">5 active</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Change orders</span>
+                  <span class="tier-feature-val">Unlimited</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">MCP access</span>
+                  <span class="tier-feature-val">✓</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Client-branded PDFs</span>
+                  <span class="tier-feature-val">—</span>
+                </li>
+              </ul>
+            </div>
+            <button class="btn-primary pricing-cta js-open-modal" data-action="connect_contract_solo">
+              Connect your contract →
+            </button>
+          </div>
+
+          <!-- Studio Tier -->
+          <div class="pricing-card">
+            <div>
+              <h3 class="pricing-tier-name">Studio</h3>
+              <div class="pricing-tier-desc">Up to 5 seats</div>
+              
+              <div class="pricing-amount-row">
+                <span class="pricing-currency">$</span>
+                <span class="pricing-figure" id="studio-price">49</span>
+                <span class="pricing-period">/mo</span>
+              </div>
+              <div class="pricing-annual-note" id="studio-annual-note"></div>
+
+              <ul class="tier-features">
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">For</span>
+                  <span class="tier-feature-val">Up to 5 seats</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Contracts</span>
+                  <span class="tier-feature-val">Unlimited</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Change orders</span>
+                  <span class="tier-feature-val">Unlimited</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">MCP access</span>
+                  <span class="tier-feature-val">✓</span>
+                </li>
+                <li class="tier-feature-item">
+                  <span class="tier-feature-name">Client-branded PDFs</span>
+                  <span class="tier-feature-val">✓</span>
+                </li>
+              </ul>
+            </div>
+            <button class="btn-primary pricing-cta js-open-modal" data-action="connect_contract_studio">
+              Connect your contract →
+            </button>
+          </div>
+        </div>
+
+        <div class="pricing-ledger-footer">
+          Pays for itself the first time you catch a single request.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Block 7 — Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-meta">
+          <ul class="footer-nav">
+            <li><button class="footer-link js-open-legal" data-modal="privacy">Privacy</button></li>
+            <li>·</li>
+            <li><button class="footer-link js-open-legal" data-modal="terms">Terms</button></li>
+            <li>·</li>
+            <li><button class="footer-link js-open-legal" data-modal="contact">Contact</button></li>
+          </ul>
+          <span class="footer-parent-mark">Profile AI / billable.copilotai.live</span>
+        </div>
+        <button class="btn-primary js-open-modal" data-action="connect_contract_footer">
+          Connect your contract →
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Accessible Dialog: Connect Contract Modal -->
+  <dialog id="contract-dialog" aria-labelledby="dialog-heading">
+    <div class="dialog-header">
+      <h2 id="dialog-heading" class="dialog-title">Connect your contract</h2>
+      <button class="dialog-close js-close-dialog" aria-label="Close dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <form id="connect-form" method="dialog">
+        <div class="form-group">
+          <label class="form-label" for="user-email">Work Email</label>
+          <input class="form-input" type="email" id="user-email" name="email" required placeholder="you@studio.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="assistant-select">Primary Assistant</label>
+          <select class="form-select" id="assistant-select" name="assistant">
+            <option value="claude">Claude (Anthropic)</option>
+            <option value="chatgpt">ChatGPT (OpenAI)</option>
+            <option value="web">Web Browser / Direct Upload</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary form-submit">Get MCP Access →</button>
+      </form>
+      <div id="form-success" class="form-success-msg" style="display: none;">
+        <strong>Spot reserved.</strong> Check your inbox for your private contract connector instructions and MCP manifest.
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Legal Modal: Privacy, Terms, Contact -->
+  <dialog id="legal-dialog" aria-labelledby="legal-dialog-title">
+    <div class="dialog-header">
+      <h2 id="legal-dialog-title" class="dialog-title">Legal Information</h2>
+      <button class="dialog-close js-close-dialog" aria-label="Close dialog">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="dialog-text-content" id="legal-dialog-body">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Script: Demo Loop, Counter, Billing Toggle, Analytics & Modals -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Analytics Dispatcher (Plausible / Umami / Console Fallback)
+      function trackEvent(name, props) {
+        if (window.plausible) {
+          window.plausible(name, { props: props });
+        } else if (window.umami) {
+          window.umami.track(name, props);
+        }
+        // Custom event for downstream logging
+        window.dispatchEvent(new CustomEvent('billable_metric', { detail: { event: name, props: props } }));
+      }
+
+      // 2. Demo State & Data
+      var demoExamples = [
+        {
+          time: "10:42 AM",
+          request: "Hey! Quick one — while you're in there, can we also add a blog section? Shouldn't take long 🙂",
+          status: "OUT OF SCOPE",
+          isFlag: true,
+          clause: "§2 — 5 pages, 3 revisions",
+          adds: "+$400.00",
+          delays: "+3 days",
+          replyText: "Happy to add a blog section. That's outside our original five pages, so it'd be <strong>$400</strong> and moves delivery to the 14th. Want me to send the change order?"
+        },
+        {
+          time: "02:15 PM",
+          request: "Can you make the logo bigger on the homepage?",
+          status: "IN SCOPE — revision 2 of 3",
+          isFlag: false,
+          clause: "§4 — 3 revisions included",
+          adds: "$0.00",
+          delays: "+0 days",
+          replyText: "Sure thing, adjusting the header logo now. That's revision 2 of your 3 included rounds."
+        },
+        {
+          time: "04:50 PM",
+          request: "Client wants a fourth round of edits on the brand deck before tomorrow's board meeting.",
+          status: "OUT OF SCOPE",
+          isFlag: true,
+          clause: "§5 — 3 revisions cap",
+          adds: "+$250.00",
+          delays: "+1 day",
+          replyText: "Can definitely do a 4th round. As we've completed the 3 contract revisions, this is billed at our <strong>$250</strong> revision rate. Shall I proceed?"
+        }
+      ];
+
+      var currentIndex = 0;
+      var timerId = null;
+      var isPaused = false;
+      var typingTimeout = null;
+
+      var demoBox = document.getElementById('demo-box');
+      var indicator = document.getElementById('demo-indicator');
+      var clientTime = document.getElementById('demo-client-time');
+      var clientText = document.getElementById('demo-client-text');
+      var statusEl = document.getElementById('demo-status');
+      var clauseEl = document.getElementById('demo-clause');
+      var addsEl = document.getElementById('demo-adds');
+      var delaysEl = document.getElementById('demo-delays');
+      var replyTextEl = document.getElementById('demo-reply-text');
+      var dotBtns = document.querySelectorAll('.demo-dot-btn');
+
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function renderDemo(index, animate) {
+        currentIndex = index;
+        var data = demoExamples[index];
+
+        // Update toolbar & indicators
+        indicator.textContent = 'EXAMPLE ' + (index + 1) + ' OF 3';
+        dotBtns.forEach(function (btn, i) {
+          var active = (i === index);
+          btn.setAttribute('aria-selected', active);
+          btn.setAttribute('aria-current', active);
+        });
+
+        // Left pane
+        clientTime.textContent = data.time;
+        clientText.textContent = data.request;
+
+        if (prefersReducedMotion || !animate) {
+          // Instant static final state
+          statusEl.textContent = data.status;
+          statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
+          clauseEl.textContent = data.clause;
+          addsEl.textContent = data.adds;
+          delaysEl.textContent = data.delays;
+          replyTextEl.innerHTML = data.replyText;
+          return;
+        }
+
+        // Animated progression:
+        // Clear previous state
+        statusEl.textContent = 'CHECKING CONTRACT...';
+        statusEl.className = 'verdict-badge verdict-scope';
+        clauseEl.textContent = 'Analyzing scope...';
+        addsEl.textContent = '—';
+        delaysEl.textContent = '—';
+        replyTextEl.innerHTML = '<span style="color: var(--ink-muted);">Drafting reply...</span>';
+
+        if (typingTimeout) clearTimeout(typingTimeout);
+
+        // 700ms pause then verdict stamps in
+        typingTimeout = setTimeout(function () {
+          statusEl.textContent = data.status;
+          statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
+          clauseEl.textContent = data.clause;
+          addsEl.textContent = data.adds;
+          delaysEl.textContent = data.delays;
+
+          // Type out drafted reply
+          replyTextEl.innerHTML = data.replyText;
+        }, 700);
+      }
+
+      function startDemoCycle() {
+        if (timerId) clearInterval(timerId);
+        if (prefersReducedMotion) return;
+
+        timerId = setInterval(function () {
+          if (!isPaused) {
+            var nextIndex = (currentIndex + 1) % demoExamples.length;
+            renderDemo(nextIndex, true);
+            trackEvent('demo_cycled', { example: nextIndex + 1 });
+          }
+        }, 6000);
+      }
+
+      // Initial demo render
+      renderDemo(0, false);
+      startDemoCycle();
+
+      // Demo hover pause
+      if (demoBox) {
+        demoBox.addEventListener('mouseenter', function () { isPaused = true; });
+        demoBox.addEventListener('mouseleave', function () { isPaused = false; });
+        demoBox.addEventListener('focusin', function () { isPaused = true; });
+        demoBox.addEventListener('focusout', function () { isPaused = false; });
+      }
+
+      // Dot click controls
+      dotBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var targetIndex = parseInt(this.getAttribute('data-index'), 10);
+          renderDemo(targetIndex, true);
+          trackEvent('demo_cycled', { manual_click: targetIndex + 1 });
+        });
+      });
+
+      // 3. Block 3: Running Total Counter on Scroll
+      var totalEl = document.getElementById('running-total');
+      if (totalEl) {
+        var counted = false;
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !counted) {
+              counted = true;
+              if (prefersReducedMotion) {
+                totalEl.textContent = '$14,200';
+                return;
+              }
+
+              var start = 0;
+              var target = parseInt(totalEl.getAttribute('data-target'), 10) || 14200;
+              var duration = 1200;
+              var startTime = null;
+
+              function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var progress = Math.min((timestamp - startTime) / duration, 1);
+                // Ease out cubic
+                var ease = 1 - Math.pow(1 - progress, 3);
+                var current = Math.floor(ease * target);
+                totalEl.textContent = '$' + current.toLocaleString('en-US');
+
+                if (progress < 1) {
+                  window.requestAnimationFrame(step);
+                } else {
+                  totalEl.textContent = '$' + target.toLocaleString('en-US');
+                }
+              }
+
+              window.requestAnimationFrame(step);
+            }
+          });
+        }, { threshold: 0.2 });
+
+        observer.observe(totalEl);
+      }
+
+      // 4. Block 6: Pricing Observer & Annual Toggle
+      var pricingSection = document.getElementById('pricing-block');
+      if (pricingSection) {
+        var pricingViewed = false;
+        var pricingObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !pricingViewed) {
+              pricingViewed = true;
+              trackEvent('pricing_viewed');
+            }
+          });
+        }, { threshold: 0.15 });
+
+        pricingObserver.observe(pricingSection);
+      }
+
+      var btnMonthly = document.getElementById('btn-monthly');
+      var btnAnnual = document.getElementById('btn-annual');
+      var soloPrice = document.getElementById('solo-price');
+      var studioPrice = document.getElementById('studio-price');
+      var soloAnnualNote = document.getElementById('solo-annual-note');
+      var studioAnnualNote = document.getElementById('studio-annual-note');
+
+      function setPricingMode(isAnnual) {
+        btnMonthly.setAttribute('aria-pressed', !isAnnual);
+        btnAnnual.setAttribute('aria-pressed', isAnnual);
+
+        if (isAnnual) {
+          // 2 months free: Solo is $190/yr ($15.83 -> $15/mo equivalent), Studio is $490/yr ($40.83 -> $39/mo equivalent)
+          soloPrice.textContent = '15';
+          studioPrice.textContent = '39';
+          soloAnnualNote.textContent = 'Billed $190 yearly (2 months free)';
+          studioAnnualNote.textContent = 'Billed $490 yearly (2 months free)';
+        } else {
+          soloPrice.textContent = '19';
+          studioPrice.textContent = '49';
+          soloAnnualNote.textContent = '';
+          studioAnnualNote.textContent = '';
+        }
+      }
+
+      if (btnMonthly && btnAnnual) {
+        btnMonthly.addEventListener('click', function () { setPricingMode(false); });
+        btnAnnual.addEventListener('click', function () { setPricingMode(true); });
+      }
+
+      // 5. Connect Contract Modal Dialog
+      var contractDialog = document.getElementById('contract-dialog');
+      var connectForm = document.getElementById('connect-form');
+      var formSuccess = document.getElementById('form-success');
+      var openModalBtns = document.querySelectorAll('.js-open-modal');
+      var closeDialogBtns = document.querySelectorAll('.js-close-dialog');
+
+      openModalBtns.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          var action = this.getAttribute('data-action') || 'cta_click';
+          trackEvent('cta_clicked', { source: action });
+
+          if (contractDialog && typeof contractDialog.showModal === 'function') {
+            contractDialog.showModal();
+          }
+        });
+      });
+
+      closeDialogBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var dialog = this.closest('dialog');
+          if (dialog) dialog.close();
+        });
+      });
+
+      // Close dialog when clicking backdrop
+      [contractDialog, document.getElementById('legal-dialog')].forEach(function (dialog) {
+        if (!dialog) return;
+        dialog.addEventListener('click', function (event) {
+          var rect = dialog.getBoundingClientRect();
+          var isInDialog = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (!isInDialog) {
+            dialog.close();
+          }
+        });
+      });
+
+      if (connectForm) {
+        connectForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var emailInput = document.getElementById('user-email');
+          var assistantSelect = document.getElementById('assistant-select');
+          var email = emailInput ? emailInput.value : '';
+          var assistant = assistantSelect ? assistantSelect.value : 'claude';
+
+          trackEvent('email_submitted', { email: email, assistant: assistant });
+
+          // Local storage record
+          try {
+            var waitlist = JSON.parse(localStorage.getItem('billable_waitlist') || '[]');
+            waitlist.push({ email: email, assistant: assistant, date: new Date().toISOString() });
+            localStorage.setItem('billable_waitlist', JSON.stringify(waitlist));
+          } catch (err) {}
+
+          connectForm.style.display = 'none';
+          formSuccess.style.display = 'block';
+        });
+      }
+
+      // 6. Legal Modals (Privacy, Terms, Contact)
+      var legalDialog = document.getElementById('legal-dialog');
+      var legalDialogTitle = document.getElementById('legal-dialog-title');
+      var legalDialogBody = document.getElementById('legal-dialog-body');
+      var openLegalBtns = document.querySelectorAll('.js-open-legal');
+
+      var legalContent = {
+        privacy: {
+          title: "Privacy Policy",
+          body: "<h3>Zero Model Training</h3><p>Your contracts, scopes, and client communications are strictly private. We never use user data to train machine learning models.</p><h3>Encryption & Security</h3><p>All data is encrypted in transit via TLS 1.3 and at rest with AES-256. You can permanently delete contracts at any time.</p><h3>Data Retention</h3><p>Change orders and contract clauses are stored exclusively for your account until deleted by you.</p>"
+        },
+        terms: {
+          title: "Terms of Service",
+          body: "<h3>Scope Analysis</h3><p>Billable provides scope analysis and drafting suggestions. Freelancers and studios maintain full responsibility for their client agreements and invoice dispatches.</p><h3>Subscription & Cancelation</h3><p>Subscriptions renew monthly or annually. Cancel anytime from your account dashboard with zero penalty.</p><h3>Global Operations</h3><p>Payments are securely handled via Merchant of Record with automated global VAT/tax compliance.</p>"
+        },
+        contact: {
+          title: "Contact & Support",
+          body: "<h3>Direct Engineering Contact</h3><p>Email: <strong>support@copilotai.live</strong></p><p>We respond within 24 hours to all freelancer and agency inquiries.</p><h3>Location</h3><p>Profile AI / Billable Copilot AI Network.</p>"
+        }
+      };
+
+      openLegalBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var type = this.getAttribute('data-modal');
+          var content = legalContent[type];
+          if (content && legalDialog && legalDialogTitle && legalDialogBody) {
+            legalDialogTitle.textContent = content.title;
+            legalDialogBody.innerHTML = content.body;
+            legalDialog.showModal();
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
