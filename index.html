@@ -206,6 +206,123 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
+    /* Sound & Interactive Haptics Toggle */
+    .sound-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-highlight);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .sound-toggle-btn:hover {
+      transform: scale(1.05);
+      border-color: var(--money);
+    }
+
+    .sound-toggle-btn.is-active {
+      border-color: var(--money);
+      background: var(--money-surface);
+      box-shadow: 0 0 10px var(--money-glow);
+    }
+
+    /* Live Autonomous Recovery Ticker */
+    .live-ticker-wrap {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0.4rem 1rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      z-index: 40;
+    }
+
+    .ticker-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      background: var(--money-surface);
+      border: 1px solid var(--money-border);
+      color: var(--money);
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-content {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      white-space: nowrap;
+      animation: tickerMarquee 35s linear infinite;
+    }
+
+    .ticker-content:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerMarquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .ticker-highlight {
+      color: var(--money);
+      font-weight: 600;
+    }
+
+    /* Laser Scanner Beam for Optical Clause Detection */
+    .scanner-laser-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--money) 50%, var(--cyan) 80%, transparent 100%);
+      box-shadow: 0 0 16px 3px var(--money-glow), 0 0 30px 6px rgba(56, 189, 248, 0.4);
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scanner-laser-bar.is-scanning {
+      opacity: 1;
+      animation: laserSweep 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes laserSweep {
+      0% { top: 0%; opacity: 0.9; }
+      50% { top: 96%; opacity: 1; }
+      100% { top: 0%; opacity: 0.9; }
+    }
+
+    /* 3D Magnetic Card Specular Lighting */
+    .interactive-3d {
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
     .theme-toggle-btn {
       display: inline-flex;
       align-items: center;
@@ -2082,6 +2199,21 @@
   <!-- Ambient Mesh Glow -->
   <div class="bg-mesh" aria-hidden="true"></div>
 
+  <!-- Live Autonomous Recovery Ticker Stream -->
+  <div class="live-ticker-wrap" aria-label="Live Scope Catches">
+    <div class="ticker-badge">⚡ LIVE MCP RADAR</div>
+    <div class="ticker-content">
+      <span class="ticker-item"><span class="ticker-highlight">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
+      <span class="ticker-item"><span class="ticker-highlight">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
+      <span class="ticker-item"><span class="ticker-highlight">+$450</span> out-of-scope round 4 revisions caught in Sydney · 7m ago</span>
+      <span class="ticker-item"><span class="ticker-highlight">+$890</span> API integration add-on billed in Berlin · 11m ago</span>
+      <span class="ticker-item"><span class="ticker-highlight">+$340</span> extra animation deliverables recovered in Austin · 15m ago</span>
+      <!-- Loop copy for smooth infinite scroll -->
+      <span class="ticker-item"><span class="ticker-highlight">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
+      <span class="ticker-item"><span class="ticker-highlight">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
+    </div>
+  </div>
+
   <!-- Header Nav -->
   <header class="site-header">
     <div class="container header-inner">
@@ -2094,6 +2226,7 @@
         <span>MCP PROTOCOL ACTIVE — v2.4</span>
       </div>
       <div style="display:flex; align-items:center; gap:0.65rem;">
+        <button class="sound-toggle-btn js-toggle-sound" id="btn-sound-toggle" title="Enable AI Audio Haptics">🔇</button>
         <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle-home" title="Switch Theme (Light / Dark)">☀️</button>
         <a href="/app.html" class="header-cta" style="border-color:var(--money-border); color:var(--money);">Launch App ↗</a>
         <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect contract →</button>
@@ -2155,7 +2288,9 @@
     <!-- Block 2 — Cyber Terminal Signature Demo -->
     <section class="demo-section" aria-label="Interactive Demo">
       <div class="container">
-        <div class="demo-terminal" id="demo-box">
+        <div class="demo-terminal interactive-3d" id="demo-box">
+          <!-- Real-Time Optical Laser Scanner -->
+          <div class="scanner-laser-bar" id="demo-scanner-laser"></div>
           <div class="terminal-header">
             <div class="terminal-header-left">
               <div class="terminal-dots" aria-hidden="true">
@@ -3079,6 +3214,109 @@
         });
       });
 
+      // Innovative Audio FX Engine (Synthesized Web Audio API)
+      var SoundFX = (function() {
+        var ctx = null;
+        var enabled = false;
+
+        function init() {
+          if (!ctx && (window.AudioContext || window.webkitAudioContext)) {
+            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            ctx = new AudioCtx();
+          }
+        }
+
+        return {
+          toggle: function() {
+            init();
+            if (ctx && ctx.state === 'suspended') ctx.resume();
+            enabled = !enabled;
+            return enabled;
+          },
+          isEnabled: function() { return enabled; },
+          click: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var osc = ctx.createOscillator();
+              var gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(800, ctx.currentTime);
+              osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
+              gain.gain.setValueAtTime(0.04, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.04);
+            } catch(e){}
+          },
+          chime: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var notes = [523.25, 659.25, 783.99, 1046.50];
+              notes.forEach(function(freq, i) {
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.03, ctx.currentTime + (i * 0.06));
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (i * 0.06) + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + (i * 0.06));
+                osc.stop(ctx.currentTime + (i * 0.06) + 0.25);
+              });
+            } catch(e){}
+          },
+          scan: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var osc = ctx.createOscillator();
+              var gain = ctx.createGain();
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(260, ctx.currentTime);
+              osc.frequency.linearRampToValueAtTime(950, ctx.currentTime + 0.16);
+              gain.gain.setValueAtTime(0.025, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.16);
+            } catch(e){}
+          }
+        };
+      })();
+
+      // Sound Toggle Button Handler
+      var soundBtn = document.getElementById('btn-sound-toggle');
+      if (soundBtn) {
+        soundBtn.addEventListener('click', function() {
+          var active = SoundFX.toggle();
+          soundBtn.innerHTML = active ? '🔊' : '🔇';
+          soundBtn.classList.toggle('is-active', active);
+          soundBtn.setAttribute('title', active ? 'Sound Enabled (Click to Mute)' : 'Enable AI Audio Haptics');
+          if (active) SoundFX.chime();
+        });
+      }
+
+      // 3D Magnetic Card Parallax
+      var cards3D = document.querySelectorAll('.interactive-3d');
+      cards3D.forEach(function(card) {
+        card.addEventListener('mousemove', function(e) {
+          var rect = card.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          var centerX = rect.width / 2;
+          var centerY = rect.height / 2;
+          var rotateX = ((y - centerY) / centerY) * -4;
+          var rotateY = ((x - centerX) / centerX) * 4;
+          card.style.transform = "perspective(1000px) rotateX(" + rotateX.toFixed(2) + "deg) rotateY(" + rotateY.toFixed(2) + "deg)";
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
+        });
+      });
+
       // Keyboard shortcuts
       window.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
@@ -3103,6 +3341,7 @@
         btn.addEventListener('click', function() {
           var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
           applyTheme(nextTheme);
+          SoundFX.click();
         });
       });
 

@@ -1653,6 +1653,7 @@
         </div>
 
         <div class="topbar-actions">
+          <button class="sound-toggle-btn js-toggle-sound" id="btn-sound-toggle-app" title="Enable AI Audio Haptics">🔇</button>
           <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle" title="Switch Theme (Light / Dark)">☀️</button>
           <button class="btn btn-secondary btn-sm" id="btn-open-new-contract">+ Contract</button>
           <button class="topbar-ai-trigger" id="btn-open-rail-top" title="Open AI Scope Copilot">
@@ -1685,6 +1686,18 @@
 
         <!-- SCREEN 1: TODAY (Default Landing) -->
         <div class="screen-view is-active" id="screen-today">
+          <!-- Real-Time AI Scope Telemetry HUD -->
+          <div class="dashboard-section" style="margin-bottom:1.25rem; padding:0.85rem 1.25rem; border-radius:var(--radius-md); background:var(--app-panel); border:1px solid var(--app-line);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+              <span style="font-family:var(--mono); font-size:0.75rem; font-weight:600; color:var(--ai-cyan); display:flex; align-items:center; gap:0.4rem;">
+                <span class="ai-live-dot"></span>
+                ACTIVE SCOPE TELEMETRY RADAR
+              </span>
+              <span class="chip chip-ai" style="font-size:0.7rem;">3 CONTRACTS MONITORED</span>
+            </div>
+            <canvas id="ai-radar-canvas" height="75" style="width:100%; display:block; border-radius:6px;"></canvas>
+          </div>
+
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-card-label">
@@ -2731,6 +2744,91 @@
         sendCopilotMessage("AI has ingested and indexed contract for " + client + " (" + title + "). Ready to monitor incoming requests.");
       });
 
+      // Innovative Audio FX Engine (Synthesized Web Audio API)
+      var SoundFX = (function() {
+        var ctx = null;
+        var enabled = false;
+
+        function init() {
+          if (!ctx && (window.AudioContext || window.webkitAudioContext)) {
+            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            ctx = new AudioCtx();
+          }
+        }
+
+        return {
+          toggle: function() {
+            init();
+            if (ctx && ctx.state === 'suspended') ctx.resume();
+            enabled = !enabled;
+            return enabled;
+          },
+          isEnabled: function() { return enabled; },
+          click: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var osc = ctx.createOscillator();
+              var gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(800, ctx.currentTime);
+              osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04);
+              gain.gain.setValueAtTime(0.04, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.04);
+            } catch(e){}
+          },
+          chime: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var notes = [523.25, 659.25, 783.99, 1046.50];
+              notes.forEach(function(freq, i) {
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.03, ctx.currentTime + (i * 0.06));
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (i * 0.06) + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + (i * 0.06));
+                osc.stop(ctx.currentTime + (i * 0.06) + 0.25);
+              });
+            } catch(e){}
+          },
+          scan: function() {
+            if (!enabled || !ctx) return;
+            try {
+              var osc = ctx.createOscillator();
+              var gain = ctx.createGain();
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(260, ctx.currentTime);
+              osc.frequency.linearRampToValueAtTime(950, ctx.currentTime + 0.16);
+              gain.gain.setValueAtTime(0.025, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.16);
+            } catch(e){}
+          }
+        };
+      })();
+
+      // Sound Toggle Button Handler
+      var soundBtnApp = document.getElementById('btn-sound-toggle-app');
+      if (soundBtnApp) {
+        soundBtnApp.addEventListener('click', function() {
+          var active = SoundFX.toggle();
+          soundBtnApp.innerHTML = active ? '🔊' : '🔇';
+          soundBtnApp.classList.toggle('is-active', active);
+          soundBtnApp.setAttribute('title', active ? 'Sound Enabled (Click to Mute)' : 'Enable AI Audio Haptics');
+          if (active) SoundFX.chime();
+        });
+      }
+
       // Theme Switcher Management (Default: Light)
       var currentTheme = localStorage.getItem('billable_theme') || 'light';
       function applyTheme(theme) {
@@ -2747,10 +2845,86 @@
         btn.addEventListener('click', function() {
           var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
           applyTheme(nextTheme);
+          SoundFX.click();
         });
       });
 
       applyTheme(currentTheme);
+
+      // Neural Scope Telemetry Radar Canvas
+      var radarCanvas = document.getElementById('ai-radar-canvas');
+      if (radarCanvas && radarCanvas.getContext) {
+        var rCtx = radarCanvas.getContext('2d');
+        var rWidth, rHeight;
+        function resizeRadar() {
+          var rect = radarCanvas.getBoundingClientRect();
+          radarCanvas.width = rect.width * (window.devicePixelRatio || 1);
+          radarCanvas.height = 75 * (window.devicePixelRatio || 1);
+          rWidth = radarCanvas.width;
+          rHeight = radarCanvas.height;
+        }
+        window.addEventListener('resize', resizeRadar);
+        resizeRadar();
+
+        var t = 0;
+        function drawRadar() {
+          t += 0.03;
+          rCtx.clearRect(0, 0, rWidth, rHeight);
+
+          // Grid lines
+          rCtx.strokeStyle = currentTheme === 'dark' ? 'rgba(0, 242, 254, 0.08)' : 'rgba(2, 132, 199, 0.08)';
+          rCtx.lineWidth = 1;
+          for (var x = 0; x < rWidth; x += 40) {
+            rCtx.beginPath();
+            rCtx.moveTo(x, 0);
+            rCtx.lineTo(x, rHeight);
+            rCtx.stroke();
+          }
+
+          // Dynamic harmonic waveform
+          rCtx.beginPath();
+          rCtx.strokeStyle = currentTheme === 'dark' ? '#00F2FE' : '#0284C7';
+          rCtx.lineWidth = 2;
+          for (var i = 0; i < rWidth; i += 2) {
+            var y = (rHeight / 2) + Math.sin((i * 0.015) + t) * (rHeight * 0.22) + Math.sin((i * 0.03) - (t * 1.5)) * (rHeight * 0.12);
+            if (i === 0) rCtx.moveTo(i, y);
+            else rCtx.lineTo(i, y);
+          }
+          rCtx.stroke();
+
+          // Recovered revenue second harmonic wave
+          rCtx.beginPath();
+          rCtx.strokeStyle = currentTheme === 'dark' ? '#10B981' : '#059669';
+          rCtx.lineWidth = 1.5;
+          for (var j = 0; j < rWidth; j += 3) {
+            var y2 = (rHeight / 2) + Math.cos((j * 0.02) + (t * 0.8)) * (rHeight * 0.18);
+            if (j === 0) rCtx.moveTo(j, y2);
+            else rCtx.lineTo(j, y2);
+          }
+          rCtx.stroke();
+
+          // Active node pings
+          var pingPositions = [0.25, 0.55, 0.82];
+          pingPositions.forEach(function(pos, idx) {
+            var px = rWidth * pos;
+            var py = (rHeight / 2) + Math.sin((px * 0.015) + t) * (rHeight * 0.22) + Math.sin((px * 0.03) - (t * 1.5)) * (rHeight * 0.12);
+            
+            var pulseR = 4 + (Math.sin(t * 3 + idx) + 1) * 3;
+            rCtx.beginPath();
+            rCtx.arc(px, py, pulseR, 0, Math.PI * 2);
+            rCtx.strokeStyle = currentTheme === 'dark' ? 'rgba(0, 242, 254, 0.4)' : 'rgba(2, 132, 199, 0.4)';
+            rCtx.stroke();
+
+            rCtx.beginPath();
+            rCtx.arc(px, py, 3, 0, Math.PI * 2);
+            rCtx.fillStyle = idx === 1 ? '#10B981' : (currentTheme === 'dark' ? '#00F2FE' : '#0284C7');
+            rCtx.fill();
+          });
+
+          requestAnimationFrame(drawRadar);
+        }
+        drawRadar();
+      }
 
       // Initial Render
       renderAll();
