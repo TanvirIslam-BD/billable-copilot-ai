@@ -35,8 +35,8 @@
       /* Surface & Voids */
       --bg-void:          #050709;
       --bg-base:          #080B0E;
-      --bg-card:          rgba(13, 17, 22, 0.82);
-      --bg-card-hover:    rgba(18, 24, 31, 0.95);
+      --bg-card:          rgba(13, 17, 22, 0.85);
+      --bg-card-hover:    rgba(18, 24, 31, 0.96);
       --bg-glass:         rgba(13, 17, 22, 0.65);
       --bg-input:         rgba(9, 12, 16, 0.85);
 
@@ -634,7 +634,7 @@
 
     .hero-img-cover {
       width: 100%;
-      height: 350px;
+      height: 360px;
       object-fit: cover;
       display: block;
       filter: brightness(0.68) contrast(1.15);
@@ -845,7 +845,7 @@
       }
     }
 
-    /* Left Pane: Client Ask Stream */
+    /* Left Pane: Incoming Client Ask Stream */
     .demo-pane-client {
       padding: clamp(1.5rem, 3.5vw, 2.5rem);
       border-right: 1px solid var(--border);
@@ -1216,7 +1216,7 @@
 
     .step-img-wrap {
       position: relative;
-      height: 190px;
+      height: 200px;
       overflow: hidden;
     }
 
@@ -1275,7 +1275,7 @@
     }
 
     /* ==========================================================================
-       8. Block 5: Interactive 3D Bento Grid ("The Scope Shield")
+       8. Block 5: Interactive 3D Bento Grid ("The Scope Shield") with Visual Imagery
        ========================================================================== */
     .bento-section {
       padding-block: clamp(2.5rem, 6vw, 5rem);
@@ -1284,7 +1284,7 @@
     .bento-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
+      gap: 1.35rem;
     }
 
     @media (max-width: 860px) {
@@ -1297,19 +1297,18 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.75rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
       position: relative;
       overflow: hidden;
       transition: all 0.25s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
     .bento-card:hover {
       border-color: var(--border-highlight);
-      transform: translateY(-2px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 245, 155, 0.08);
     }
 
     .bento-card.col-span-2 {
@@ -1322,9 +1321,41 @@
       }
     }
 
+    .bento-media-header {
+      position: relative;
+      height: 140px;
+      overflow: hidden;
+    }
+
+    .bento-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.6) contrast(1.15);
+      transition: transform 0.5s ease;
+    }
+
+    .bento-card:hover .bento-img {
+      transform: scale(1.05);
+    }
+
+    .bento-media-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 22, 0.98) 100%);
+    }
+
+    .bento-body {
+      padding: 1.5rem 1.75rem 1.75rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
     .bento-icon-box {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-highlight);
@@ -1332,7 +1363,8 @@
       align-items: center;
       justify-content: center;
       color: var(--money);
-      font-size: 1.25rem;
+      font-size: 1.15rem;
+      margin-bottom: 0.25rem;
     }
 
     .bento-card-title {
@@ -1349,7 +1381,123 @@
     }
 
     /* ==========================================================================
-       9. Block 6: Interactive Scope Leak Calculator
+       9. Block 6: Verified Recoveries Visual Testimonial Gallery
+       ========================================================================== */
+    .gallery-section {
+      padding-block: clamp(3rem, 6vw, 5rem);
+      background: linear-gradient(180deg, rgba(6, 8, 10, 0.4) 0%, rgba(13, 17, 22, 0.6) 100%);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 980px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .gallery-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-card:hover {
+      border-color: var(--money-border);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px var(--money-glow);
+    }
+
+    .gallery-img-wrap {
+      position: relative;
+      height: 170px;
+      overflow: hidden;
+    }
+
+    .gallery-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.75) contrast(1.1);
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-card:hover .gallery-img {
+      transform: scale(1.06);
+    }
+
+    .gallery-recovery-badge {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+      background: rgba(6, 8, 10, 0.85);
+      border: 1px solid var(--money);
+      color: var(--money);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 12px var(--money-glow);
+    }
+
+    .gallery-card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .gallery-quote {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .gallery-author-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 0.65rem;
+    }
+
+    .gallery-author-name {
+      font-family: var(--display);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .gallery-author-role {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       10. Block 7: Interactive Scope Leak Calculator with Visual Backdrop
        ========================================================================== */
     .calc-section {
       padding-block: clamp(3rem, 6vw, 5.5rem);
@@ -1361,11 +1509,13 @@
       border-radius: var(--radius-xl);
       padding: clamp(1.75rem, 4vw, 3rem);
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
     }
 
     .calc-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 2.5rem;
       align-items: center;
     }
@@ -1427,14 +1577,26 @@
       transform: scale(1.2);
     }
 
-    /* Calculator Result Box */
+    /* Calculator Result Box with Split Photo Texture */
     .calc-result-box {
-      background: linear-gradient(135deg, rgba(0, 245, 155, 0.12) 0%, rgba(8, 18, 14, 0.75) 100%);
+      background: linear-gradient(135deg, rgba(0, 245, 155, 0.12) 0%, rgba(8, 18, 14, 0.85) 100%);
       border: 1px solid var(--money-border);
       border-radius: var(--radius-lg);
       padding: clamp(1.5rem, 3vw, 2.25rem);
       text-align: center;
       box-shadow: 0 0 35px rgba(0, 245, 155, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calc-result-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.12;
+      pointer-events: none;
     }
 
     .calc-result-label {
@@ -1444,6 +1606,8 @@
       letter-spacing: 0.12em;
       color: var(--text-secondary);
       margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
     }
 
     .calc-result-num {
@@ -1454,15 +1618,19 @@
       line-height: 1.1;
       text-shadow: 0 0 30px rgba(0, 245, 155, 0.4);
       margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
     }
 
     .calc-result-sub {
       font-size: 0.95rem;
       color: var(--text-secondary);
+      position: relative;
+      z-index: 1;
     }
 
     /* ==========================================================================
-       10. Block 7: Monumental Pricing
+       11. Block 8: Monumental Pricing with Studio Imagery
        ========================================================================== */
     .pricing-section {
       padding-block: clamp(3.5rem, 7vw, 6.5rem);
@@ -1532,7 +1700,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: clamp(1.75rem, 3vw, 2.5rem);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1548,6 +1716,33 @@
     .pricing-card.featured {
       border: 1.5px solid var(--money);
       box-shadow: 0 0 40px var(--money-glow), 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .pricing-header-media {
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-header-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.55) contrast(1.1);
+    }
+
+    .pricing-header-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 22, 0.98) 100%);
+    }
+
+    .pricing-body {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
     }
 
     .pricing-tier-name {
@@ -1615,7 +1810,7 @@
     }
 
     /* ==========================================================================
-       11. Block 8: Objections & Accordion FAQs
+       12. Block 9: Objections & Accordion FAQs
        ========================================================================== */
     .faq-section {
       padding-block: clamp(3rem, 6vw, 5.5rem);
@@ -1727,7 +1922,47 @@
     }
 
     /* ==========================================================================
-       12. Block 9: Footer with Verified Shield & LLC Details
+       13. Panoramic Pre-Footer CTA Hero Banner
+       ========================================================================== */
+    .pre-footer-cta-section {
+      padding-block: clamp(3.5rem, 7vw, 6rem);
+      position: relative;
+    }
+
+    .panoramic-cta-card {
+      position: relative;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-highlight);
+      overflow: hidden;
+      padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3.5rem);
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(0, 245, 155, 0.1);
+    }
+
+    .panoramic-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.35) contrast(1.2);
+    }
+
+    .panoramic-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(5, 7, 9, 0.7) 0%, rgba(5, 7, 9, 0.95) 100%);
+    }
+
+    .panoramic-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      margin-inline: auto;
+    }
+
+    /* ==========================================================================
+       14. Block 10: Footer with Verified Shield & LLC Details
        ========================================================================== */
     .site-footer {
       background: #040507;
@@ -1851,7 +2086,7 @@
     }
 
     /* ==========================================================================
-       13. Accessible Native Modal Dialogs
+       15. Accessible Native Modal Dialogs
        ========================================================================== */
     dialog {
       border: 1px solid var(--border-highlight);
@@ -1988,7 +2223,7 @@
   </header>
 
   <main>
-    <!-- Block 1 — Kinetic Hero Section -->
+    <!-- Block 1 — Kinetic Hero Section with High-Fashion Photography -->
     <section class="hero-section" aria-labelledby="hero-title">
       <div class="container">
         <div class="hero-grid">
@@ -2189,7 +2424,7 @@
       </div>
     </section>
 
-    <!-- Block 5 — Interactive 3D Bento Grid ("The Scope Shield") -->
+    <!-- Block 5 — Interactive 3D Bento Grid with Rich Photography ("The Scope Shield") -->
     <section class="bento-section" aria-label="Feature Bento Grid">
       <div class="container">
         <div class="section-header-center">
@@ -2200,36 +2435,133 @@
         <div class="bento-grid">
           <!-- Card 1 (Span 2) -->
           <div class="bento-card col-span-2 interactive-3d">
-            <div class="bento-icon-box">🛡️</div>
-            <h3 class="bento-card-title">Zero Model Training &amp; Absolute Privacy</h3>
-            <p class="bento-card-desc">Your contracts, scopes, and client communications are strictly confidential. We never train public AI models on your private agreements. Encrypted with AES-256 at rest.</p>
+            <div class="bento-media-header">
+              <img class="bento-img" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80" alt="Secure encrypted server infrastructure" loading="lazy">
+              <div class="bento-media-overlay"></div>
+            </div>
+            <div class="bento-body">
+              <div class="bento-icon-box">🛡️</div>
+              <h3 class="bento-card-title">Zero Model Training &amp; Absolute Privacy</h3>
+              <p class="bento-card-desc">Your contracts, scopes, and client communications are strictly confidential. We never train public AI models on your private agreements. Encrypted with AES-256 at rest.</p>
+            </div>
           </div>
 
           <!-- Card 2 -->
           <div class="bento-card interactive-3d">
-            <div class="bento-icon-box">⚡</div>
-            <h3 class="bento-card-title">Sub-180ms Clause AST Parser</h3>
-            <p class="bento-card-desc">Evaluates complex multi-page master service agreements against tiny informal client asks in milliseconds.</p>
+            <div class="bento-media-header">
+              <img class="bento-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Sub-180ms Neural AST Parser" loading="lazy">
+              <div class="bento-media-overlay"></div>
+            </div>
+            <div class="bento-body">
+              <div class="bento-icon-box">⚡</div>
+              <h3 class="bento-card-title">Sub-180ms Clause AST Parser</h3>
+              <p class="bento-card-desc">Evaluates complex multi-page master service agreements against tiny informal client asks in milliseconds.</p>
+            </div>
           </div>
 
           <!-- Card 3 -->
           <div class="bento-card interactive-3d">
-            <div class="bento-icon-box">🎭</div>
-            <h3 class="bento-card-title">Tone-Calibrated Replies</h3>
-            <p class="bento-card-desc">Choose between Warm &amp; Polite, Neutral &amp; Direct, or Firm &amp; Formal to match your exact client relationship dynamic.</p>
+            <div class="bento-media-header">
+              <img class="bento-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="Tone-Calibrated Replies" loading="lazy">
+              <div class="bento-media-overlay"></div>
+            </div>
+            <div class="bento-body">
+              <div class="bento-icon-box">🎭</div>
+              <h3 class="bento-card-title">Tone-Calibrated Replies</h3>
+              <p class="bento-card-desc">Choose between Warm &amp; Polite, Neutral &amp; Direct, or Firm &amp; Formal to match your exact client relationship dynamic.</p>
+            </div>
           </div>
 
           <!-- Card 4 (Span 2) -->
           <div class="bento-card col-span-2 interactive-3d">
-            <div class="bento-icon-box">🔌</div>
-            <h3 class="bento-card-title">Native Model Context Protocol (MCP)</h3>
-            <p class="bento-card-desc">Works directly inside Claude Desktop, Cursor, and ChatGPT. The web dashboard and your AI assistant share the exact same database and recovery ledger.</p>
+            <div class="bento-media-header">
+              <img class="bento-img" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Native Model Context Protocol Studio" loading="lazy">
+              <div class="bento-media-overlay"></div>
+            </div>
+            <div class="bento-body">
+              <div class="bento-icon-box">🔌</div>
+              <h3 class="bento-card-title">Native Model Context Protocol (MCP)</h3>
+              <p class="bento-card-desc">Works directly inside Claude Desktop, Cursor, and ChatGPT. The web dashboard and your AI assistant share the exact same database and recovery ledger.</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Block 6 — Interactive Scope Leak Matrix Calculator -->
+    <!-- Block 6 — Verified Recoveries Visual Testimonial Gallery -->
+    <section class="gallery-section" aria-label="Customer Success Gallery">
+      <div class="container">
+        <div class="section-header-center" style="margin-bottom:2.5rem;">
+          <span class="eyebrow-pill"><span class="dot"></span> VERIFIED RECOVERY STORIES</span>
+          <h2 class="section-title gradient-text-silver">Trusted by founders &amp; independent leads</h2>
+          <p class="section-desc">See how top independent designers, developers, and agency owners protect their revenue.</p>
+        </div>
+
+        <div class="gallery-grid">
+          <!-- Story 1 -->
+          <div class="gallery-card interactive-3d">
+            <div class="gallery-img-wrap">
+              <img class="gallery-img" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80" alt="Jessica V., Design Director" loading="lazy">
+              <span class="gallery-recovery-badge">+$3,800 RECOVERED</span>
+            </div>
+            <div class="gallery-card-body">
+              <p class="gallery-quote">"Billable caught 4 extra brand collateral requests that would have eaten my entire weekend for free."</p>
+              <div class="gallery-author-meta">
+                <span class="gallery-author-name">Jessica V.</span>
+                <span class="gallery-author-role">Design Director, Berlin</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Story 2 -->
+          <div class="gallery-card interactive-3d">
+            <div class="gallery-img-wrap">
+              <img class="gallery-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Alex M., Fullstack Consultant" loading="lazy">
+              <span class="gallery-recovery-badge">+$5,400 RECOVERED</span>
+            </div>
+            <div class="gallery-card-body">
+              <p class="gallery-quote">"Client asked for custom auth and third-party webhook integrations not in SOW. Accepted change order in 1 hour."</p>
+              <div class="gallery-author-meta">
+                <span class="gallery-author-name">Alex M.</span>
+                <span class="gallery-author-role">Lead Consultant, San Francisco</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Story 3 -->
+          <div class="gallery-card interactive-3d">
+            <div class="gallery-img-wrap">
+              <img class="gallery-img" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80" alt="Maya R., 3D Artist" loading="lazy">
+              <span class="gallery-recovery-badge">+$2,100 RECOVERED</span>
+            </div>
+            <div class="gallery-card-body">
+              <p class="gallery-quote">"Revision rounds are where I used to bleed money. Having clause AST citations stopped scope creep immediately."</p>
+              <div class="gallery-author-meta">
+                <span class="gallery-author-name">Maya R.</span>
+                <span class="gallery-author-role">Motion &amp; 3D Specialist, London</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Story 4 -->
+          <div class="gallery-card interactive-3d">
+            <div class="gallery-img-wrap">
+              <img class="gallery-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Daniel K., Brand Strategist" loading="lazy">
+              <span class="gallery-recovery-badge">+$4,600 RECOVERED</span>
+            </div>
+            <div class="gallery-card-body">
+              <p class="gallery-quote">"The polite tone synthesizer makes uncomfortable money conversations completely effortless and diplomatic."</p>
+              <div class="gallery-author-meta">
+                <span class="gallery-author-name">Daniel K.</span>
+                <span class="gallery-author-role">Brand Strategist, New York</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Block 7 — Interactive Scope Leak Matrix Calculator with Visual Texture -->
     <section class="calc-section" aria-label="Scope Leak Calculator">
       <div class="container">
         <div class="leak-calculator interactive-3d">
@@ -2255,8 +2587,9 @@
               </div>
             </div>
 
-            <!-- Result Box -->
+            <!-- Result Box with Photographic Atmosphere -->
             <div class="calc-result-box">
+              <img class="calc-result-bg-img" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80" alt="Studio background atmosphere" loading="lazy">
               <p class="calc-result-label">Recoverable Revenue with Billable</p>
               <div class="calc-result-num numeral-money" id="calc-recoverable">+$600 / mo</div>
               <p class="calc-result-sub" id="calc-annual-leak">~$7,200 lost each year without automated contract guard</p>
@@ -2266,7 +2599,7 @@
       </div>
     </section>
 
-    <!-- Block 7 — Monumental Pricing -->
+    <!-- Block 8 — Monumental Pricing with Studio Imagery -->
     <section class="pricing-section" id="pricing-block" aria-labelledby="pricing-title">
       <div class="container">
         <div class="section-header-center">
@@ -2285,53 +2618,65 @@
         <div class="pricing-grid">
           <!-- Tier 1: Solo Freelance -->
           <div class="pricing-card">
-            <div>
-              <h3 class="pricing-tier-name">Solo Freelance</h3>
-              <p class="pricing-tier-desc">For individual designers, developers, and consultants.</p>
-              <div class="pricing-num-box">
-                <span class="price-currency">$</span>
-                <span class="price-amount" id="solo-price">19</span>
-                <span class="price-period">/ month</span>
-              </div>
-              <p id="solo-annual-note" style="font-family:var(--mono); font-size:0.75rem; color:var(--money); margin-bottom:1.5rem;"></p>
-              <ul class="pricing-features-list">
-                <li class="feature-item"><span class="feature-check">✓</span> Up to 5 Active Contracts</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Unlimited Scope Checks</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Claude &amp; ChatGPT MCP Integration</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Autonomous Change Order PDF Gen</li>
-              </ul>
+            <div class="pricing-header-media">
+              <img class="pricing-header-img" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Solo Freelancer" loading="lazy">
+              <div class="pricing-header-overlay"></div>
             </div>
-            <button class="btn-secondary js-open-modal" style="width:100%;" data-action="connect_contract_solo">Start 14-Day Free Trial →</button>
+            <div class="pricing-body">
+              <div>
+                <h3 class="pricing-tier-name">Solo Freelance</h3>
+                <p class="pricing-tier-desc">For individual designers, developers, and consultants.</p>
+                <div class="pricing-num-box">
+                  <span class="price-currency">$</span>
+                  <span class="price-amount" id="solo-price">19</span>
+                  <span class="price-period">/ month</span>
+                </div>
+                <p id="solo-annual-note" style="font-family:var(--mono); font-size:0.75rem; color:var(--money); margin-bottom:1.5rem;"></p>
+                <ul class="pricing-features-list">
+                  <li class="feature-item"><span class="feature-check">✓</span> Up to 5 Active Contracts</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Unlimited Scope Checks</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Claude &amp; ChatGPT MCP Integration</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Autonomous Change Order PDF Gen</li>
+                </ul>
+              </div>
+              <button class="btn-secondary js-open-modal" style="width:100%;" data-action="connect_contract_solo">Start 14-Day Free Trial →</button>
+            </div>
           </div>
 
           <!-- Tier 2: Studio / Agency -->
           <div class="pricing-card featured">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                <h3 class="pricing-tier-name">Studio &amp; Agency</h3>
-                <span class="discount-badge">POPULAR</span>
-              </div>
-              <p class="pricing-tier-desc">For studios and multi-person agency teams.</p>
-              <div class="pricing-num-box">
-                <span class="price-currency">$</span>
-                <span class="price-amount" id="studio-price">49</span>
-                <span class="price-period">/ month</span>
-              </div>
-              <p id="studio-annual-note" style="font-family:var(--mono); font-size:0.75rem; color:var(--money); margin-bottom:1.5rem;"></p>
-              <ul class="pricing-features-list">
-                <li class="feature-item"><span class="feature-check">✓</span> Unlimited Active Contracts</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Multi-seat Team Access</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Shared Recovery Audit Ledger</li>
-                <li class="feature-item"><span class="feature-check">✓</span> Custom Clause Model &amp; Tone Tuning</li>
-              </ul>
+            <div class="pricing-header-media">
+              <img class="pricing-header-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" alt="Studio & Agency Team" loading="lazy">
+              <div class="pricing-header-overlay"></div>
             </div>
-            <button class="btn-primary js-open-modal" style="width:100%;" data-action="connect_contract_studio">Start 14-Day Free Trial →</button>
+            <div class="pricing-body">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                  <h3 class="pricing-tier-name">Studio &amp; Agency</h3>
+                  <span class="discount-badge">POPULAR</span>
+                </div>
+                <p class="pricing-tier-desc">For studios and multi-person agency teams.</p>
+                <div class="pricing-num-box">
+                  <span class="price-currency">$</span>
+                  <span class="price-amount" id="studio-price">49</span>
+                  <span class="price-period">/ month</span>
+                </div>
+                <p id="studio-annual-note" style="font-family:var(--mono); font-size:0.75rem; color:var(--money); margin-bottom:1.5rem;"></p>
+                <ul class="pricing-features-list">
+                  <li class="feature-item"><span class="feature-check">✓</span> Unlimited Active Contracts</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Multi-seat Team Access</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Shared Recovery Audit Ledger</li>
+                  <li class="feature-item"><span class="feature-check">✓</span> Custom Clause Model &amp; Tone Tuning</li>
+                </ul>
+              </div>
+              <button class="btn-primary js-open-modal" style="width:100%;" data-action="connect_contract_studio">Start 14-Day Free Trial →</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Block 8 — Objections & Accordion FAQs -->
+    <!-- Block 9 — Objections & Accordion FAQs -->
     <section class="faq-section" aria-labelledby="faq-title">
       <div class="container">
         <div class="faq-grid">
@@ -2394,9 +2739,32 @@
         </div>
       </div>
     </section>
+
+    <!-- Block 10 — Panoramic Pre-Footer CTA Hero Banner -->
+    <section class="pre-footer-cta-section" aria-label="Get Started Banner">
+      <div class="container">
+        <div class="panoramic-cta-card interactive-3d">
+          <img class="panoramic-bg-img" src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1400&q=80" alt="Architectural design studio workspace" loading="lazy">
+          <div class="panoramic-overlay"></div>
+          <div class="panoramic-content">
+            <span class="eyebrow-pill" style="margin-bottom:1.25rem;"><span class="dot"></span> READY TO RECOVER REVENUE?</span>
+            <h2 class="section-title gradient-text-silver" style="font-size:clamp(2.2rem, 5vw, 3.4rem); margin-bottom:1.25rem;">
+              Stop doing free work today.
+            </h2>
+            <p class="section-desc" style="margin-bottom:2rem; max-width:540px; margin-inline:auto;">
+              Connect your first contract in under 2 minutes. Start catching scope creep directly in your favorite AI assistant.
+            </p>
+            <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+              <button class="btn-primary js-open-modal" data-action="connect_contract_prefooter">Connect your contract →</button>
+              <a href="/app.html" class="btn-secondary" style="font-size:0.95rem; padding:0.85rem 1.5rem;">Launch Web Console ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Block 9 — Footer with LLC Address, Socials & Legal Dialogs -->
+  <!-- Block 11 — Footer with LLC Address, Socials & Legal Dialogs -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
@@ -2466,7 +2834,7 @@
   </footer>
 
   <!-- ==========================================================================
-       14. Interactive Dialog Modals
+       16. Interactive Dialog Modals
        ========================================================================== -->
   <!-- Connect Contract Modal -->
   <dialog id="contract-dialog" aria-labelledby="modal-title">
@@ -2514,7 +2882,7 @@
   </dialog>
 
   <!-- ==========================================================================
-       15. High-Performance Client Logic (Zero external dependencies)
+       17. High-Performance Client Logic (Zero external dependencies)
        ========================================================================== -->
   <script>
     (function () {
