@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="6" fill="#08090A"/>
-  <rect x="1" y="1" width="30" height="30" rx="5" fill="#0F1316" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-  <line x1="4" y1="12" x2="28" y2="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <line x1="4" y1="20" x2="28" y2="20" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="16" y="22" font-family="'IBM Plex Mono', monospace" font-size="15" font-weight="700" fill="#10B981" text-anchor="middle">§</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Dark Background Squircle -->
+  <rect width="64" height="64" rx="16" fill="#090D11" />
+  <!-- Rounded Rect Outline with top-right gap -->
+  <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" 
+        stroke="#FFFFFF" 
+        stroke-width="5.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+  <!-- Emerald Beacon Dot -->
+  <circle cx="46" cy="18" r="6" fill="#00F59B" />
 </svg>

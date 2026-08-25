@@ -475,26 +475,28 @@
     }
 
     .brand-mark {
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 1.05rem;
-      border: 1px solid var(--money-border);
       width: 34px;
       height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, rgba(0, 245, 155, 0.18) 0%, rgba(6, 8, 10, 0.9) 100%);
-      color: var(--money);
-      box-shadow: 0 0 16px rgba(0, 245, 155, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-highlight);
+      color: var(--text-primary);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .brand:hover .brand-mark {
-      transform: scale(1.08) rotate(-4deg);
+      transform: scale(1.06);
       border-color: var(--money);
-      box-shadow: 0 0 24px rgba(0, 245, 155, 0.4);
+      box-shadow: 0 0 16px var(--money-glow);
+    }
+
+    .brand-logo-svg {
+      width: 22px;
+      height: 22px;
+      display: block;
     }
 
     .brand-name {
@@ -838,27 +840,21 @@
     }
 
     /* ==========================================================================
-       5. Block 2: Scope Deck 2.0 (Interactive Signature Hardware Simulator)
+       5. Block 2: Scope Deck 2.0 (Intelligent Chat & Financial Telemetry Simulator)
        ========================================================================== */
     .demo-section {
       padding-block: clamp(2rem, 5vw, 4.5rem);
     }
 
     .demo-terminal {
-      background: var(--bg-card);
+      background: rgba(8, 12, 16, 0.95);
       border: 1px solid var(--border-highlight);
       border-radius: var(--radius-xl);
-      box-shadow: 0 24px 90px -20px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 245, 155, 0.06);
+      box-shadow: 0 32px 100px -20px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 245, 155, 0.08);
       overflow: hidden;
       position: relative;
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .demo-terminal:hover {
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 32px 100px -20px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 245, 155, 0.12);
     }
 
     .terminal-header {
@@ -867,8 +863,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 1rem 1.5rem;
-      background: rgba(9, 12, 16, 0.95);
+      padding: 0.95rem 1.5rem;
+      background: rgba(5, 8, 11, 0.95);
       border-bottom: 1px solid var(--border);
     }
 
@@ -886,8 +882,8 @@
     }
 
     .t-dot {
-      width: 11px;
-      height: 11px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       display: inline-block;
     }
@@ -901,21 +897,21 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
     .demo-preset-chips {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
     }
 
     .demo-chip {
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 500;
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.65rem;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: rgba(255, 255, 255, 0.04);
@@ -934,137 +930,188 @@
       border-color: var(--money);
       background: var(--money-surface);
       color: var(--money);
-      box-shadow: 0 0 14px var(--money-glow);
+      box-shadow: 0 0 12px var(--money-glow);
     }
 
-    .demo-dots-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .demo-dot-btn {
-      width: 0.75rem;
-      height: 0.75rem;
-      border-radius: 50%;
+    .terminal-mode-pills {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-highlight);
-      background: transparent;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: var(--radius-full);
+      padding: 2px;
     }
 
-    .demo-dot-btn[aria-current="true"] {
-      background-color: var(--money);
-      border-color: var(--money);
-      box-shadow: 0 0 10px var(--money);
-      transform: scale(1.25);
+    .t-mode-btn {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .t-mode-btn.active {
+      background: var(--money);
+      color: #050709;
+      box-shadow: 0 0 10px var(--money-glow);
     }
 
     .demo-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.4fr 1fr;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 880px) {
       .demo-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Left Pane: Incoming Client Ask Stream */
+    /* Left Pane: Intelligent Copilot Chat View */
     .demo-pane-client {
-      padding: clamp(1.5rem, 3.5vw, 2.5rem);
+      padding: clamp(1.25rem, 3vw, 2rem);
       border-right: 1px solid var(--border);
-      background: rgba(9, 12, 16, 0.65);
+      background: rgba(6, 9, 12, 0.6);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 380px;
+      gap: 1.25rem;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 880px) {
       .demo-pane-client {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        min-height: auto;
       }
     }
 
-    .client-msg-header {
+    .chat-date-pill {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Modern Lime/Emerald Client Bubble */
+    .client-ask-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .client-ask-bubble {
+      background: linear-gradient(135deg, #A3E635 0%, #00F59B 100%);
+      color: #050709;
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      padding: 1rem 1.35rem;
+      border-radius: 18px 18px 4px 18px;
+      max-width: 85%;
+      box-shadow: 0 8px 24px rgba(0, 245, 155, 0.2);
+    }
+
+    /* AI Copilot Response Card */
+    .copilot-response-card {
+      background: rgba(13, 18, 24, 0.95);
+      border: 1px solid var(--border-highlight);
+      border-radius: 18px 18px 18px 4px;
+      padding: 1.25rem 1.35rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .copilot-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 0.85rem;
     }
 
-    .client-author-box {
-      display: flex;
+    .copilot-brand-tag {
+      display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.45rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--money);
     }
 
-    .client-photo {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1.5px solid var(--border-highlight);
+    .copilot-summary-msg {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
     }
 
-    .client-author-info {
+    .copilot-summary-msg strong {
+      color: var(--text-primary);
+    }
+
+    /* Itemized Breakdown Table */
+    .copilot-breakdown-list {
       display: flex;
       flex-direction: column;
-      line-height: 1.2;
+      gap: 0.65rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .client-author-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .client-tag {
+    .copilot-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+      font-size: 0.78rem;
     }
 
-    .client-time {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .breakdown-item-name {
+      color: var(--text-secondary);
     }
 
-    .client-bubble {
-      background: rgba(18, 23, 28, 0.85);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1.25rem 1.4rem;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-primary);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      position: relative;
-      margin-bottom: 1.5rem;
+    .breakdown-item-val {
+      color: var(--money);
+      font-weight: 700;
+    }
+
+    .breakdown-progress-line {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      margin-top: 3px;
+      overflow: hidden;
+    }
+
+    .breakdown-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--money) 0%, var(--cyan) 100%);
+      width: 100%;
+      border-radius: 2px;
     }
 
     /* Custom Scope Input Sandbox Form */
     .demo-custom-form {
       display: flex;
       gap: 0.5rem;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
     }
 
     .demo-custom-input {
       flex: 1;
-      background: rgba(6, 8, 10, 0.8);
+      background: rgba(6, 8, 10, 0.85);
       border: 1px solid var(--border-highlight);
       border-radius: var(--radius-sm);
-      padding: 0.6rem 0.85rem;
+      padding: 0.65rem 0.95rem;
       font-family: var(--body);
       font-size: 0.8125rem;
       color: var(--text-primary);
@@ -1077,31 +1124,168 @@
       box-shadow: 0 0 12px rgba(0, 245, 155, 0.2);
     }
 
-    .demo-custom-input::placeholder {
-      color: var(--text-faint);
-    }
-
-    /* Right Pane: Autonomous Scope Verdict & Reply */
-    .demo-pane-verdict {
-      padding: clamp(1.5rem, 3.5vw, 2.5rem);
-      background: rgba(13, 17, 22, 0.92);
+    /* Right Pane: Financial Telemetry & Scope Radial HUD */
+    .demo-pane-hud {
+      padding: clamp(1.25rem, 3vw, 2rem);
+      background: rgba(10, 14, 18, 0.88);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      gap: 1.5rem;
     }
 
-    .verdict-header {
+    .hud-top-meta {
+      text-align: center;
+    }
+
+    .hud-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .hud-primary-amount {
+      font-family: var(--display);
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .hud-sub-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Circular Donut Scope Ring */
+    .hud-donut-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin-inline: auto;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
+      justify-content: center;
+    }
+
+    .hud-donut-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .hud-donut-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 10;
+    }
+
+    .hud-donut-fill {
+      fill: none;
+      stroke: var(--money);
+      stroke-width: 10;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 0;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 0 6px rgba(0, 245, 155, 0.4));
+    }
+
+    .hud-donut-center {
+      position: absolute;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .hud-donut-pct {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .hud-donut-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Bottom Trend Badge */
+    .hud-trend-card {
+      background: rgba(6, 8, 10, 0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .trend-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-xs);
+      background: var(--money-surface);
+      border: 1px solid var(--money-border);
+      color: var(--money);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .trend-text-col {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .trend-headline {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .trend-caption {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .btn-copy-change-order {
+      width: 100%;
+      background: rgba(0, 245, 155, 0.12);
+      border: 1px solid var(--money-border);
+      color: var(--money);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.7rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .btn-copy-change-order:hover {
+      background: var(--money);
+      color: #050709;
+      box-shadow: 0 0 20px var(--money-glow);
     }
 
     .verdict-badge {
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.65rem;
       border-radius: var(--radius-xs);
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -1122,119 +1306,6 @@
       border: 1px solid rgba(0, 210, 255, 0.3);
       color: var(--cyan);
       box-shadow: 0 0 16px var(--cyan-glow);
-    }
-
-    .verdict-speed-tag {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--money);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .verdict-stats-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-      padding: 0.85rem 1rem;
-      background: rgba(6, 8, 10, 0.6);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-    }
-
-    .v-stat-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-    }
-
-    .v-stat-label {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-    }
-
-    .v-stat-val {
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    /* AI Drafted Reply Box */
-    .reply-box {
-      background: rgba(8, 11, 14, 0.95);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem 1.15rem;
-      position: relative;
-    }
-
-    .reply-box-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.65rem;
-    }
-
-    .reply-box-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--money);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .btn-copy-reply {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-highlight);
-      color: var(--text-primary);
-      padding: 0.25rem 0.6rem;
-      border-radius: var(--radius-xs);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-copy-reply:hover {
-      background: var(--money-surface);
-      border-color: var(--money);
-      color: var(--money);
-    }
-
-    .reply-text {
-      font-size: 0.875rem;
-      line-height: 1.55;
-      color: var(--text-secondary);
-    }
-
-    .reply-text strong {
-      color: var(--text-primary);
-    }
-
-    /* Animated typing cursor */
-    .typing-cursor {
-      display: inline-block;
-      width: 6px;
-      height: 13px;
-      background: var(--money);
-      margin-left: 4px;
-      animation: cursorBlink 0.9s infinite;
-      vertical-align: middle;
-    }
-
-    @keyframes cursorBlink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
     }
 
     /* 3D Magnetic Card Specular Physics */
@@ -2343,7 +2414,12 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="/" class="brand" aria-label="Billable Copilot AI Homepage">
-        <span class="brand-mark">§</span>
+        <span class="brand-mark">
+          <svg class="brand-logo-svg" viewBox="0 0 64 64" fill="none">
+            <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="46" cy="18" r="6.5" fill="#00F59B" />
+          </svg>
+        </span>
         <span class="brand-name">Billable Copilot AI</span>
       </a>
       <div class="header-badge">
@@ -2408,7 +2484,7 @@
       </div>
     </section>
 
-    <!-- Block 2 — Scope Deck 2.0 (Interactive Signature Hardware Simulator) -->
+    <!-- Block 2 — Scope Deck 2.0 (Intelligent Chat & Financial Telemetry Simulator) -->
     <section class="demo-section" aria-label="Interactive Scope Deck Simulator">
       <div class="container">
         <div class="demo-terminal interactive-3d" id="demo-box">
@@ -2419,76 +2495,109 @@
                 <span class="t-dot yellow"></span>
                 <span class="t-dot green"></span>
               </div>
-              <span class="terminal-title" id="demo-indicator">SCENARIO 1 OF 3</span>
+              <span class="terminal-title" id="demo-indicator">August Scope Overview</span>
               <div class="demo-preset-chips" role="tablist" aria-label="Scenario presets">
                 <button class="demo-chip" role="tab" aria-selected="true" aria-current="true" data-index="0">§2 Blog section</button>
                 <button class="demo-chip" role="tab" aria-selected="false" aria-current="false" data-index="1">§4 Logo resize</button>
                 <button class="demo-chip" role="tab" aria-selected="false" aria-current="false" data-index="2">§5 Round 4 edits</button>
               </div>
             </div>
-            <div class="demo-dots-controls">
-              <button class="demo-dot-btn" role="tab" aria-selected="true" aria-current="true" aria-label="Scenario 1" data-index="0"></button>
-              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Scenario 2" data-index="1"></button>
-              <button class="demo-dot-btn" role="tab" aria-selected="false" aria-current="false" aria-label="Scenario 3" data-index="2"></button>
+            
+            <div class="terminal-mode-pills" role="tablist">
+              <button class="t-mode-btn active" id="tab-mode-radar">Live Radar</button>
+              <button class="t-mode-btn" id="tab-mode-clauses">SOW Clauses</button>
+              <button class="t-mode-btn" id="tab-mode-reply">AI Reply</button>
             </div>
           </div>
 
           <div class="demo-grid">
-            <!-- Left Pane: Incoming Client Ask Simulator -->
+            <!-- Left Pane: Intelligent Copilot Chat View -->
             <div class="demo-pane-client">
               <div>
-                <div class="client-msg-header">
-                  <div class="client-author-box">
-                    <img id="demo-client-photo" class="client-photo" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Client Portrait" loading="lazy">
-                    <div class="client-author-info">
-                      <span id="demo-client-name" class="client-author-name">Sarah Jenkins</span>
-                      <span class="client-tag">INCOMING CLIENT ASK</span>
+                <div class="chat-date-pill" id="demo-client-time">TODAY, 10:42 AM</div>
+
+                <!-- Client Incoming Ask Bubble -->
+                <div class="client-ask-row">
+                  <div class="client-ask-bubble" id="demo-client-text">
+                    Hey! Quick one — while you're in there, can we also add a blog section? Shouldn't take long 🙂
+                  </div>
+                </div>
+
+                <!-- AI Copilot Response Card -->
+                <div class="copilot-response-card">
+                  <div class="copilot-card-header">
+                    <div class="copilot-brand-tag">
+                      <svg width="18" height="18" viewBox="0 0 64 64" fill="none" style="vertical-align:middle;">
+                        <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="46" cy="18" r="6" fill="#00F59B" />
+                      </svg>
+                      <span>BILLABLE COPILOT</span>
+                    </div>
+                    <span id="demo-verdict-badge" class="verdict-badge verdict-flag">OUT OF SCOPE</span>
+                  </div>
+
+                  <div class="copilot-summary-msg" id="demo-copilot-summary">
+                    Evaluated contract scope (§2.1). Detected <strong>1 out-of-scope deliverable</strong> (+3 business days).
+                  </div>
+
+                  <!-- Itemized Breakdown Table -->
+                  <div class="copilot-breakdown-list">
+                    <div>
+                      <div class="copilot-breakdown-row">
+                        <span class="breakdown-item-name" id="demo-item-name-1">Blog CMS Section (§2.1)</span>
+                        <span class="breakdown-item-val numeral-money" id="demo-adds-val">+$650.00</span>
+                      </div>
+                      <div class="breakdown-progress-line"><div class="breakdown-progress-fill"></div></div>
+                    </div>
+
+                    <div>
+                      <div class="copilot-breakdown-row">
+                        <span class="breakdown-item-name">Delivery Adjustment</span>
+                        <span class="breakdown-item-val" id="demo-delays-val" style="color:var(--text-primary);">+3 days</span>
+                      </div>
+                      <div class="breakdown-progress-line"><div class="breakdown-progress-fill" style="width:40%;"></div></div>
                     </div>
                   </div>
-                  <span class="client-time" id="demo-client-time">10:42 AM</span>
                 </div>
-                <div class="client-bubble" id="demo-client-text">
-                  Hey! Quick one — while you're in there, can we also add a blog section? Shouldn't take long 🙂
-                </div>
-                <!-- Custom Scope Testing Input -->
-                <form id="custom-scope-form" class="demo-custom-form" title="Test any custom client request">
-                  <input type="text" id="custom-request-input" class="demo-custom-input" placeholder="Type ask: 'Can we add a mobile app?' or 'Round 4 revisions...'" aria-label="Type custom client ask">
-                  <button type="submit" class="btn-secondary">Check ↵</button>
-                </form>
               </div>
+
+              <!-- Custom Scope Testing Form -->
+              <form id="custom-scope-form" class="demo-custom-form" title="Test any custom client request">
+                <input type="text" id="custom-request-input" class="demo-custom-input" placeholder="Test any client ask: 'Add mobile app' or 'Logo 15% bigger'..." aria-label="Type custom client ask">
+                <button type="submit" class="btn-secondary">Check ↵</button>
+              </form>
             </div>
 
-            <!-- Right Pane: Autonomous Scope Verdict & Reply -->
-            <div class="demo-pane-verdict">
-              <div>
-                <div class="verdict-header">
-                  <span id="demo-verdict-badge" class="verdict-badge verdict-flag">OUT OF SCOPE</span>
-                  <span class="verdict-speed-tag">⚡ Evaluated in 142ms</span>
-                </div>
-                <div class="verdict-stats-grid">
-                  <div class="v-stat-col">
-                    <span class="v-stat-label">Contract Clause</span>
-                    <span class="v-stat-val" id="demo-clause-val">§2.1 — Scope of Work</span>
-                  </div>
-                  <div class="v-stat-col">
-                    <span class="v-stat-label">Adds to Invoice</span>
-                    <span class="v-stat-val numeral-money" id="demo-adds-val">+$650.00</span>
-                  </div>
-                  <div class="v-stat-col">
-                    <span class="v-stat-label">Timeline Impact</span>
-                    <span class="v-stat-val" id="demo-delays-val">+3 business days</span>
-                  </div>
-                </div>
-                <div class="reply-box">
-                  <div class="reply-box-header">
-                    <span class="reply-box-label">✨ Autonomous AI Drafted Reply</span>
-                    <button class="btn-copy-reply" id="btn-copy-reply">Copy reply</button>
-                  </div>
-                  <p class="reply-text" id="demo-reply-text">
-                    Happy to add the blog section! That falls outside our contracted scope (§2.1), so it would be <strong>$650</strong> and adjusts delivery by 3 days. Should I send over the change order?
-                  </p>
+            <!-- Right Pane: Financial Telemetry & Scope Radial HUD -->
+            <div class="demo-pane-hud">
+              <div class="hud-top-meta">
+                <div class="hud-label">This Project / This Month</div>
+                <div class="hud-primary-amount numeral-money" id="hud-recoverable-amount">$650.00</div>
+                <div class="hud-sub-label" id="hud-recoverable-sub">recovered in 1 caught request</div>
+              </div>
+
+              <!-- Circular Donut Scope Ring -->
+              <div class="hud-donut-wrap">
+                <svg class="hud-donut-svg" viewBox="0 0 140 140">
+                  <circle class="hud-donut-bg" cx="70" cy="70" r="55"></circle>
+                  <circle class="hud-donut-fill" id="hud-donut-meter" cx="70" cy="70" r="55"></circle>
+                </svg>
+                <div class="hud-donut-center">
+                  <div class="hud-donut-pct numeral-money" id="hud-donut-pct-text">100%</div>
+                  <div class="hud-donut-tag">of budget</div>
                 </div>
               </div>
+
+              <!-- Bottom Trend Badge -->
+              <div class="hud-trend-card">
+                <div class="trend-icon-box">✓</div>
+                <div class="trend-text-col">
+                  <span class="trend-headline" id="hud-trend-title">43% lower scope leak</span>
+                  <span class="trend-caption" id="hud-trend-sub">Sub-180ms AST evaluation</span>
+                </div>
+              </div>
+
+              <button class="btn-copy-change-order" id="btn-copy-reply">Copy Polite Change Order Reply ✓</button>
             </div>
           </div>
         </div>
@@ -2902,7 +3011,12 @@
       <div class="footer-grid">
         <div class="footer-brand-meta">
           <a href="/" class="brand" aria-label="Billable Copilot AI Homepage">
-            <span class="brand-mark">§</span>
+            <span class="brand-mark">
+              <svg class="brand-logo-svg" viewBox="0 0 64 64" fill="none">
+                <path d="M 36 16 H 22 C 16.5 16 12 20.5 12 26 V 42 C 12 47.5 16.5 52 22 52 H 42 C 47.5 52 52 47.5 52 42 V 28" stroke="currentColor" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="46" cy="18" r="6.5" fill="#00F59B" />
+              </svg>
+            </span>
             <span class="brand-name">Billable Copilot AI</span>
           </a>
           <p style="font-size:0.875rem; color:var(--text-secondary); max-width:320px; line-height:1.6;">
@@ -3168,33 +3282,43 @@
       var typingTimeout = null;
 
       var demoBox = document.getElementById('demo-box');
-      var clientPhoto = document.getElementById('demo-client-photo');
-      var clientName = document.getElementById('demo-client-name');
       var clientTime = document.getElementById('demo-client-time');
       var clientText = document.getElementById('demo-client-text');
       var statusEl = document.getElementById('demo-verdict-badge');
-      var clauseEl = document.getElementById('demo-clause-val');
+      var copilotSummary = document.getElementById('demo-copilot-summary');
+      var itemName1El = document.getElementById('demo-item-name-1');
       var addsEl = document.getElementById('demo-adds-val');
       var delaysEl = document.getElementById('demo-delays-val');
-      var replyTextEl = document.getElementById('demo-reply-text');
+      var hudAmountEl = document.getElementById('hud-recoverable-amount');
+      var hudSubEl = document.getElementById('hud-recoverable-sub');
+      var hudDonutMeter = document.getElementById('hud-donut-meter');
+      var hudDonutPct = document.getElementById('hud-donut-pct-text');
       var indicatorEl = document.getElementById('demo-indicator');
-      var dotBtns = document.querySelectorAll('.demo-dot-btn');
       var chipBtns = document.querySelectorAll('.demo-chip');
       var btnCopyReply = document.getElementById('btn-copy-reply');
       var customScopeForm = document.getElementById('custom-scope-form');
       var customRequestInput = document.getElementById('custom-request-input');
 
+      // Segmented Tabs
+      var tabModeRadar = document.getElementById('tab-mode-radar');
+      var tabModeClauses = document.getElementById('tab-mode-clauses');
+      var tabModeReply = document.getElementById('tab-mode-reply');
+      var modeTabs = [tabModeRadar, tabModeClauses, tabModeReply];
+
+      modeTabs.forEach(function(tab) {
+        if (!tab) return;
+        tab.addEventListener('click', function() {
+          modeTabs.forEach(function(t) { if (t) t.classList.remove('active'); });
+          tab.classList.add('active');
+          SoundFX.click();
+        });
+      });
+
       function renderDemo(index, animated, customData) {
         var data = customData || demoExamples[index];
         currentIndex = index;
 
-        if (indicatorEl) indicatorEl.textContent = customData ? "CUSTOM TEST SCAN" : "SCENARIO " + (index + 1) + " OF " + demoExamples.length;
-
-        dotBtns.forEach(function (btn, i) {
-          var isCur = (!customData && i === index);
-          btn.setAttribute('aria-selected', isCur);
-          btn.setAttribute('aria-current', isCur);
-        });
+        if (indicatorEl) indicatorEl.textContent = customData ? "Custom Scope Audit" : "August Scope: " + data.clause.split('—')[0].trim();
 
         chipBtns.forEach(function (chip, i) {
           var isCur = (!customData && i === index);
@@ -3202,29 +3326,50 @@
           chip.setAttribute('aria-current', isCur);
         });
 
-        clientPhoto.src = data.avatar;
-        clientName.textContent = data.author;
-        clientTime.textContent = data.time;
-        clientText.textContent = data.request;
+        if (clientTime) clientTime.textContent = "TODAY, " + data.time;
+        if (clientText) clientText.textContent = data.request;
 
-        statusEl.textContent = 'ANALYZING CONTRACT CLAUSES...';
+        statusEl.textContent = 'ANALYZING CLAUSES...';
         statusEl.className = 'verdict-badge verdict-scope';
-        clauseEl.textContent = 'Matching contract terms...';
-        addsEl.textContent = '—';
-        delaysEl.textContent = '—';
-        replyTextEl.innerHTML = '<span style="color: var(--text-muted);">Drafting change order...</span><span class="typing-cursor"></span>';
+        if (copilotSummary) copilotSummary.innerHTML = '<span style="color: var(--text-muted);">Comparing against signed SOW clauses & AST parameters...</span>';
+        if (addsEl) addsEl.textContent = '—';
+        if (delaysEl) delaysEl.textContent = '—';
 
         if (typingTimeout) clearTimeout(typingTimeout);
 
         typingTimeout = setTimeout(function () {
           statusEl.textContent = data.status;
           statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
-          clauseEl.textContent = data.clause;
-          addsEl.textContent = data.adds;
-          delaysEl.textContent = data.delays;
-          replyTextEl.innerHTML = data.replyText;
+          
+          if (copilotSummary) {
+            copilotSummary.innerHTML = data.isFlag 
+              ? 'Evaluated ' + data.clause + '. Detected <strong>1 out-of-scope request</strong> (' + data.delays + ').'
+              : 'Evaluated ' + data.clause + '. Request is <strong>covered under included allowance</strong>.';
+          }
+
+          if (itemName1El) itemName1El.textContent = data.clause;
+          if (addsEl) addsEl.textContent = data.adds;
+          if (delaysEl) delaysEl.textContent = data.delays;
+
+          if (hudAmountEl) hudAmountEl.textContent = data.adds.replace('+', '');
+          if (hudSubEl) hudSubEl.textContent = data.isFlag ? "recovered in 1 caught request" : "covered under agreement";
+
+          if (hudDonutMeter && hudDonutPct) {
+            // Circumference for r=55 is ~345.5
+            var maxCirc = 345.5;
+            if (data.isFlag) {
+              hudDonutMeter.style.strokeDashoffset = '0';
+              hudDonutPct.textContent = '100%';
+              hudDonutMeter.style.stroke = 'var(--money)';
+            } else {
+              hudDonutMeter.style.strokeDashoffset = '60';
+              hudDonutPct.textContent = '82%';
+              hudDonutMeter.style.stroke = 'var(--cyan)';
+            }
+          }
+
           SoundFX.chime();
-        }, 550);
+        }, 400);
       }
 
       function startDemoCycle() {
@@ -3246,14 +3391,6 @@
         demoBox.addEventListener('mouseenter', function () { isPaused = true; });
         demoBox.addEventListener('mouseleave', function () { isPaused = false; });
       }
-
-      dotBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var idx = parseInt(this.getAttribute('data-index'), 10);
-          renderDemo(idx, true);
-          SoundFX.click();
-        });
-      });
 
       chipBtns.forEach(function (chip) {
         chip.addEventListener('click', function () {
@@ -3296,14 +3433,14 @@
             author: "Direct Client Ask",
             avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
             time: "Just now",
-            request: '"' + val + '"',
+            request: val,
             status: isOutOfScope ? "OUT OF SCOPE" : "IN SCOPE",
             isFlag: isOutOfScope,
             clause: clause,
             adds: amount,
             delays: delays,
             replyText: isOutOfScope
-              ? "Happy to accommodate this! That falls outside our contracted scope (" + clause + "), so it would be <strong>" + amount.replace('+', '') + "</strong> and adjusts delivery by " + delays + ". Should I send over the change order?"
+              ? "Happy to accommodate this! That falls outside our contracted scope (" + clause + "), so it would be " + amount.replace('+', '') + " and adjusts delivery by " + delays + ". Should I send over the change order?"
               : "On it! That falls right within our agreed scope (" + clause + "). I will have the update ready for you shortly."
           };
 
@@ -3314,17 +3451,18 @@
       // Copy drafted reply to clipboard
       if (btnCopyReply) {
         btnCopyReply.addEventListener('click', function () {
-          var cleanText = replyTextEl.innerText || replyTextEl.textContent;
-          navigator.clipboard.writeText(cleanText).then(function () {
-            btnCopyReply.textContent = "Copied ✓";
-            btnCopyReply.style.color = "var(--money)";
-            btnCopyReply.style.borderColor = "var(--money)";
-            SoundFX.click();
+          var curData = demoExamples[currentIndex];
+          var copyStr = curData.replyText.replace(/<[^>]*>/g, '');
+          navigator.clipboard.writeText(copyStr).then(function () {
+            btnCopyReply.textContent = "Change Order Copied to Clipboard ✓";
+            btnCopyReply.style.background = "var(--money)";
+            btnCopyReply.style.color = "#050709";
+            SoundFX.chime();
             setTimeout(function () {
-              btnCopyReply.textContent = "Copy reply";
-              btnCopyReply.style.color = "var(--text-primary)";
-              btnCopyReply.style.borderColor = "var(--border-highlight)";
-            }, 2000);
+              btnCopyReply.textContent = "Copy Polite Change Order Reply ✓";
+              btnCopyReply.style.background = "rgba(0, 245, 155, 0.12)";
+              btnCopyReply.style.color = "var(--money)";
+            }, 2500);
           });
         });
       }
