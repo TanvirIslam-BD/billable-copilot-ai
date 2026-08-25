@@ -443,8 +443,9 @@
     .brand-name {
       font-family: var(--display);
       font-weight: 800;
-      font-size: 1.35rem;
+      font-size: clamp(1.1rem, 2.8vw, 1.35rem);
       letter-spacing: -0.03em;
+      white-space: nowrap;
       background: linear-gradient(180deg, #FFFFFF 30%, #CBD5E1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -2327,9 +2328,9 @@
   <!-- Header Nav -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="/" class="brand" aria-label="Billable Homepage">
+      <a href="/" class="brand" aria-label="Billable Copilot AI Homepage">
         <span class="brand-mark">§</span>
-        <span class="brand-name">Billable</span>
+        <span class="brand-name">Billable Copilot AI</span>
       </a>
       <div class="header-badge">
         <span class="dot" style="width:6px;height:6px;border-radius:50%;background:#00F59B;box-shadow:0 0 8px #00F59B;"></span>
@@ -2890,9 +2891,9 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand-meta">
-          <a href="/" class="brand" aria-label="Billable Homepage">
+          <a href="/" class="brand" aria-label="Billable Copilot AI Homepage">
             <span class="brand-mark">§</span>
-            <span class="brand-name">Billable</span>
+            <span class="brand-name">Billable Copilot AI</span>
           </a>
           <p style="font-size:0.875rem; color:var(--text-secondary); max-width:320px; line-height:1.6;">
             The autonomous AI unbilled work detector for independent creators, developers, and studios worldwide.
