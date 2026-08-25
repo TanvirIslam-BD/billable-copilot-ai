@@ -105,20 +105,6 @@
       background-color: var(--bg-page);
     }
 
-    @media (max-width: 1380px) {
-      .app-wrapper { grid-template-columns: 220px 1fr 310px; }
-    }
-
-    @media (max-width: 1180px) {
-      .app-wrapper { grid-template-columns: 220px 1fr; }
-      .app-copilot-rail { display: none; }
-    }
-
-    @media (max-width: 860px) {
-      .app-wrapper { grid-template-columns: 1fr; }
-      .app-sidebar { display: none; }
-    }
-
     /* ==========================================================================
        2. Left Navigation Sidebar (Desktop & Mobile Drawer)
        ========================================================================== */
@@ -136,8 +122,19 @@
       z-index: 100;
     }
 
-    /* Mobile Sidebar Drawer Overlay State */
+    @media (max-width: 1380px) {
+      .app-wrapper { grid-template-columns: 220px 1fr 310px; }
+    }
+
+    @media (max-width: 1180px) {
+      .app-wrapper { grid-template-columns: 220px 1fr; }
+      .app-copilot-rail { display: none; }
+    }
+
     @media (max-width: 860px) {
+      .app-wrapper { grid-template-columns: 1fr; }
+      .app-sidebar { display: none; }
+
       .app-sidebar.mobile-drawer-open {
         display: flex;
         position: fixed;
