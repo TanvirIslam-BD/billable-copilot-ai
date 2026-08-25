@@ -327,64 +327,121 @@
     }
 
     /* ==========================================================================
-       2. Top Live Recovery Marquee Bar
+       2. Top Live Recovery Marquee & Promo Announcement Bar
        ========================================================================== */
-    .live-ticker-wrap {
-      background: rgba(8, 11, 14, 0.92);
+    .top-promo-bar {
+      background: rgba(6, 9, 12, 0.95);
       border-bottom: 1px solid var(--border);
-      padding: 0.45rem 1.25rem;
-      overflow: hidden;
+      height: 42px;
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      justify-content: space-between;
+      padding-inline: clamp(0.75rem, 3vw, 1.5rem);
       font-family: var(--mono);
       font-size: 0.75rem;
       color: var(--text-secondary);
-      z-index: 50;
-      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 70;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
-    .ticker-badge {
+    .promo-badge-anchor {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.2rem 0.6rem;
+      gap: 0.5rem;
+      padding: 0.25rem 0.65rem;
       border-radius: var(--radius-full);
       background: var(--money-surface);
       border: 1px solid var(--money-border);
       color: var(--money);
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 0.72rem;
       white-space: nowrap;
       flex-shrink: 0;
-      box-shadow: 0 0 10px rgba(0, 245, 155, 0.15);
+      box-shadow: 0 0 12px rgba(0, 245, 155, 0.15);
+      z-index: 2;
     }
 
-    .ticker-content {
+    .promo-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--money);
+      box-shadow: 0 0 8px var(--money);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    .promo-marquee-viewport {
+      flex: 1;
+      margin-inline: clamp(0.75rem, 2vw, 1.5rem);
+      overflow: hidden;
+      position: relative;
+      mask-image: linear-gradient(90deg, transparent 0%, black 30px, black calc(100% - 30px), transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 30px, black calc(100% - 30px), transparent 100%);
       display: flex;
       align-items: center;
-      gap: 3rem;
-      white-space: nowrap;
-      animation: tickerMarquee 38s linear infinite;
     }
 
-    .ticker-content:hover {
+    .promo-marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 3.5rem;
+      white-space: nowrap;
+      animation: promoMarquee 40s linear infinite;
+    }
+
+    .promo-marquee-track:hover {
       animation-play-state: paused;
     }
 
-    @keyframes tickerMarquee {
+    @keyframes promoMarquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
 
-    .ticker-item {
+    .promo-ticker-item {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
     }
 
-    .ticker-highlight {
+    .promo-ticker-amount {
       color: var(--money);
+      font-weight: 700;
+    }
+
+    .promo-cta-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      border: 1px solid var(--border-highlight);
+      color: var(--text-primary);
+      font-family: var(--mono);
+      font-size: 0.72rem;
       font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .promo-cta-action:hover {
+      border-color: var(--money);
+      color: var(--money);
+      background: var(--money-surface);
+    }
+
+    @media (max-width: 768px) {
+      .promo-cta-action {
+        display: none;
+      }
     }
 
     /* ==========================================================================
@@ -475,33 +532,6 @@
       display: flex;
       align-items: center;
       gap: 0.65rem;
-    }
-
-    .sound-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-card);
-      border: 1px solid var(--border-highlight);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.15s ease;
-      touch-action: manipulation;
-    }
-
-    .sound-toggle-btn:hover {
-      transform: scale(1.05);
-      border-color: var(--money);
-    }
-
-    .sound-toggle-btn.is-active {
-      border-color: var(--money);
-      background: var(--money-surface);
-      box-shadow: 0 0 12px var(--money-glow);
     }
 
     .header-cta-app {
@@ -2310,19 +2340,28 @@
   <!-- Ambient Dynamic Mesh Canvas -->
   <div class="bg-mesh" aria-hidden="true"></div>
 
-  <!-- Live Autonomous Recovery Ticker Stream -->
-  <div class="live-ticker-wrap" aria-label="Live Verified Scope Recoveries">
-    <div class="ticker-badge">⚡ LIVE MCP RADAR</div>
-    <div class="ticker-content">
-      <span class="ticker-item"><span class="ticker-highlight">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
-      <span class="ticker-item"><span class="ticker-highlight">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
-      <span class="ticker-item"><span class="ticker-highlight">+$450</span> out-of-scope round 4 revisions caught in Sydney · 7m ago</span>
-      <span class="ticker-item"><span class="ticker-highlight">+$890</span> API integration add-on billed in Berlin · 11m ago</span>
-      <span class="ticker-item"><span class="ticker-highlight">+$340</span> extra animation deliverables recovered in Austin · 15m ago</span>
-      <!-- Seamless loop duplicate -->
-      <span class="ticker-item"><span class="ticker-highlight">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
-      <span class="ticker-item"><span class="ticker-highlight">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
+  <!-- Redesigned Top Live Recovery & Promo Announcement Bar -->
+  <div class="top-promo-bar" aria-label="Live Scope Recoveries and Announcements">
+    <div class="promo-badge-anchor">
+      <span class="promo-pulse-dot"></span>
+      <span>LIVE MCP RADAR</span>
     </div>
+    
+    <div class="promo-marquee-viewport">
+      <div class="promo-marquee-track">
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$450</span> out-of-scope round 4 revisions caught in Sydney · 7m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$890</span> API integration add-on billed in Berlin · 11m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$340</span> extra animation deliverables recovered in Austin · 15m ago</span>
+        <!-- Seamless duplicate loop -->
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$650</span> recovered for extra brand collateral in London · 2m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$1,200</span> change order accepted (E-commerce scope creep) in New York · 4m ago</span>
+        <span class="promo-ticker-item"><span class="promo-ticker-amount">+$450</span> out-of-scope round 4 revisions caught in Sydney · 7m ago</span>
+      </div>
+    </div>
+
+    <button class="promo-cta-action js-open-modal" data-action="top_promo_access">Connect 14-Day Free Trial →</button>
   </div>
 
   <!-- Header Nav -->
@@ -2337,7 +2376,6 @@
         <span>MCP PROTOCOL ACTIVE — v2.4</span>
       </div>
       <div class="header-actions">
-        <button class="sound-toggle-btn js-toggle-sound" id="btn-sound-toggle" title="Enable AI Audio Haptics">🔇</button>
         <a href="/app.html" class="header-cta-app">Launch App ↗</a>
         <button class="header-cta-connect js-open-modal" data-action="connect_contract_header">Connect contract →</button>
       </div>
@@ -3093,18 +3131,6 @@
           }
         };
       })();
-
-      // Sound Toggle Handler
-      var soundBtn = document.getElementById('btn-sound-toggle');
-      if (soundBtn) {
-        soundBtn.addEventListener('click', function() {
-          var active = SoundFX.toggle();
-          soundBtn.innerHTML = active ? '🔊' : '🔇';
-          soundBtn.classList.toggle('is-active', active);
-          soundBtn.setAttribute('title', active ? 'Sound Enabled (Click to Mute)' : 'Enable AI Audio Haptics');
-          if (active) SoundFX.chime();
-        });
-      }
 
       // 3D Magnetic Card Parallax
       var cards3D = document.querySelectorAll('.interactive-3d');
