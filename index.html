@@ -861,31 +861,6 @@
       box-shadow: 0 32px 100px -20px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 245, 155, 0.12);
     }
 
-    /* Optical Laser Scanner Line */
-    .scanner-laser-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent 0%, var(--money) 50%, var(--cyan) 85%, transparent 100%);
-      box-shadow: 0 0 18px 4px var(--money-glow), 0 0 32px 6px rgba(0, 210, 255, 0.4);
-      z-index: 10;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .scanner-laser-bar.is-scanning {
-      opacity: 1;
-      animation: laserSweep 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    }
-
-    @keyframes laserSweep {
-      0% { top: 0%; opacity: 0.9; }
-      50% { top: 96%; opacity: 1; }
-      100% { top: 0%; opacity: 0.9; }
-    }
-
     .terminal-header {
       display: flex;
       flex-wrap: wrap;
@@ -2437,9 +2412,6 @@
     <section class="demo-section" aria-label="Interactive Scope Deck Simulator">
       <div class="container">
         <div class="demo-terminal interactive-3d" id="demo-box">
-          <!-- Real-Time Optical Laser Scanner -->
-          <div class="scanner-laser-bar" id="demo-scanner-laser"></div>
-          
           <div class="terminal-header">
             <div class="terminal-header-left">
               <div class="terminal-dots" aria-hidden="true">
@@ -3196,7 +3168,6 @@
       var typingTimeout = null;
 
       var demoBox = document.getElementById('demo-box');
-      var scannerLaser = document.getElementById('demo-scanner-laser');
       var clientPhoto = document.getElementById('demo-client-photo');
       var clientName = document.getElementById('demo-client-name');
       var clientTime = document.getElementById('demo-client-time');
@@ -3235,15 +3206,6 @@
         clientName.textContent = data.author;
         clientTime.textContent = data.time;
         clientText.textContent = data.request;
-
-        // Trigger Optical Laser Scanner
-        if (scannerLaser) {
-          scannerLaser.classList.remove('is-scanning');
-          void scannerLaser.offsetWidth;
-          scannerLaser.classList.add('is-scanning');
-        }
-
-        SoundFX.scan();
 
         statusEl.textContent = 'ANALYZING CONTRACT CLAUSES...';
         statusEl.className = 'verdict-badge verdict-scope';
