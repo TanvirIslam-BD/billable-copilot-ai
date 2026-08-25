@@ -155,6 +155,11 @@
       border-radius: 2px;
       line-height: 1;
       background-color: var(--card);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand:hover .brand-mark {
+      transform: scale(1.08) rotate(-3deg);
     }
 
     .brand-name {
@@ -187,7 +192,12 @@
       height: 6px;
       border-radius: 50%;
       background-color: var(--ink);
-      opacity: 0.8;
+      animation: pulseLive 2.4s infinite ease-in-out;
+    }
+
+    @keyframes pulseLive {
+      0%, 100% { opacity: 0.9; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.75); }
     }
 
     .header-cta {
@@ -201,12 +211,14 @@
       border-radius: 2px;
       background-color: var(--card);
       cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .header-cta:hover {
       background-color: var(--ink);
       color: var(--card);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(20, 22, 15, 0.08);
     }
 
     .header-cta:active {
@@ -229,13 +241,14 @@
       padding: 0.9rem 1.6rem;
       text-decoration: none;
       cursor: pointer;
-      transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-      box-shadow: 0 1px 2px rgba(20, 22, 15, 0.06);
+      transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+      box-shadow: 0 2px 4px rgba(20, 22, 15, 0.08);
     }
 
     .btn-primary:hover {
-      opacity: 0.92;
-      box-shadow: 0 4px 12px rgba(20, 22, 15, 0.1);
+      opacity: 0.94;
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 16px rgba(20, 22, 15, 0.12);
     }
 
     .btn-primary:active {
@@ -256,15 +269,16 @@
       border-radius: 2px;
       padding: 0.35rem 0.65rem;
       cursor: pointer;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
+      transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
     }
 
     .btn-secondary:hover {
       border-color: var(--ink);
       background-color: var(--card);
+      transform: translateY(-1px);
     }
 
-    /* Block 1: Hero */
+    /* Block 1: Hero Animations */
     .hero-section {
       padding-top: clamp(3.5rem, 8vw, 6rem);
       padding-bottom: clamp(2.5rem, 5vw, 4rem);
@@ -276,6 +290,7 @@
 
     .hero-eyebrow {
       margin-bottom: 1.25rem;
+      animation: fadeInSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .hero-h1 {
@@ -286,6 +301,7 @@
       line-height: 1.02;
       color: var(--ink);
       margin-bottom: 1.5rem;
+      animation: fadeInSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
     }
 
     .desktop-br {
@@ -304,6 +320,7 @@
       color: var(--ink-muted);
       margin-bottom: 2rem;
       max-width: 640px;
+      animation: fadeInSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
     }
 
     .hero-cta-group {
@@ -311,6 +328,12 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 0.85rem;
+      animation: fadeInSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+
+    @keyframes fadeInSlide {
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .hero-note {
@@ -331,9 +354,14 @@
       background-color: var(--card);
       border: 1px solid var(--rule);
       border-radius: 4px;
-      box-shadow: 0 8px 30px rgba(20, 22, 15, 0.04);
+      box-shadow: 0 10px 32px rgba(20, 22, 15, 0.05);
       overflow: hidden;
-      transition: border-color 0.2s ease;
+      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .demo-container:hover {
+      box-shadow: 0 14px 40px rgba(20, 22, 15, 0.08);
     }
 
     .demo-toolbar {
@@ -373,7 +401,7 @@
       font-family: var(--mono);
       font-size: 0.7rem;
       font-weight: 500;
-      padding: 0.25rem 0.5rem;
+      padding: 0.25rem 0.55rem;
       border: 1px solid var(--rule);
       border-radius: 2px;
       background-color: var(--card);
@@ -391,12 +419,13 @@
       border-color: var(--ink);
       background-color: var(--ink);
       color: var(--card);
+      transform: scale(1.02);
     }
 
     .demo-dots-controls {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .demo-dot-btn {
@@ -407,13 +436,13 @@
       background-color: transparent;
       cursor: pointer;
       padding: 0;
-      transition: background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+      transition: background-color 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s ease;
     }
 
     .demo-dot-btn[aria-current="true"] {
       background-color: var(--ink);
       border-color: var(--ink);
-      transform: scale(1.15);
+      transform: scale(1.25);
     }
 
     .demo-grid {
@@ -435,7 +464,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 310px;
+      min-height: 320px;
     }
 
     @media (max-width: 768px) {
@@ -478,6 +507,12 @@
       color: var(--ink);
       margin-bottom: 1rem;
       box-shadow: 0 1px 3px rgba(20, 22, 15, 0.03);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .client-bubble.is-updating {
+      opacity: 0.5;
+      transform: translateY(3px);
     }
 
     /* Custom input field inside demo */
@@ -512,14 +547,39 @@
       justify-content: space-between;
     }
 
-    /* Right Pane: Ledger Verdict */
+    /* Right Pane: Ledger Verdict & Laser Scanner */
     .demo-pane-verdict {
       padding: clamp(1.25rem, 3vw, 2rem);
       background-color: var(--card);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 310px;
+      min-height: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scanner Hairline Animation */
+    .scanner-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--ink), transparent);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .scanner-line.is-scanning {
+      animation: scanLaser 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes scanLaser {
+      0% { top: 0%; opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { top: 60%; opacity: 0; }
     }
 
     .ledger-table {
@@ -532,6 +592,11 @@
 
     .ledger-table tr {
       border-bottom: 1px solid var(--rule);
+      transition: background-color 0.2s ease;
+    }
+
+    .ledger-table tr:hover {
+      background-color: #FAFBF9;
     }
 
     .ledger-table tr:first-child {
@@ -556,11 +621,22 @@
       color: var(--ink);
     }
 
+    /* Verdict Stamp Effect */
     .verdict-badge {
       display: inline-block;
       font-weight: 700;
       letter-spacing: 0.04em;
-      transition: transform 0.15s ease;
+      transform-origin: left center;
+    }
+
+    .verdict-badge.stamp-effect {
+      animation: stampImpact 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes stampImpact {
+      0% { opacity: 0; transform: scale(1.22) rotate(-3deg); }
+      70% { transform: scale(0.96) rotate(1deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
     .verdict-flag {
@@ -575,6 +651,7 @@
       font-variant-numeric: tabular-nums;
       font-weight: 500;
       color: var(--money);
+      transition: color 0.2s ease;
     }
 
     .reply-box {
@@ -583,6 +660,11 @@
       padding: 0.9rem 1.1rem;
       border-radius: 3px;
       position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .reply-box:hover {
+      border-color: var(--ink-muted);
     }
 
     .reply-box-header {
@@ -614,6 +696,7 @@
 
     .btn-copy-reply:hover {
       border-color: var(--ink);
+      transform: translateY(-1px);
     }
 
     .reply-box-text {
@@ -627,6 +710,22 @@
       font-family: var(--mono);
       font-weight: 600;
       color: var(--money);
+    }
+
+    /* Typewriter Cursor */
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background-color: var(--ink);
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blinkCursor 0.8s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     /* Block 3: Running Total & Interactive Scope Leakage Calculator */
@@ -659,6 +758,7 @@
       line-height: 1;
       color: var(--money);
       letter-spacing: -0.03em;
+      transition: transform 0.2s ease;
     }
 
     /* Interactive Scope Leak Calculator Card */
@@ -668,6 +768,12 @@
       border-radius: 4px;
       padding: clamp(1.25rem, 3vw, 2rem);
       max-width: 860px;
+      box-shadow: 0 4px 20px rgba(20, 22, 15, 0.03);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .leak-calculator:hover {
+      box-shadow: 0 8px 30px rgba(20, 22, 15, 0.06);
     }
 
     .calc-header {
@@ -730,37 +836,53 @@
       background: var(--rule);
       border-radius: 2px;
       outline: none;
+      transition: background 0.15s ease;
+    }
+
+    .calc-slider:hover {
+      background: #D0D4CF;
     }
 
     .calc-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--ink);
       cursor: pointer;
       border: 2px solid var(--card);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      transition: transform 0.1s ease;
+    }
+
+    .calc-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
     }
 
     .calc-slider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--ink);
       cursor: pointer;
       border: 2px solid var(--card);
+      transition: transform 0.1s ease;
+    }
+
+    .calc-slider::-moz-range-thumb:hover {
+      transform: scale(1.18);
     }
 
     .calc-result-box {
       background-color: var(--paper);
       border: 1px solid var(--rule);
-      padding: 1rem;
+      padding: 1.1rem;
       border-radius: 3px;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.25rem;
+      transition: border-color 0.2s ease, transform 0.15s ease;
     }
 
     .calc-result-label {
@@ -773,11 +895,12 @@
 
     .calc-result-number {
       font-family: var(--mono);
-      font-size: 1.75rem;
+      font-size: 1.85rem;
       font-weight: 500;
       font-variant-numeric: tabular-nums;
       color: var(--money);
       line-height: 1.1;
+      transition: transform 0.15s ease;
     }
 
     .calc-result-sub {
@@ -811,7 +934,27 @@
     .step-item {
       border-top: 1px solid var(--rule);
       padding-top: 1.25rem;
-      transition: transform 0.15s ease;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+      position: relative;
+    }
+
+    .step-item::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: var(--ink);
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .step-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .step-item:hover::after {
+      width: 100%;
     }
 
     .step-num {
@@ -821,6 +964,11 @@
       color: var(--ink-muted);
       margin-bottom: 0.75rem;
       display: block;
+      transition: color 0.2s ease;
+    }
+
+    .step-item:hover .step-num {
+      color: var(--ink);
     }
 
     .step-text {
@@ -847,6 +995,7 @@
     .objection-item {
       border-top: 1px solid var(--rule);
       padding-block: 1.75rem;
+      transition: background-color 0.2s ease;
     }
 
     .objection-item:last-child {
@@ -917,7 +1066,7 @@
       color: var(--ink-muted);
       cursor: pointer;
       border-radius: 2px;
-      transition: background-color 0.15s ease, color 0.15s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
     }
 
     .toggle-btn[aria-pressed="true"] {
@@ -948,11 +1097,13 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 4px 20px rgba(20, 22, 15, 0.02);
-      transition: border-color 0.15s ease;
+      transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
     }
 
     .pricing-card:hover {
       border-color: var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(20, 22, 15, 0.06);
     }
 
     .pricing-tier-name {
@@ -976,6 +1127,7 @@
       display: flex;
       align-items: baseline;
       gap: 0.35rem;
+      overflow: hidden;
     }
 
     .pricing-currency {
@@ -993,6 +1145,8 @@
       font-variant-numeric: tabular-nums;
       line-height: 1;
       color: var(--ink);
+      display: inline-block;
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
 
     .pricing-period {
@@ -1008,6 +1162,7 @@
       margin-top: -1rem;
       margin-bottom: 1.25rem;
       min-height: 1.2em;
+      transition: opacity 0.2s ease;
     }
 
     .tier-features {
@@ -1098,6 +1253,7 @@
       background: none;
       border: none;
       padding: 0;
+      transition: color 0.15s ease;
     }
 
     .footer-link:hover {
@@ -1117,13 +1273,19 @@
       color: var(--ink);
       max-width: 540px;
       width: calc(100% - 2rem);
-      box-shadow: 0 24px 48px rgba(20, 22, 15, 0.12);
+      box-shadow: 0 24px 48px rgba(20, 22, 15, 0.14);
       z-index: 100;
+      animation: dialogScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes dialogScale {
+      0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     dialog::backdrop {
       background: rgba(20, 22, 15, 0.45);
-      backdrop-filter: blur(3px);
+      backdrop-filter: blur(4px);
     }
 
     .dialog-header {
@@ -1150,10 +1312,12 @@
       color: var(--ink-muted);
       cursor: pointer;
       padding: 0.25rem;
+      transition: transform 0.15s ease, color 0.15s ease;
     }
 
     .dialog-close:hover {
       color: var(--ink);
+      transform: scale(1.15);
     }
 
     .dialog-body {
@@ -1184,6 +1348,7 @@
       border-radius: 3px;
       background-color: var(--paper);
       color: var(--ink);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
     }
 
     .form-input:focus, .form-select:focus {
@@ -1215,6 +1380,7 @@
       border-radius: 3px;
       font-size: 0.9375rem;
       line-height: 1.5;
+      animation: fadeInSlide 0.3s ease both;
     }
 
     .dialog-text-content {
@@ -1237,13 +1403,16 @@
       color: var(--ink-muted);
     }
 
-    /* Motion & Transitions */
+    /* Motion & Transitions: Full fallback when reduced motion requested */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+      }
+      .scanner-line, .typing-cursor {
+        display: none !important;
       }
     }
   </style>
@@ -1334,11 +1503,13 @@
 
             <!-- Right Pane: Invoice Line Item & Verdict -->
             <div class="demo-pane-verdict" aria-live="polite" id="demo-verdict-pane">
+              <div class="scanner-line" id="scanner-laser"></div>
+
               <table class="ledger-table">
                 <tbody>
                   <tr>
                     <td class="ledger-label">STATUS</td>
-                    <td class="ledger-val"><span id="demo-status" class="verdict-badge verdict-flag">OUT OF SCOPE</span></td>
+                    <td class="ledger-val"><span id="demo-status" class="verdict-badge verdict-flag stamp-effect">OUT OF SCOPE</span></td>
                   </tr>
                   <tr>
                     <td class="ledger-label">CLAUSE</td>
@@ -1689,6 +1860,7 @@
       var addsEl = document.getElementById('demo-adds');
       var delaysEl = document.getElementById('demo-delays');
       var replyTextEl = document.getElementById('demo-reply-text');
+      var scannerLaser = document.getElementById('scanner-laser');
       var dotBtns = document.querySelectorAll('.demo-dot-btn');
       var chipBtns = document.querySelectorAll('.demo-chip');
       var btnCopyReply = document.getElementById('btn-copy-reply');
@@ -1728,18 +1900,25 @@
           return;
         }
 
+        // Animated progression with laser scan and typing effect
+        if (scannerLaser) {
+          scannerLaser.classList.remove('is-scanning');
+          void scannerLaser.offsetWidth;
+          scannerLaser.classList.add('is-scanning');
+        }
+
         statusEl.textContent = 'CHECKING CONTRACT...';
         statusEl.className = 'verdict-badge verdict-scope';
         clauseEl.textContent = 'Analyzing scope clauses...';
         addsEl.textContent = '—';
         delaysEl.textContent = '—';
-        replyTextEl.innerHTML = '<span style="color: var(--ink-muted);">Drafting polite response...</span>';
+        replyTextEl.innerHTML = '<span style="color: var(--ink-muted);">Drafting polite change order...</span><span class="typing-cursor"></span>';
 
         if (typingTimeout) clearTimeout(typingTimeout);
 
         typingTimeout = setTimeout(function () {
           statusEl.textContent = data.status;
-          statusEl.className = 'verdict-badge ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
+          statusEl.className = 'verdict-badge stamp-effect ' + (data.isFlag ? 'verdict-flag' : 'verdict-scope');
           clauseEl.textContent = data.clause;
           addsEl.textContent = data.adds;
           delaysEl.textContent = data.delays;
@@ -1842,7 +2021,11 @@
           var cleanText = replyTextEl.innerText || replyTextEl.textContent;
           navigator.clipboard.writeText(cleanText).then(function () {
             btnCopyReply.textContent = "Copied ✓";
-            setTimeout(function () { btnCopyReply.textContent = "Copy reply"; }, 2000);
+            btnCopyReply.style.borderColor = "var(--ink)";
+            setTimeout(function () { 
+              btnCopyReply.textContent = "Copy reply"; 
+              btnCopyReply.style.borderColor = "var(--rule)";
+            }, 2000);
             trackEvent('reply_copied');
           });
         });
@@ -1887,7 +2070,7 @@
         observer.observe(totalEl);
       }
 
-      // Interactive Scope Leak Calculator
+      // Interactive Scope Leak Calculator with live tactile feedback
       var rateSlider = document.getElementById('rate-slider');
       var asksSlider = document.getElementById('asks-slider');
       var rateVal = document.getElementById('rate-val');
@@ -1903,7 +2086,6 @@
         rateVal.textContent = '$' + rate + '/hr';
         asksVal.textContent = asks + (asks === 1 ? ' ask' : ' asks');
 
-        // Estimate: average unbilled ask is ~1.5 hours of creep
         var monthlyLeak = Math.round(asks * 1.5 * rate);
         var annualLeak = monthlyLeak * 12;
 
@@ -1916,7 +2098,7 @@
         asksSlider.addEventListener('input', updateCalculator);
       }
 
-      // 4. Block 6: Pricing Observer & Annual Toggle
+      // 4. Block 6: Pricing Observer & Annual Toggle with Number Slide Animation
       var pricingSection = document.getElementById('pricing-block');
       if (pricingSection) {
         var pricingViewed = false;
@@ -1943,17 +2125,25 @@
         btnMonthly.setAttribute('aria-pressed', !isAnnual);
         btnAnnual.setAttribute('aria-pressed', isAnnual);
 
-        if (isAnnual) {
-          soloPrice.textContent = '15';
-          studioPrice.textContent = '39';
-          soloAnnualNote.textContent = 'Billed $190 yearly (2 months free)';
-          studioAnnualNote.textContent = 'Billed $490 yearly (2 months free)';
-        } else {
-          soloPrice.textContent = '19';
-          studioPrice.textContent = '49';
-          soloAnnualNote.textContent = '';
-          studioAnnualNote.textContent = '';
-        }
+        // Smooth transition
+        soloPrice.style.opacity = '0';
+        studioPrice.style.opacity = '0';
+
+        setTimeout(function() {
+          if (isAnnual) {
+            soloPrice.textContent = '15';
+            studioPrice.textContent = '39';
+            soloAnnualNote.textContent = 'Billed $190 yearly (2 months free)';
+            studioAnnualNote.textContent = 'Billed $490 yearly (2 months free)';
+          } else {
+            soloPrice.textContent = '19';
+            studioPrice.textContent = '49';
+            soloAnnualNote.textContent = '';
+            studioAnnualNote.textContent = '';
+          }
+          soloPrice.style.opacity = '1';
+          studioPrice.style.opacity = '1';
+        }, 120);
       }
 
       if (btnMonthly && btnAnnual) {
