@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,15 +82,15 @@
     [data-theme="light"] {
       /* Surface & Canvas */
       --bg-main:          #F8FAFC;
-      --bg-card:          rgba(255, 255, 255, 0.95);
-      --bg-card-hover:    #FFFFFF;
-      --bg-glass:         rgba(255, 255, 255, 0.8);
+      --bg-card:          #FFFFFF;
+      --bg-card-hover:    #F8FAFC;
+      --bg-glass:         rgba(255, 255, 255, 0.85);
       --bg-input:         #F1F5F9;
       
       /* Borders & Dividers */
-      --border:           rgba(0, 0, 0, 0.08);
-      --border-subtle:    rgba(0, 0, 0, 0.04);
-      --border-highlight: rgba(0, 0, 0, 0.15);
+      --border:           rgba(15, 23, 42, 0.08);
+      --border-subtle:    rgba(15, 23, 42, 0.04);
+      --border-highlight: rgba(15, 23, 42, 0.14);
       --border-glow:      rgba(5, 150, 105, 0.2);
 
       /* Typography Ink */
@@ -112,6 +112,87 @@
 
       --cyan:             #0284C7;
       --cyan-surface:     rgba(2, 132, 199, 0.08);
+    }
+
+    [data-theme="light"] .hero-h1 {
+      background: linear-gradient(180deg, #0F172A 20%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    [data-theme="light"] .brand-name {
+      background: linear-gradient(180deg, #0F172A 30%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    [data-theme="light"] .bg-mesh {
+      background:
+        radial-gradient(circle at 50% -10%, rgba(5, 150, 105, 0.08) 0%, transparent 55%),
+        radial-gradient(circle at 90% 20%, rgba(2, 132, 199, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 10% 60%, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
+        radial-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px;
+      background-position: 0 0, 0 0, 0 0, -18px -18px;
+    }
+    [data-theme="light"] .site-header {
+      background: rgba(248, 250, 252, 0.88);
+      border-bottom-color: var(--border);
+    }
+    [data-theme="light"] .demo-terminal {
+      background: #FFFFFF;
+      box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.07), 0 0 20px rgba(5, 150, 105, 0.04);
+    }
+    [data-theme="light"] .terminal-header {
+      background: #F8FAFC;
+    }
+    [data-theme="light"] .demo-pane-client {
+      background: #FAFAFA;
+    }
+    [data-theme="light"] .demo-pane-verdict {
+      background: #FFFFFF;
+    }
+    [data-theme="light"] .client-bubble {
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    [data-theme="light"] .reply-box {
+      background: #F8FAFC;
+    }
+    [data-theme="light"] .site-footer {
+      background: #F1F5F9;
+    }
+    [data-theme="light"] dialog {
+      background: #FFFFFF;
+      color: #0F172A;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.15);
+    }
+    [data-theme="light"] .dialog-header {
+      background: #F8FAFC;
+    }
+    [data-theme="light"] .form-input, [data-theme="light"] .form-select, [data-theme="light"] .mcp-code-preview {
+      background: #F8FAFC;
+      border-color: #E2E8F0;
+      color: #0F172A;
+    }
+    [data-theme="light"] .step-img-gradient {
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.95) 100%);
+    }
+    [data-theme="light"] .calc-result-box {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(240, 253, 244, 0.9) 100%);
+    }
+    [data-theme="light"] .total-section {
+      background: linear-gradient(180deg, rgba(241, 245, 249, 0.6) 0%, rgba(248, 250, 252, 0.95) 100%);
+    }
+    [data-theme="light"] .toggle-btn[aria-pressed="true"] {
+      background: #0F172A;
+      color: #FFFFFF;
+    }
+    [data-theme="light"] .hero-visual-card, [data-theme="light"] .objection-editorial-card {
+      background: #FFFFFF;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+    }
+    [data-theme="light"] .social-btn {
+      background: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
     .theme-toggle-btn {
@@ -2994,8 +3075,8 @@
         }
       });
 
-      // Theme Switcher
-      var currentTheme = localStorage.getItem('billable_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      // Theme Switcher (Default: Light)
+      var currentTheme = localStorage.getItem('billable_theme') || 'light';
       function applyTheme(theme) {
         currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);

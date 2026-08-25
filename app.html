@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -112,6 +112,79 @@
       --in-scope:     #0284C7;
       --in-scope-surface: rgba(2, 132, 199, 0.08);
       --in-scope-border:  rgba(2, 132, 199, 0.25);
+    }
+
+    [data-theme="light"] .app-sidebar,
+    [data-theme="light"] .app-topbar,
+    [data-theme="light"] .app-chat-rail {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+    }
+    [data-theme="light"] .mobile-bottom-nav {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: #E2E8F0;
+    }
+    [data-theme="light"] .metric-card,
+    [data-theme="light"] .dashboard-section,
+    [data-theme="light"] .pinned-paste-box {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 25px -5px rgba(0, 0, 0, 0.02);
+    }
+    [data-theme="light"] .pipeline-col {
+      background: #F8FAFC;
+      border-color: #E2E8F0;
+    }
+    [data-theme="light"] .pipeline-card {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+    [data-theme="light"] .chat-msg.assistant .chat-bubble {
+      background: #F8FAFC;
+      border-color: #E2E8F0;
+      color: #0F172A;
+    }
+    [data-theme="light"] .chat-action-card {
+      background: #FFFFFF;
+      border-color: rgba(5, 150, 105, 0.3);
+      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.08);
+    }
+    [data-theme="light"] .ai-thought-trace {
+      background: #F0F9FF;
+      border-color: #BAE6FD;
+      border-left-color: #0284C7;
+      color: #0369A1;
+    }
+    [data-theme="light"] .rail-header {
+      background: #F8FAFC;
+    }
+    [data-theme="light"] .rail-tone-strip {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+    }
+    [data-theme="light"] .rail-input-container {
+      background: #FFFFFF;
+    }
+    [data-theme="light"] .rail-input,
+    [data-theme="light"] .paste-input-area,
+    [data-theme="light"] .form-ctrl {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+      color: #0F172A;
+    }
+    [data-theme="light"] dialog {
+      background: #FFFFFF;
+      border-color: #CBD5E1;
+      color: #0F172A;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+    }
+    [data-theme="light"] .modal-header {
+      background: #F8FAFC;
+    }
+    [data-theme="light"] .ai-daemon-status-box {
+      background: #F0F9FF;
+      border-color: #BAE6FD;
     }
 
     /* Theme Switcher Button */
@@ -2647,8 +2720,8 @@
         sendCopilotMessage("AI has ingested and indexed contract for " + client + " (" + title + "). Ready to monitor incoming requests.");
       });
 
-      // Theme Switcher Management
-      var currentTheme = localStorage.getItem('billable_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      // Theme Switcher Management (Default: Light)
+      var currentTheme = localStorage.getItem('billable_theme') || 'light';
       function applyTheme(theme) {
         currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);
