@@ -72,6 +72,71 @@
       --radius-lg:    14px;
     }
 
+    /* Light Theme Palette */
+    [data-theme="light"] {
+      /* Working Surface Tokens */
+      --app-bg:       #F6F8FA;
+      --app-panel:    #FFFFFF;
+      --app-surface:  #F0F3F6;
+      --app-surface-hover: #E4E8EC;
+      --app-line:     #E1E4E8;
+      --app-line-light:#D0D7DE;
+
+      /* Ink Tokens */
+      --app-text:     #0D1117;
+      --app-muted:    #57606A;
+      --app-faint:    #8C959F;
+      --app-white:    #0D1117;
+
+      /* AI Neural Cyan & Purple Accents */
+      --ai-cyan:      #0284C7;
+      --ai-cyan-glow: rgba(2, 132, 199, 0.2);
+      --ai-cyan-surf: rgba(2, 132, 199, 0.08);
+      --ai-purple:    #7C3AED;
+      --ai-purple-glow:rgba(124, 58, 237, 0.2);
+
+      /* Meaning Accents */
+      --money:        #059669;
+      --money-glow:   rgba(5, 150, 105, 0.2);
+      --money-surface:rgba(5, 150, 105, 0.08);
+      --money-border: rgba(5, 150, 105, 0.25);
+
+      --flag:         #E11D48;
+      --flag-surface: rgba(225, 29, 72, 0.08);
+      --flag-border:  rgba(225, 29, 72, 0.25);
+
+      --ambiguous:    #D97706;
+      --ambiguous-surface: rgba(217, 119, 6, 0.08);
+      --ambiguous-border:  rgba(217, 119, 6, 0.25);
+
+      --in-scope:     #0284C7;
+      --in-scope-surface: rgba(2, 132, 199, 0.08);
+      --in-scope-border:  rgba(2, 132, 199, 0.25);
+    }
+
+    /* Theme Switcher Button */
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--app-surface);
+      border: 1px solid var(--app-line);
+      color: var(--app-text);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--app-surface-hover);
+      border-color: var(--app-line-light);
+      transform: scale(1.05);
+    }
+
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -1504,6 +1569,7 @@
         </div>
 
         <div class="topbar-actions">
+          <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle" title="Switch Theme (Light / Dark)">☀️</button>
           <button class="btn btn-secondary btn-sm" id="btn-open-new-contract">+ Contract</button>
           <button class="topbar-ai-trigger" id="btn-open-rail-top" title="Open AI Scope Copilot">
             <span class="ai-live-dot"></span>
@@ -2580,6 +2646,27 @@
         openChatRail();
         sendCopilotMessage("AI has ingested and indexed contract for " + client + " (" + title + "). Ready to monitor incoming requests.");
       });
+
+      // Theme Switcher Management
+      var currentTheme = localStorage.getItem('billable_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      function applyTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('billable_theme', theme);
+        document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
+          btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
+          btn.setAttribute('title', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+        });
+      }
+
+      document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+          applyTheme(nextTheme);
+        });
+      });
+
+      applyTheme(currentTheme);
 
       // Initial Render
       renderAll();

@@ -78,6 +78,62 @@
       --max:              1140px;
     }
 
+    /* Light Theme Palette */
+    [data-theme="light"] {
+      /* Surface & Canvas */
+      --bg-main:          #F8FAFC;
+      --bg-card:          rgba(255, 255, 255, 0.95);
+      --bg-card-hover:    #FFFFFF;
+      --bg-glass:         rgba(255, 255, 255, 0.8);
+      --bg-input:         #F1F5F9;
+      
+      /* Borders & Dividers */
+      --border:           rgba(0, 0, 0, 0.08);
+      --border-subtle:    rgba(0, 0, 0, 0.04);
+      --border-highlight: rgba(0, 0, 0, 0.15);
+      --border-glow:      rgba(5, 150, 105, 0.2);
+
+      /* Typography Ink */
+      --text-primary:     #0F172A;
+      --text-secondary:   #475569;
+      --text-muted:       #64748B;
+      --text-faint:       #94A3B8;
+
+      /* Meaning Accents */
+      --money:            #059669;
+      --money-glow:       rgba(5, 150, 105, 0.18);
+      --money-surface:    rgba(5, 150, 105, 0.08);
+      --money-border:     rgba(5, 150, 105, 0.25);
+      
+      --flag:             #E11D48;
+      --flag-glow:        rgba(225, 29, 72, 0.18);
+      --flag-surface:     rgba(225, 29, 72, 0.08);
+      --flag-border:      rgba(225, 29, 72, 0.25);
+
+      --cyan:             #0284C7;
+      --cyan-surface:     rgba(2, 132, 199, 0.08);
+    }
+
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-highlight);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.15s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: scale(1.05);
+      border-color: var(--money);
+    }
+
     /* Reset & Base */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -1945,6 +2001,7 @@
         <span>MCP PROTOCOL ACTIVE — v2.4</span>
       </div>
       <div style="display:flex; align-items:center; gap:0.65rem;">
+        <button class="theme-toggle-btn js-toggle-theme" id="btn-theme-toggle-home" title="Switch Theme (Light / Dark)">☀️</button>
         <a href="/app.html" class="header-cta" style="border-color:var(--money-border); color:var(--money);">Launch App ↗</a>
         <button class="header-cta js-open-modal" data-action="connect_contract_header">Connect contract →</button>
       </div>
@@ -2936,6 +2993,27 @@
           if (legalDialog && legalDialog.open) legalDialog.close();
         }
       });
+
+      // Theme Switcher
+      var currentTheme = localStorage.getItem('billable_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      function applyTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('billable_theme', theme);
+        document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
+          btn.innerHTML = theme === 'light' ? '🌙' : '☀️';
+          btn.setAttribute('title', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+        });
+      }
+
+      document.querySelectorAll('.js-toggle-theme').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+          applyTheme(nextTheme);
+        });
+      });
+
+      applyTheme(currentTheme);
 
     })();
   </script>
