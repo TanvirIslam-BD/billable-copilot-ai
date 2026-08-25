@@ -533,7 +533,8 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.55rem;
+      flex-shrink: 0;
     }
 
     .header-cta-app {
@@ -542,11 +543,12 @@
       font-weight: 600;
       color: var(--money);
       text-decoration: none;
-      padding: 0.55rem 1.1rem;
+      padding: 0.5rem 0.95rem;
       border: 1px solid var(--money-border);
       border-radius: var(--radius-sm);
       background: var(--money-surface);
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       backdrop-filter: blur(8px);
       box-shadow: 0 0 14px rgba(0, 245, 155, 0.1);
@@ -561,14 +563,15 @@
 
     .header-cta-connect {
       font-family: var(--body);
-      font-size: 0.875rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: #050709;
       background: var(--money);
       border: 1px solid var(--money);
       border-radius: var(--radius-sm);
-      padding: 0.55rem 1.15rem;
+      padding: 0.5rem 1rem;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.2s ease;
       box-shadow: 0 0 16px var(--money-glow);
     }
@@ -577,6 +580,33 @@
       filter: brightness(1.1);
       transform: translateY(-1px);
       box-shadow: 0 0 24px var(--money-glow);
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding-block: 0.75rem;
+      }
+      .header-inner {
+        gap: 0.5rem;
+      }
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+      }
+      .brand-logo-svg {
+        width: 18px;
+        height: 18px;
+      }
+      .brand-name {
+        font-size: 1.05rem;
+      }
+      .header-cta-app {
+        display: none; /* Keep header clean on mobile, hero already has prominent App Launch */
+      }
+      .header-cta-connect {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.78rem;
+      }
     }
 
     /* Buttons */
